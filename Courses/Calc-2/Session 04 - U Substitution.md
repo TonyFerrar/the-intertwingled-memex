@@ -10,19 +10,28 @@ updated: 2026-08-18
 
 # Session 04 - U Substitution
 
-> [!abstract] Session Objectives & Overview
-> By the end of this session, you will be able to:
-> - Algebraic Flexibility Rewriting and Variable Manipulation
-> - Pattern Recognition Spotting the Inner Function and its Derivative
-> - Precision in Mechanics Handling Constants, Limits, and Core Rules
+## Session Objectives
+- Algebraic Flexibility Rewriting and Variable Manipulation
+- Pattern Recognition Spotting the Inner Function and its Derivative
+- Precision in Mechanics Handling Constants, Limits, and Core Rules
 
-## Timeline & Session Breakdown
+## Session Timeline
+- **00:00 - 00:10 (10 mins)**: Micro-Lecture
+- **00:10 - 00:25 (15 mins)**: Skill Block 1
+- **00:25 - 00:30 (5 mins)**: Regroup 1
+- **00:30 - 00:45 (15 mins)**: Skill Block 2
+- **00:45 - 00:50 (5 mins)**: Regroup 2
+- **00:50 - 01:05 (15 mins)**: Skill Block 3
+- **01:05 - 01:10 (5 mins)**: Regroup 3
+- **01:10 - 01:15 (5 mins)**: Synthesis Wrap-up
 
-### 00:00 - 00:10 (10 mins) — Micro-Lecture: Motivation & Theory
+## Session Content
+
+### Micro-Lecture
 > [!example] Engineering Context: Engineering Calculus II Application
 > In engineering, mastering the substitution rule is essential for modeling and controlling the physical world, as it translates complex mathematical systems into simpler, solvable forms. For example, electrical engineers use the mechanics of **introducing constants** to evaluate dynamic AC power and exponential capacitor charging integrals , while civil and mechanical engineers rely on **pattern recognition** to isolate trapped "inner functions" when mapping hydrostatic fluid pressure and structural stress. Additionally, aerospace engineers and roboticists employ **variable manipulation** to transform complex three-dimensional paths into simpler coordinate systems , while chemical and nuclear engineers depend on absolute **precision when transforming definite integration limits** to ensure thermal safety systems deploy at the exact correct physical thresholds. Ultimately, the ability to successfully substitute a complex expression with a single manageable variable allows engineers to efficiently calculate the critical, real-time equations that keep modern infrastructure, flight guidance software, and power grids operating safely.
 
-### 00:10 - 00:25 (15 mins) — Skill Block 1: Algebraic Flexibility Rewriting and Variable Manipulation
+### Skill Block 1
 > [!note]- Theory & Derivations
 > Integrals in the real world rarely arrive perfectly configured for a basic substitution. Often, the "inner function" or its "derivative partner" is visually obscured. To uncover them, you must develop **Algebraic Flexibility**, which primarily manifests in two ways:
 > 
@@ -230,10 +239,10 @@ $$\int \frac{x}{x^{2}+1} \, dx$$
 > 
 > $$\frac{1}{2} \ln(x^2 + 1) + C$$
 
-### 00:25 - 00:30 (5 mins) — Regroup 1: Class Discussion
+### Regroup 1
 - Review common misconceptions and clarify key notations.
 
-### 00:30 - 00:45 (15 mins) — Skill Block 2: Pattern Recognition Spotting the Inner Function and its Derivative
+### Skill Block 2
 > [!note]- Theory & Derivations
 > When confronted with a complex, intimidating integral, your first line of defense is always **Pattern Recognition**. The substitution rule is essentially the **Chain Rule in reverse**.
 > 
@@ -470,10 +479,10 @@ $$\int_{1}^{3} \frac{e^{1/x}}{x^{2}} \, dx$$
 > 
 > $$e - \sqrt[3]{e}$$
 
-### 00:45 - 00:50 (5 mins) — Regroup 2: Reflection
+### Regroup 2
 - Reflect on the physical modeling applications and mathematical setups.
 
-### 00:50 - 01:05 (15 mins) — Skill Block 3: Precision in Mechanics Handling Constants, Limits, and Core Rules
+### Skill Block 3
 > [!note]- Theory & Derivations
 > Even if you possess perfect pattern recognition, a $u$-substitution can fall apart due to minor mechanical errors. Skill 3 focuses on execution precision: managing mismatched constant coefficients, transforming boundaries for definite integrals, and correctly applying final integration rules.
 > 
@@ -720,8 +729,8 @@ $$\int_{0}^{\sqrt{\pi}} 4x\cos(x^{2}) \, dx$$
 > 
 > _(Fun fact: The answer is exactly zero because the positive area under the curve from $0$ to $\sqrt{\pi/2}$ perfectly cancels out the negative area under the curve from $\sqrt{\pi/2}$ to $\sqrt{\pi}$!)_
 
-### 01:05 - 01:10 (5 mins) — Regroup 3: Verification
+### Regroup 3
 - Verify calculations and mathematical reasoning.
 
-### 01:10 - 01:15 (5 mins) — Synthesis Wrap-up
+### Synthesis Wrap-up
 - Core takeaways from Session 04 and overview of homework homework assignment.

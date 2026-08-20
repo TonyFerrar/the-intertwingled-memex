@@ -13,3 +13,4 @@ web-portal/yarn-error.log*
 
 # Generated PDF Exports
 *.pdf
+*- Backup.md

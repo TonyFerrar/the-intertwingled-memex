@@ -300,6 +300,36 @@ export function getCourseSessions(courseName) {
 }
 
 /**
+ * Recursively search and expand Obsidian transclusions ![[Filename]] or ![[Filename#Header]]
+ */
+function expandTransclusions(text) {
+  if (!text) return '';
+  const transclusionRegex = /!\[\[([^\]|#]+)(?:#[^\]]*)?\]\]/g;
+  
+  return text.replace(transclusionRegex, (match, targetName) => {
+    const isAttachment = /\.(png|jpg|jpeg|gif|svg|pdf|webp|mp4)$/i.test(targetName);
+    if (isAttachment) {
+      return match;
+    }
+    const resolvedPath = findVaultFileByName(VAULT_ROOT, targetName);
+    if (!resolvedPath) {
+      console.warn(`[Transclusion Warning] Could not find transcluded file: ${targetName}`);
+      return `*Warning: Transclusion not found: [[${targetName}]]*`;
+    }
+    
+    try {
+      const content = fs.readFileSync(resolvedPath, 'utf-8');
+      const { content: rawBody } = matter(preprocessFrontmatter(content));
+      // Recursively expand nested transclusions
+      return expandTransclusions(rawBody);
+    } catch (err) {
+      console.error(`Error expanding transclusion ${targetName}:`, err);
+      return match;
+    }
+  });
+}
+
+/**
  * Parses a single session markdown file into structured segments.
  */
 export function getSessionDetails(courseName, sessionSlug) {
@@ -315,233 +345,490 @@ export function getSessionDetails(courseName, sessionSlug) {
 
   const filePath = path.join(coursePath, matchedFile);
   const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const { data, content } = matter(preprocessFrontmatter(fileContent));
+  
+  // Expand transclusions at compile-time
+  const expandedContent = expandTransclusions(fileContent);
+  const { data, content } = matter(preprocessFrontmatter(expandedContent));
 
   const cleanedContent = stripTitleHeading(content);
 
-  // Divide the session content by major Schedule Blocks
-  const rawSections = cleanedContent.split(/^### /gm);
-  
-  const intro = rawSections[0] || '';
-  const blocks = [];
+  const hasTimeline = cleanedContent.includes('## Session Timeline');
 
-  for (let i = 1; i < rawSections.length; i++) {
-    const rawSec = rawSections[i];
-    const lines = rawSec.split('\n');
-    const header = lines[0].trim();
-    const body = lines.slice(1).join('\n');
-
-    const isSkillBlock = header.toLowerCase().includes('skill block');
+  if (hasTimeline) {
+    // ----------------------------------------------------
+    // NEW TEMPLATE OUTLINE PARSER
+    // ----------------------------------------------------
     
-    let parsedBlock = {
-      header,
-      isSkillBlock,
-      bodyRaw: body,
-      bodyHtml: '',
-      problems: []
-    };
+    // 1. Parse objectives (everything between ## Session Objectives and ## Session Timeline)
+    let objectivesHtml = '';
+    const objMatch = cleanedContent.match(/## Session Objectives([\s\S]*?)## Session Timeline/i);
+    if (objMatch) {
+      const rawObj = objMatch[1].trim();
+      const objBodyHtml = renderMathAndMarkdown(rawObj);
+      objectivesHtml = `
+<div class="callout callout-abstract my-4 p-4 border-l-4 rounded-r-md bg-mathBgSecondary border-mathBorder">
+  <div class="callout-title font-bold text-mathTextNormal text-lg mb-1">Session Objectives & Overview</div>
+  <div class="callout-content text-mathTextNormal">
+    ${objBodyHtml}
+  </div>
+</div>`;
+    }
 
-    if (isSkillBlock) {
-      // Parse generic problems inside the block
-      const parts = body.split(/^####\s+/gm);
-      // parts[0] is the theory section (everything before the first problem)
-      
-      // Split theory and engineering applications
-      let theoryText = parts[0];
-      const engineeringProblems = [];
-      
-      const engSplitRegex = /^(?:>\s*)?##\s*(?:3\.\s*)?(?:Real-Life\s+)?Engineering\s+Applications?\s*(?:Problems?)?\s*$/im;
-      const engMatch = theoryText.match(engSplitRegex);
-      if (engMatch) {
-        const engIndex = theoryText.indexOf(engMatch[0]);
-        const engPart = parts[0].substring(engIndex);
+    // 2. Parse timeline list to construct segment config
+    const timelineItems = [];
+    const timelineBlockMatch = cleanedContent.match(/## Session Timeline([\s\S]*?)## Session Content/i);
+    if (timelineBlockMatch) {
+      const rawTimeline = timelineBlockMatch[1];
+      const lineRegex = /-\s*\*\*(.*?)\s*\((.*?)\)\*\*\s*:\s*(.*)/g;
+      let tmatch;
+      while ((tmatch = lineRegex.exec(rawTimeline)) !== null) {
+        timelineItems.push({
+          time: tmatch[1].trim(),
+          duration: tmatch[2].trim(),
+          name: tmatch[3].trim()
+        });
+      }
+    }
+
+    // 3. Parse segments under ## Session Content
+    const contentMatch = cleanedContent.match(/## Session Content([\s\S]*)$/i);
+    const contentText = contentMatch ? contentMatch[1] : '';
+    
+    // Split content text by ### headers
+    const rawSections = contentText.split(/^### /gm);
+    const blocks = [];
+
+    // For each timeline item, find the corresponding content section matching the name
+    timelineItems.forEach((item, index) => {
+      // Find the raw section that starts with the item name (fuzzy match)
+      const matchedSection = rawSections.find(sec => {
+        const lines = sec.split('\n');
+        const header = lines[0].trim();
+        return header.toLowerCase().replace(/[^a-z0-9]/g, '') === item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      });
+
+      const body = matchedSection ? matchedSection.split('\n').slice(1).join('\n') : '';
+      const header = `${item.time} (${item.duration}) — ${item.name}`;
+      const isSkillBlock = item.name.toLowerCase().includes('skill block');
+
+      let parsedBlock = {
+        header,
+        isSkillBlock,
+        bodyRaw: body,
+        bodyHtml: '',
+        problems: []
+      };
+
+      if (isSkillBlock) {
+        // Parse skill block contents (theory, generic problems, engineering problems, etc.)
+        const parts = body.split(/^####\s+/gm);
+        let theoryText = parts[0];
+        const engineeringProblems = [];
         
-        // Extract wiki links from the engineering section
-        const links = [];
-        const linkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
-        let lmatch;
-        while ((lmatch = linkRegex.exec(engPart)) !== null) {
-          links.push(lmatch[1]);
+        const engSplitRegex = /^(?:>\s*)?##\s*(?:3\.\s*)?(?:Real-Life\s+)?Engineering\s+Applications?\s*(?:Problems?)?\s*$/im;
+        const engMatch = theoryText.match(engSplitRegex);
+        if (engMatch) {
+          const engIndex = theoryText.indexOf(engMatch[0]);
+          const engPart = parts[0].substring(engIndex);
+          
+          const links = [];
+          const linkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+          let lmatch;
+          while ((lmatch = linkRegex.exec(engPart)) !== null) {
+            links.push(lmatch[1]);
+          }
+          
+          // Find problem files in vault
+          const problemLinks = links.filter(l => !l.toLowerCase().includes('solution'));
+          for (const probLink of problemLinks) {
+            const probPath = findVaultFileByName(VAULT_ROOT, probLink);
+            if (!probPath) continue;
+            
+            const probContent = fs.readFileSync(probPath, 'utf-8');
+            const cleanProbContent = stripTitleHeading(probContent);
+            
+            const solLink = probLink + ' Solution';
+            const solPath = findVaultFileByName(VAULT_ROOT, solLink);
+            let solutionHtml = '';
+            let applicationHtml = '';
+            
+            if (solPath) {
+              const solContent = fs.readFileSync(solPath, 'utf-8');
+              const cleanSolContent = stripTitleHeading(solContent);
+              const solParts = cleanSolContent.split(/####\s*(?:Meaning\s+of\s+the\s+Answer|Engineering\s+Real-Life|Real-life\s+Engineering)/i);
+              const stepByStep = solParts[0].replace(/####\s*Step-by-Step\s+Solution:?/i, '').trim();
+              solutionHtml = renderMathAndMarkdown(stepByStep);
+              
+              if (solParts[1]) {
+                applicationHtml = renderMathAndMarkdown(solParts[1].trim());
+              }
+            }
+            
+            let emoji = '⚙️';
+            let discipline = 'General Engineering';
+            const disciplines = [
+              { name: 'Electrical', emoji: '⚡' },
+              { name: 'Aerospace', emoji: '🚀' },
+              { name: 'Civil', emoji: '🏗️' },
+              { name: 'Mechanical', emoji: '⚙️' },
+              { name: 'Nuclear', emoji: '⚛️' },
+              { name: 'Chemical', emoji: '🧪' },
+              { name: 'Robotics', emoji: '🤖' },
+            ];
+            for (const disc of disciplines) {
+              if (probLink.toLowerCase().includes(disc.name.toLowerCase())) {
+                discipline = `${disc.name} Engineering`;
+                emoji = disc.emoji;
+                break;
+              }
+            }
+            
+            const cleanTitle = probLink.replace(/^[^-—:]+[-—:]\s*/, '').trim();
+            engineeringProblems.push({
+              title: cleanTitle,
+              discipline,
+              emoji,
+              statementHtml: renderMathAndMarkdown(cleanProbContent),
+              solutionHtml,
+              applicationHtml,
+            });
+          }
+          
+          theoryText = parts[0].substring(0, engIndex).trim();
+        }
+
+        parsedBlock.theoryHtml = renderMathAndMarkdown(theoryText);
+        parsedBlock.engineeringProblems = engineeringProblems;
+
+        // Parse generic practice problems
+        for (let j = 1; j < parts.length; j++) {
+          const part = parts[j];
+          const plines = part.split('\n');
+          const ptitle = plines[0].trim();
+          const pbody = plines.slice(1).join('\n');
+
+          const solutionLines = [];
+          const statementLines = [];
+          let insideSolution = false;
+          let hasWorkspace = false;
+
+          const pbodyLines = pbody.split('\n');
+          for (let line of pbodyLines) {
+            if (line.trim().startsWith('> [!check]-') || line.trim().startsWith('> [!check]')) {
+              insideSolution = true;
+              continue;
+            }
+            if (line.trim().startsWith('> [!workspace]')) {
+              hasWorkspace = true;
+              continue;
+            }
+            
+            if (insideSolution) {
+              if (line.trim().startsWith('>')) {
+                solutionLines.push(line.replace(/^>\s?/, ''));
+              } else {
+                insideSolution = false;
+              }
+            } else {
+              if (!line.trim().startsWith('>')) {
+                statementLines.push(line);
+              }
+            }
+          }
+
+          const isWorked = ptitle.toLowerCase().includes('worked') || ptitle.toLowerCase().includes('example') || j === 1;
+          const finalHasWorkspace = isWorked ? false : hasWorkspace;
+          const solutionText = solutionLines.join('\n');
+          
+          let hint = '';
+          const hintMatch = solutionText.match(/^(?:\*\*|\*|>\s*)Hint:\s*(.*?)$/im);
+          if (hintMatch) {
+            hint = hintMatch[1].trim();
+          } else {
+            hint = "Refer to the 'Core Theory' tab or review the Worked Example demonstration for this skill.";
+          }
+
+          let quickAnswer = '';
+          const answerMatch = solutionText.match(/^(?:\*\*|\*|>\s*)(?:Final\s+)?Answer:\s*(.*?)$/im);
+          if (answerMatch) {
+            quickAnswer = answerMatch[1].trim();
+          } else {
+            const nonCmtLines = solutionLines.map(l => l.trim()).filter(l => l.length > 0 && !l.includes('---') && !l.startsWith('>'));
+            if (nonCmtLines.length > 0) {
+              const lastLine = nonCmtLines[nonCmtLines.length - 1];
+              if (lastLine.length < 150) {
+                quickAnswer = lastLine;
+              }
+            }
+          }
+
+          let cleanedSolutionText = solutionText;
+          if (answerMatch) {
+            cleanedSolutionText = cleanedSolutionText.replace(answerMatch[0], '');
+          }
+          if (hintMatch) {
+            cleanedSolutionText = cleanedSolutionText.replace(hintMatch[0], '');
+          }
+          cleanedSolutionText = cleanedSolutionText.trim();
+
+          let formattedAnswer = quickAnswer;
+          if (quickAnswer && !quickAnswer.toLowerCase().startsWith('answer') && !quickAnswer.toLowerCase().startsWith('final answer')) {
+            formattedAnswer = `**Answer:** ${quickAnswer}`;
+          }
+
+          parsedBlock.problems.push({
+            title: ptitle,
+            isWorked,
+            statementHtml: renderMathAndMarkdown(statementLines.join('\n')),
+            hintHtml: renderMathAndMarkdown(hint),
+            quickAnswerHtml: formattedAnswer ? renderMathAndMarkdown(formattedAnswer) : '',
+            solutionHtml: renderMathAndMarkdown(cleanedSolutionText),
+            hasWorkspace: finalHasWorkspace
+          });
+        }
+      } else {
+        parsedBlock.theoryHtml = renderMathAndMarkdown(body);
+      }
+
+      blocks.push(parsedBlock);
+    });
+
+    return {
+      metadata: data,
+      title: data.title || matchedFile.replace('.md', ''),
+      code: data.code || '',
+      introHtml: objectivesHtml,
+      blocks
+    };
+  } else {
+    // ----------------------------------------------------
+    // FALLBACK TO OLD PARSER
+    // ----------------------------------------------------
+    // Divide the session content by major Schedule Blocks
+    const rawSections = cleanedContent.split(/^### /gm);
+    
+    const intro = rawSections[0] || '';
+    const blocks = [];
+
+    for (let i = 1; i < rawSections.length; i++) {
+      const rawSec = rawSections[i];
+      const lines = rawSec.split('\n');
+      const header = lines[0].trim();
+      const body = lines.slice(1).join('\n');
+
+      const isSkillBlock = header.toLowerCase().includes('skill block');
+      
+      let parsedBlock = {
+        header,
+        isSkillBlock,
+        bodyRaw: body,
+        bodyHtml: '',
+        problems: []
+      };
+
+      if (isSkillBlock) {
+        // Parse generic problems inside the block
+        const parts = body.split(/^####\s+/gm);
+        // parts[0] is the theory section (everything before the first problem)
+        
+        // Split theory and engineering applications
+        let theoryText = parts[0];
+        const engineeringProblems = [];
+        
+        const engSplitRegex = /^(?:>\s*)?##\s*(?:3\.\s*)?(?:Real-Life\s+)?Engineering\s+Applications?\s*(?:Problems?)?\s*$/im;
+        const engMatch = theoryText.match(engSplitRegex);
+        if (engMatch) {
+          const engIndex = theoryText.indexOf(engMatch[0]);
+          const engPart = parts[0].substring(engIndex);
+          
+          // Extract wiki links from the engineering section
+          const links = [];
+          const linkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+          let lmatch;
+          while ((lmatch = linkRegex.exec(engPart)) !== null) {
+            links.push(lmatch[1]);
+          }
+          
+          // Find problem files in vault
+          const problemLinks = links.filter(l => !l.toLowerCase().includes('solution'));
+          for (const probLink of problemLinks) {
+            const probPath = findVaultFileByName(VAULT_ROOT, probLink);
+            if (!probPath) continue;
+            
+            const probContent = fs.readFileSync(probPath, 'utf-8');
+            const cleanProbContent = stripTitleHeading(probContent);
+            
+            const solLink = probLink + ' Solution';
+            const solPath = findVaultFileByName(VAULT_ROOT, solLink);
+            let solutionHtml = '';
+            let applicationHtml = '';
+            
+            if (solPath) {
+              const solContent = fs.readFileSync(solPath, 'utf-8');
+              const cleanSolContent = stripTitleHeading(solContent);
+              const solParts = cleanSolContent.split(/####\s*(?:Meaning\s+of\s+the\s+Answer|Engineering\s+Real-Life|Real-life\s+Engineering)/i);
+              const stepByStep = solParts[0].replace(/####\s*Step-by-Step\s+Solution:?/i, '').trim();
+              solutionHtml = renderMathAndMarkdown(stepByStep);
+              
+              if (solParts[1]) {
+                applicationHtml = renderMathAndMarkdown(solParts[1].trim());
+              }
+            }
+            
+            let emoji = '⚙️';
+            let discipline = 'General Engineering';
+            const disciplines = [
+              { name: 'Electrical', emoji: '⚡' },
+              { name: 'Aerospace', emoji: '🚀' },
+              { name: 'Civil', emoji: '🏗️' },
+              { name: 'Mechanical', emoji: '⚙️' },
+              { name: 'Nuclear', emoji: '⚛️' },
+              { name: 'Chemical', emoji: '🧪' },
+              { name: 'Robotics', emoji: '🤖' },
+            ];
+            for (const disc of disciplines) {
+              if (probLink.toLowerCase().includes(disc.name.toLowerCase())) {
+                discipline = `${disc.name} Engineering`;
+                emoji = disc.emoji;
+                break;
+              }
+            }
+            
+            const cleanTitle = probLink.replace(/^[^-—:]+[-—:]\s*/, '').trim();
+            engineeringProblems.push({
+              title: cleanTitle,
+              discipline,
+              emoji,
+              statementHtml: renderMathAndMarkdown(cleanProbContent),
+              solutionHtml,
+              applicationHtml,
+            });
+          }
+          
+          // Keep only the theory portion
+          theoryText = parts[0].substring(0, engIndex).trim();
         }
         
-        // Find problem files in vault
-        const problemLinks = links.filter(l => !l.toLowerCase().includes('solution'));
-        for (const probLink of problemLinks) {
-          const probPath = findVaultFileByName(VAULT_ROOT, probLink);
-          if (!probPath) continue;
-          
-          const probContent = fs.readFileSync(probPath, 'utf-8');
-          const cleanProbContent = stripTitleHeading(probContent);
-          
-          const solLink = probLink + ' Solution';
-          const solPath = findVaultFileByName(VAULT_ROOT, solLink);
-          let solutionHtml = '';
-          let applicationHtml = '';
-          
-          if (solPath) {
-            const solContent = fs.readFileSync(solPath, 'utf-8');
-            const cleanSolContent = stripTitleHeading(solContent);
-            const solParts = cleanSolContent.split(/####\s*(?:Meaning\s+of\s+the\s+Answer|Engineering\s+Real-Life|Real-life\s+Engineering)/i);
-            const stepByStep = solParts[0].replace(/####\s*Step-by-Step\s+Solution:?/i, '').trim();
-            solutionHtml = renderMathAndMarkdown(stepByStep);
+        parsedBlock.theoryHtml = renderMathAndMarkdown(theoryText);
+        parsedBlock.engineeringProblems = engineeringProblems;
+        
+        // Parse problems (parts[1...])
+        for (let j = 1; j < parts.length; j++) {
+          const part = parts[j];
+          const plines = part.split('\n');
+          const ptitle = plines[0].trim();
+          const pbody = plines.slice(1).join('\n');
+
+          const solutionLines = [];
+          const statementLines = [];
+          let insideSolution = false;
+          let hasWorkspace = false;
+
+          const pbodyLines = pbody.split('\n');
+          for (let line of pbodyLines) {
+            if (line.trim().startsWith('> [!check]-') || line.trim().startsWith('> [!check]')) {
+              insideSolution = true;
+              continue;
+            }
+            if (line.trim().startsWith('> [!workspace]')) {
+              hasWorkspace = true;
+              continue;
+            }
             
-            if (solParts[1]) {
-              applicationHtml = renderMathAndMarkdown(solParts[1].trim());
+            if (insideSolution) {
+              if (line.trim().startsWith('>')) {
+                solutionLines.push(line.replace(/^>\s?/, ''));
+              } else {
+                insideSolution = false;
+              }
+            } else {
+              if (!line.trim().startsWith('>')) {
+                statementLines.push(line);
+              }
             }
           }
+
+          const isWorked = ptitle.toLowerCase().includes('worked') || ptitle.toLowerCase().includes('example') || j === 1;
+
+          // If it is the first problem and we force it to be worked, we strip the workspace checkbox
+          const finalHasWorkspace = isWorked ? false : hasWorkspace;
+
+          const solutionText = solutionLines.join('\n');
           
-          let emoji = '⚙️';
-          let discipline = 'General Engineering';
-          const disciplines = [
-            { name: 'Electrical', emoji: '⚡' },
-            { name: 'Aerospace', emoji: '🚀' },
-            { name: 'Civil', emoji: '🏗️' },
-            { name: 'Mechanical', emoji: '⚙️' },
-            { name: 'Nuclear', emoji: '⚛️' },
-            { name: 'Chemical', emoji: '🧪' },
-            { name: 'Robotics', emoji: '🤖' },
-          ];
-          for (const disc of disciplines) {
-            if (probLink.toLowerCase().includes(disc.name.toLowerCase())) {
-              discipline = `${disc.name} Engineering`;
-              emoji = disc.emoji;
-              break;
+          // 1. Extract Hint
+          let hint = '';
+          const hintMatch = solutionText.match(/^(?:\*\*|\*|>\s*)Hint:\s*(.*?)$/im);
+          if (hintMatch) {
+            hint = hintMatch[1].trim();
+          } else {
+            hint = "Refer to the 'Core Theory' tab or review the Worked Example demonstration for this skill.";
+          }
+
+          // 2. Extract Quick Answer
+          let quickAnswer = '';
+          const answerMatch = solutionText.match(/^(?:\*\*|\*|>\s*)(?:Final\s+)?Answer:\s*(.*?)$/im);
+          if (answerMatch) {
+            quickAnswer = answerMatch[1].trim();
+          } else {
+            // Fallback: extract the last line if it is a short equation or bold answer
+            const nonCmtLines = solutionLines.map(l => l.trim()).filter(l => l.length > 0 && !l.includes('---') && !l.startsWith('>'));
+            if (nonCmtLines.length > 0) {
+              const lastLine = nonCmtLines[nonCmtLines.length - 1];
+              if (lastLine.length < 150) {
+                quickAnswer = lastLine;
+              }
             }
           }
-          
-          const cleanTitle = probLink.replace(/^[^-—:]+[-—:]\s*/, '').trim();
-          engineeringProblems.push({
-            title: cleanTitle,
-            discipline,
-            emoji,
-            statementHtml: renderMathAndMarkdown(cleanProbContent),
-            solutionHtml,
-            applicationHtml,
+
+          // Clean solution text of duplicated hint/answer labels in step-by-step
+          let cleanedSolutionText = solutionText;
+          if (answerMatch) {
+            cleanedSolutionText = cleanedSolutionText.replace(answerMatch[0], '');
+          }
+          if (hintMatch) {
+            cleanedSolutionText = cleanedSolutionText.replace(hintMatch[0], '');
+          }
+          cleanedSolutionText = cleanedSolutionText.trim();
+
+          // Convert quickAnswer label prefix
+          let formattedAnswer = quickAnswer;
+          if (quickAnswer && !quickAnswer.toLowerCase().startsWith('answer') && !quickAnswer.toLowerCase().startsWith('final answer')) {
+            formattedAnswer = `**Answer:** ${quickAnswer}`;
+          }
+
+          parsedBlock.problems.push({
+            title: ptitle,
+            isWorked,
+            statementHtml: renderMathAndMarkdown(statementLines.join('\n')),
+            hintHtml: renderMathAndMarkdown(hint),
+            quickAnswerHtml: formattedAnswer ? renderMathAndMarkdown(formattedAnswer) : '',
+            solutionHtml: renderMathAndMarkdown(cleanedSolutionText),
+            hasWorkspace: finalHasWorkspace
           });
         }
         
-        // Keep only the theory portion
-        theoryText = parts[0].substring(0, engIndex).trim();
-      }
-      
-      parsedBlock.theoryHtml = renderMathAndMarkdown(theoryText);
-      parsedBlock.engineeringProblems = engineeringProblems;
-      
-      // Parse problems (parts[1...])
-      for (let j = 1; j < parts.length; j++) {
-        const part = parts[j];
-        const plines = part.split('\n');
-        const ptitle = plines[0].trim();
-        const pbody = plines.slice(1).join('\n');
+        // Collect extensions (extra practice) from block
+        const extHtml = extractCalloutHtml(body, 'info');
+        if (extHtml) parsedBlock.extensionsHtml = extHtml;
 
-        const solutionLines = [];
-        const statementLines = [];
-        let insideSolution = false;
-        let hasWorkspace = false;
-
-        const pbodyLines = pbody.split('\n');
-        for (let line of pbodyLines) {
-          if (line.trim().startsWith('> [!check]-') || line.trim().startsWith('> [!check]')) {
-            insideSolution = true;
-            continue;
-          }
-          if (line.trim().startsWith('> [!workspace]')) {
-            hasWorkspace = true;
-            continue;
-          }
-          
-          if (insideSolution) {
-            if (line.trim().startsWith('>')) {
-              solutionLines.push(line.replace(/^>\s?/, ''));
-            } else {
-              insideSolution = false;
-            }
-          } else {
-            if (!line.trim().startsWith('>')) {
-              statementLines.push(line);
-            }
-          }
-        }
-
-        const isWorked = ptitle.toLowerCase().includes('worked') || ptitle.toLowerCase().includes('example') || j === 1;
-
-        // If it is the first problem and we force it to be worked, we strip the workspace checkbox
-        const finalHasWorkspace = isWorked ? false : hasWorkspace;
-
-        const solutionText = solutionLines.join('\n');
-        
-        // 1. Extract Hint
-        let hint = '';
-        const hintMatch = solutionText.match(/^(?:\*\*|\*|>\s*)Hint:\s*(.*?)$/im);
-        if (hintMatch) {
-          hint = hintMatch[1].trim();
-        } else {
-          hint = "Refer to the 'Core Theory' tab or review the Worked Example demonstration for this skill.";
-        }
-
-        // 2. Extract Quick Answer
-        let quickAnswer = '';
-        const answerMatch = solutionText.match(/^(?:\*\*|\*|>\s*)(?:Final\s+)?Answer:\s*(.*?)$/im);
-        if (answerMatch) {
-          quickAnswer = answerMatch[1].trim();
-        } else {
-          // Fallback: extract the last line if it is a short equation or bold answer
-          const nonCmtLines = solutionLines.map(l => l.trim()).filter(l => l.length > 0 && !l.includes('---') && !l.startsWith('>'));
-          if (nonCmtLines.length > 0) {
-            const lastLine = nonCmtLines[nonCmtLines.length - 1];
-            if (lastLine.length < 150) {
-              quickAnswer = lastLine;
-            }
-          }
-        }
-
-        // Clean solution text of duplicated hint/answer labels in step-by-step
-        let cleanedSolutionText = solutionText;
-        if (answerMatch) {
-          cleanedSolutionText = cleanedSolutionText.replace(answerMatch[0], '');
-        }
-        if (hintMatch) {
-          cleanedSolutionText = cleanedSolutionText.replace(hintMatch[0], '');
-        }
-        cleanedSolutionText = cleanedSolutionText.trim();
-
-        // Convert quickAnswer label prefix
-        let formattedAnswer = quickAnswer;
-        if (quickAnswer && !quickAnswer.toLowerCase().startsWith('answer') && !quickAnswer.toLowerCase().startsWith('final answer')) {
-          formattedAnswer = `**Answer:** ${quickAnswer}`;
-        }
-
-        parsedBlock.problems.push({
-          title: ptitle,
-          isWorked,
-          statementHtml: renderMathAndMarkdown(statementLines.join('\n')),
-          hintHtml: renderMathAndMarkdown(hint),
-          quickAnswerHtml: formattedAnswer ? renderMathAndMarkdown(formattedAnswer) : '',
-          solutionHtml: renderMathAndMarkdown(cleanedSolutionText),
-          hasWorkspace: finalHasWorkspace
-        });
+      } else {
+        parsedBlock.bodyHtml = renderMathAndMarkdown(body);
       }
 
-      // Collect extensions (extra practice) from block
-      const extHtml = extractCalloutHtml(body, 'info');
-      if (extHtml) parsedBlock.extensionsHtml = extHtml;
-
-    } else {
-      parsedBlock.bodyHtml = renderMathAndMarkdown(body);
+      blocks.push(parsedBlock);
     }
 
-    blocks.push(parsedBlock);
+    // Clean redundant timeline section headers from intro markdown
+    const cleanedIntro = intro.replace(/##\s+Timeline\s+&\s+Session\s+Breakdown\s*$/gmi, '');
+
+    return {
+      metadata: data,
+      title: data.title || matchedFile.replace('.md', ''),
+      code: data.code || '',
+      introHtml: renderMathAndMarkdown(cleanedIntro),
+      blocks
+    };
   }
-
-  // Clean redundant timeline section headers from intro markdown
-  const cleanedIntro = intro.replace(/##\s+Timeline\s+&\s+Session\s+Breakdown\s*$/gmi, '');
-
-  return {
-    metadata: data,
-    title: data.title || matchedFile.replace('.md', ''),
-    introHtml: renderMathAndMarkdown(cleanedIntro),
-    blocks
-  };
 }
 
 /**
