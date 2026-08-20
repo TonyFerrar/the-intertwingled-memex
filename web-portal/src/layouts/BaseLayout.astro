@@ -22,7 +22,7 @@ const courses = [
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title} | UNLV Calculus Portal</title>
+  <title>{title} | Tony's Interwingled Memex</title>
   
   <!-- KaTeX CSS CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
@@ -436,14 +436,14 @@ const courses = [
       </button>
       <span class="text-xl sm:text-2xl">🌱</span>
       <a href={link('/')} class="logo-title font-bold tracking-tight hover:text-accent transition-colors">
-        <span class="logo-mobile">UNLV Calculus</span>
-        <span class="logo-desktop">UNLV Calculus Reference Portal</span>
+        <span class="logo-mobile">Tony's Memex</span>
+        <span class="logo-desktop">Tony's Interwingled Memex</span>
       </a>
     </div>
     <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
       <a href={link('/garden/limits')} class="font-semibold hover:underline">Digital Garden</a>
       <span class="text-mathTextMuted">|</span>
-      <span class="text-[10px] sm:text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
+      <a href={link('/courses')} class="text-[10px] sm:text-xs py-1 px-2 bg-mathBorder rounded font-mono hover:bg-mathBorder hover:text-accent transition-all">OER Curriculum</a>
     </div>
   </header>
 

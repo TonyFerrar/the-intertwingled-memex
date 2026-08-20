@@ -1,55 +1,83 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getVaultHome, getRecentlyUpdatedNotes } from '../utils/vaultLoader.js';
 
-const courses = [
-  { id: 'calc-1', name: 'Calculus I', code: 'MATH-181', desc: 'Differential calculus of single variable functions, limits, continuity, derivative rules, optimization, and introduction to integration.', icon: '📐' },
-  { id: 'calc-2', name: 'Calculus II', code: 'MATH-182', desc: 'Integral calculus of single variable functions, techniques of integration, applications, improper integrals, infinite sequences, and power series.', icon: '🌀' },
-  { id: 'calc-3', name: 'Calculus III', code: 'MATH-281', desc: 'Multivariable calculus, vectors, vector-valued functions, partial derivatives, multiple integrals, and line integrals.', icon: '🕸️' },
-];
+const vaultHome = getVaultHome();
+const recentNotes = getRecentlyUpdatedNotes();
+
 const base = import.meta.env.BASE_URL;
 const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
+
+// Type mapping helper for badges
+const typeLabels: Record<string, { label: string; badge: string }> = {
+  'course-session': { label: 'Session Note', badge: 'bg-accent/10 text-accent border-accent/20' },
+  'concept': { label: 'Concept Card', badge: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+  'blog': { label: 'Blog Post', badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' }
+};
 ---
 
-<BaseLayout title="UNLV Calculus Portal">
-  <div class="space-y-8">
-    <!-- Hero Block -->
-    <section class="py-8 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl text-white shadow-md">
-      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Active Calculus OER Portal</h1>
-      <p class="text-lg text-blue-100 mt-2 max-w-xl">
-        A custom digital learning reference and interactive Digital Garden for UNLV Calculus courses. Built for mobile-first in-class active learning.
-      </p>
-      <div class="mt-6 flex flex-wrap gap-4">
-        <a href={link('/garden')} class="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg shadow hover:bg-blue-50 transition-colors text-sm">
-          🌲 Browse Digital Garden
-        </a>
+<BaseLayout title={vaultHome.title}>
+  <div class="space-y-12 max-w-5xl mx-auto">
+    <!-- Header/Hero Section -->
+    <section class="border-b border-mathBorder pb-6">
+      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{vaultHome.title}</h1>
+      <div class="prose max-w-none text-mathTextNormal mt-6 leading-relaxed">
+        <Fragment set:html={vaultHome.bodyHtml} />
       </div>
     </section>
 
-    <!-- Course Cards Grid -->
-    <section class="grid md:grid-cols-3 gap-6">
-      {courses.map(course => (
-        <a href={link(`/courses/${course.id}`)} class="group border border-mathBorder rounded-xl p-6 bg-mathBgSecondary hover:border-accent hover:shadow transition-all duration-200">
-          <span class="text-4xl block mb-4">{course.icon}</span>
-          <h2 class="text-xl font-bold text-mathTextNormal group-hover:text-accent transition-colors flex items-center gap-2">
-            {course.name}
-            <span class="text-xs py-0.5 px-2 bg-mathBorder rounded font-mono text-mathTextMuted">{course.code}</span>
-          </h2>
-          <p class="text-sm text-mathTextMuted mt-2 leading-relaxed">
-            {course.desc}
-          </p>
-          <span class="text-xs font-bold text-accent group-hover:underline mt-4 block">
-            Explore 26 Sessions ➜
-          </span>
-        </a>
-      ))}
-    </section>
-
-    <!-- Project Goals / About -->
-    <section class="p-6 border border-mathBorder rounded-xl bg-mathBgSecondary/40 leading-relaxed">
-      <h3 class="font-bold text-lg text-mathTextNormal mb-2">About this Curriculum</h3>
-      <p class="text-sm text-mathTextMuted">
-        This curriculum implements active learning by structuring class sessions into 3 distinct Skill Blocks, replacing standard lectures with active worked examples, hands-on student practices, and peer discussion. The entire curriculum is structured inside a Zettelkasten Digital Garden, allowing students to explore prerequisite concepts bidirectionally.
+    <!-- Recently Updated Section -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2">
+        🕒 Recently Updated Notes
+      </h2>
+      <p class="text-xs text-mathTextMuted">
+        The table below lists the most recently updated notes in this vault that are marked for publication.
       </p>
+
+      {recentNotes.length > 0 ? (
+        <div class="overflow-x-auto border border-mathBorder rounded-xl bg-mathBgSecondary/20">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-mathBorder bg-mathBgSecondary/50 font-semibold text-mathTextNormal text-xs uppercase tracking-wider select-none">
+                <th class="p-3 pl-4">Note / Topic</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Course</th>
+                <th class="p-3 pr-4 text-right">Last Updated</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-mathBorder/40">
+              {recentNotes.map(note => {
+                const typeInfo = typeLabels[note.type] || { label: note.type, badge: 'bg-gray-500/10 text-gray-400 border-gray-500/20' };
+                return (
+                  <tr class="hover:bg-mathBgSecondary/40 transition-colors">
+                    <td class="p-3 pl-4">
+                      <a href={link(note.url)} class="text-accent hover:underline font-semibold block leading-tight">
+                        {note.title}
+                      </a>
+                    </td>
+                    <td class="p-3 select-none">
+                      <span class={`text-[10px] font-mono font-extrabold px-2 py-0.5 rounded border ${typeInfo.badge}`}>
+                        {typeInfo.label}
+                      </span>
+                    </td>
+                    <td class="p-3 font-mono text-xs text-mathTextMuted">
+                      {note.course || '—'}
+                    </td>
+                    <td class="p-3 pr-4 text-right font-mono text-xs text-mathTextMuted">
+                      {note.updated || '—'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div class="py-8 text-center text-sm text-mathTextMuted italic bg-mathBgSecondary/20 border border-mathBorder rounded-xl">
+          No published notes found.
+        </div>
+      )}
     </section>
   </div>
 </BaseLayout>

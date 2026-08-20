@@ -167,7 +167,10 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
     if (target.startsWith('Courses/')) {
       const parts = target.split('/');
       const course = parts[1].toLowerCase();
-      const session = parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      if (parts[2] && parts[2].toLowerCase().startsWith('index')) {
+        return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/courses/${course}">${displayText}</a>`;
+      }
+      const session = parts[2] ? parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
       return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/courses/${course}/${session}">${displayText}</a>`;
     } else {
       const conceptSlug = target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -442,6 +445,9 @@ export function getCourseIndex(courseName) {
 
   const overviewHtml = renderMathAndMarkdown(overviewMarkdown);
 
+  // Get description from frontmatter, or fallback to overview snippet
+  const description = data.description || (overviewMarkdown.replace(/[#*`_\[\]]/g, '').substring(0, 160).trim() + '...');
+
   // Parse H2 sections for Weeks / Schedule
   const h2Parts = scheduleMarkdown.split(/^##\s+/gm);
   const weeks = [];
@@ -482,9 +488,174 @@ export function getCourseIndex(courseName) {
 
   return {
     title,
+    description,
     overviewHtml,
     weeks: weeks.filter(w => w.sessions.length > 0)
   };
+}
+
+/**
+ * Loads the root index.md note to dynamically populate the Tony's Interwingled Memex homepage.
+ */
+export function getVaultHome() {
+  const indexPath = path.join(VAULT_ROOT, 'index.md');
+  if (!fs.existsSync(indexPath)) {
+    return { title: "Tony's Interwingled Memex", bodyHtml: '' };
+  }
+
+  const fileContent = fs.readFileSync(indexPath, 'utf-8');
+  const { data, content: body } = matter(preprocessFrontmatter(fileContent));
+
+  // Extract Title Heading
+  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const title = titleMatch ? titleMatch[1].trim() : (data.title || "Tony's Interwingled Memex");
+
+  // Remove Title and dataview codeblocks
+  let cleanBody = body;
+  if (titleMatch) {
+    cleanBody = body.substring(titleMatch.index + titleMatch[0].length).trim();
+  }
+  cleanBody = cleanBody.replace(/```dataview[\s\S]*?```/g, '').trim();
+  cleanBody = cleanBody.replace(/\s*---\s*$/, '').trim(); // Remove trailing hr if present
+
+  const bodyHtml = renderMathAndMarkdown(cleanBody);
+
+  return {
+    title,
+    bodyHtml
+  };
+}
+
+/**
+ * Loads the Courses/index.md note to dynamically populate the OER Portal landing page.
+ */
+export function getOERPortalHome() {
+  const indexPath = path.join(VAULT_ROOT, 'Courses', 'index.md');
+  if (!fs.existsSync(indexPath)) {
+    return {
+      title: 'Active Calculus OER Portal',
+      overviewHtml: '<p>A custom digital learning reference and interactive Digital Garden for UNLV Calculus courses.</p>',
+      aboutHtml: ''
+    };
+  }
+
+  const fileContent = fs.readFileSync(indexPath, 'utf-8');
+  const { data, content: body } = matter(preprocessFrontmatter(fileContent));
+
+  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const title = titleMatch ? titleMatch[1].trim() : (data.title || 'Active Calculus OER Portal');
+
+  let bodyWithoutTitle = body;
+  if (titleMatch) {
+    bodyWithoutTitle = body.substring(titleMatch.index + titleMatch[0].length).trim();
+  }
+
+  // Parse about section: ## About this Curriculum
+  const aboutMatch = bodyWithoutTitle.match(/^##\s+About\s+this\s+Curriculum/im);
+  let overviewMarkdown = '';
+  let aboutMarkdown = '';
+
+  if (aboutMatch) {
+    overviewMarkdown = bodyWithoutTitle.substring(0, aboutMatch.index).trim();
+    aboutMarkdown = bodyWithoutTitle.substring(aboutMatch.index).trim();
+    // Remove the ## header from aboutMarkdown
+    const aboutH2Match = aboutMarkdown.match(/^##\s+.*?\n/);
+    if (aboutH2Match) {
+      aboutMarkdown = aboutMarkdown.substring(aboutH2Match[0].length).trim();
+    }
+  } else {
+    overviewMarkdown = bodyWithoutTitle;
+  }
+
+  return {
+    title,
+    overviewHtml: renderMathAndMarkdown(overviewMarkdown),
+    aboutHtml: renderMathAndMarkdown(aboutMarkdown)
+  };
+}
+
+/**
+ * Returns the 10 most recently updated, published notes across courses, garden, and blog folders.
+ */
+export function getRecentlyUpdatedNotes() {
+  const notes = [];
+
+  const processDir = (dirPath, typeDefault) => {
+    if (!fs.existsSync(dirPath)) return;
+    const files = fs.readdirSync(dirPath);
+    for (const file of files) {
+      if (!file.endsWith('.md') || file.toLowerCase() === 'index.md') continue;
+      const filePath = path.join(dirPath, file);
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      
+      let data = {};
+      try {
+        const parsed = matter(preprocessFrontmatter(fileContent));
+        data = parsed.data;
+      } catch (e) {
+        continue;
+      }
+
+      // Skip drafts: blog notes require explicit publish: true, standard notes skip if publish is false
+      if (data.publish === false) continue;
+      if (typeDefault === 'blog' && data.publish !== true) continue;
+
+      let updatedStr = '';
+      if (data.updated) {
+        if (data.updated instanceof Date) {
+          updatedStr = data.updated.toISOString().split('T')[0];
+        } else {
+          updatedStr = String(data.updated);
+        }
+      }
+
+      const slug = file.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const noteType = data.type || typeDefault;
+
+      let url = '';
+      if (noteType === 'course-session') {
+        const courseFolder = path.basename(dirPath).toLowerCase();
+        url = `/courses/${courseFolder}/${slug}`;
+      } else if (noteType === 'blog') {
+        url = `/blog/${slug}`;
+      } else {
+        url = `/garden/${slug}`;
+      }
+
+      notes.push({
+        title: data.title || file.replace('.md', ''),
+        type: noteType,
+        course: data.course || '',
+        updated: updatedStr,
+        url
+      });
+    }
+  };
+
+  // Scan courses
+  const coursesDir = path.join(VAULT_ROOT, 'Courses');
+  if (fs.existsSync(coursesDir)) {
+    const courseDirs = fs.readdirSync(coursesDir);
+    for (const cDir of courseDirs) {
+      const fullPath = path.join(coursesDir, cDir);
+      if (fs.statSync(fullPath).isDirectory()) {
+        processDir(fullPath, 'course-session');
+      }
+    }
+  }
+
+  // Scan concept garden
+  processDir(GARDEN_DIR, 'concept');
+
+  // Scan blog folder
+  const blogDir = path.join(VAULT_ROOT, 'Blog');
+  processDir(blogDir, 'blog');
+
+  // Filter and sort by updated date descending
+  return notes
+    .filter(n => n.updated)
+    .sort((a, b) => b.updated.localeCompare(a.updated))
+    .slice(0, 10);
 }
 
 /**
