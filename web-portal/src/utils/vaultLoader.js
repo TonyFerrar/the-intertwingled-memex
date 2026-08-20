@@ -216,11 +216,21 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
 }
 
 /**
+ * Case-insensitive course directory resolver to prevent case mismatches on Linux/CI environments.
+ */
+function resolveCoursePath(courseName) {
+  if (!fs.existsSync(COURSES_DIR)) return null;
+  const dirs = fs.readdirSync(COURSES_DIR);
+  const matched = dirs.find(d => d.toLowerCase() === courseName.toLowerCase());
+  return matched ? path.join(COURSES_DIR, matched) : null;
+}
+
+/**
  * Scans a course folder and returns a list of sessions.
  */
 export function getCourseSessions(courseName) {
-  const coursePath = path.join(COURSES_DIR, courseName);
-  if (!fs.existsSync(coursePath)) return [];
+  const coursePath = resolveCoursePath(courseName);
+  if (!coursePath) return [];
 
   const files = fs.readdirSync(coursePath);
   
@@ -293,8 +303,8 @@ export function getCourseSessions(courseName) {
  * Parses a single session markdown file into structured segments.
  */
 export function getSessionDetails(courseName, sessionSlug) {
-  const coursePath = path.join(COURSES_DIR, courseName);
-  if (!fs.existsSync(coursePath)) return null;
+  const coursePath = resolveCoursePath(courseName);
+  if (!coursePath) return null;
 
   const files = fs.readdirSync(coursePath);
   const matchedFile = files.find(file => {
