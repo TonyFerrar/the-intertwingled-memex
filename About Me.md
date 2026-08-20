@@ -4,7 +4,7 @@ description: "Tony's profile, research background, and teaching philosophy."
 ---
 # About Me
 
-Welcome to my personal page! 
+Hi there! Welcome to my personal page! 
 
 ## 👤 Biography
 Here is where you can write your biography. Share your academic journey, professional history, or personal background.
