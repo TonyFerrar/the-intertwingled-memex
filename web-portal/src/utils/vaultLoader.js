@@ -9,6 +9,57 @@ const VAULT_ROOT = path.resolve(process.cwd(), '..');
 const COURSES_DIR = path.join(VAULT_ROOT, 'Courses');
 const GARDEN_DIR = path.join(VAULT_ROOT, 'Garden');
 
+// Sync media assets from the vault root to the web-portal public/ directory
+function syncMediaAssets() {
+  const publicDir = path.resolve(process.cwd(), 'public');
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+
+  const mediaExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.pdf', '.mp4', '.webm'];
+
+  function walk(dir) {
+    if (!fs.existsSync(dir)) return;
+    const list = fs.readdirSync(dir);
+    for (const file of list) {
+      // Skip hidden files/directories and web-portal source code
+      if (file.startsWith('.') || file === 'node_modules' || file === 'web-portal') continue;
+      const filePath = path.join(dir, file);
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        walk(filePath);
+      } else {
+        const ext = path.extname(file).toLowerCase();
+        if (mediaExtensions.includes(ext)) {
+          const destPath = path.join(publicDir, file);
+          let shouldCopy = false;
+          if (!fs.existsSync(destPath)) {
+            shouldCopy = true;
+          } else {
+            const destStat = fs.statSync(destPath);
+            if (stat.mtimeMs > destStat.mtimeMs) {
+              shouldCopy = true;
+            }
+          }
+          if (shouldCopy) {
+            fs.copyFileSync(filePath, destPath);
+            console.log(`[Media Sync] Copied ${file} to public/`);
+          }
+        }
+      }
+    }
+  }
+
+  walk(VAULT_ROOT);
+}
+
+// Call sync immediately on module load
+try {
+  syncMediaAssets();
+} catch (err) {
+  console.error('[Media Sync Error]', err);
+}
+
 /**
  * Recursively search the Obsidian vault for a file matching targetName.md
  */
@@ -160,6 +211,59 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
 
   // 3. Preprocess callouts recursively, passing down shared registries
   processed = compileCallouts(processed, mathBlocks, mathInlines);
+
+  // 3.5 Convert Obsidian media embeds ![[Attachment.jpg]] or ![[Document.pdf]] or ![[YouTube/Desmos Link]]
+  processed = processed.replace(/!\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (match, target, options) => {
+    const cleanTarget = target.trim();
+    
+    // YouTube Embed parser
+    if (cleanTarget.includes('youtube.com') || cleanTarget.includes('youtu.be')) {
+      let videoId = '';
+      if (cleanTarget.includes('v=')) {
+        videoId = cleanTarget.split('v=')[1]?.split('&')[0];
+      } else if (cleanTarget.includes('youtu.be/')) {
+        videoId = cleanTarget.split('youtu.be/')[1]?.split('?')[0];
+      }
+      if (videoId) {
+        return `<iframe src="https://www.youtube.com/embed/${videoId}" class="w-full aspect-video rounded my-4 border border-mathBorder" allowfullscreen></iframe>`;
+      }
+    }
+
+    // Desmos Embed parser
+    if (cleanTarget.includes('desmos.com/calculator/')) {
+      const graphId = cleanTarget.split('calculator/')[1]?.split('?')[0];
+      if (graphId) {
+        return `<iframe src="https://www.desmos.com/calculator/${graphId}?embed" class="w-full h-[500px] rounded my-4 border border-mathBorder"></iframe>`;
+      }
+    }
+
+    const ext = path.extname(cleanTarget).toLowerCase();
+    
+    // URL-encode spaces in filename
+    const encodedTarget = encodeURIComponent(cleanTarget);
+    const srcPath = `/the-interwingled-memex/${encodedTarget}`;
+    
+    let width = '';
+    let alt = cleanTarget;
+    if (options) {
+      const opt = options.trim();
+      if (/^\d+$/.test(opt)) {
+        width = `width="${opt}"`;
+      } else {
+        alt = opt;
+      }
+    }
+    
+    if (ext === '.pdf') {
+      return `<iframe src="${srcPath}" class="w-full h-[600px] border border-mathBorder rounded my-4"></iframe>`;
+    } else if (['.mp4', '.webm', '.ogg'].includes(ext)) {
+      return `<video src="${srcPath}" controls class="max-w-full h-auto rounded my-4"></video>`;
+    } else if (['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif'].includes(ext)) {
+      return `<img src="${srcPath}" alt="${alt}" ${width} class="max-w-full h-auto rounded my-4" />`;
+    } else {
+      return `<a class="text-accent underline font-semibold" href="${srcPath}" target="_blank">Download ${cleanTarget}</a>`;
+    }
+  });
 
   // 4. Convert Obsidian links [[Limits]] or [[Limits|Limits Card]] into standard HTML links
   processed = processed.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (match, target, alias) => {
