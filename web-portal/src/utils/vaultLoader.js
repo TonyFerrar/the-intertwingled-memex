@@ -423,13 +423,42 @@ export function getSessionDetails(courseName, sessionSlug) {
         // Parse skill block contents (theory, generic problems, engineering problems, etc.)
         const parts = body.split(/^####\s+/gm);
         let theoryText = parts[0];
+        const problemsToProcess = [];
+
+        // 1. Group parts into theory or active problems
+        for (let j = 1; j < parts.length; j++) {
+          const part = parts[j];
+          const plines = part.split('\n');
+          const ptitle = plines[0].trim();
+          const ptitleLower = ptitle.toLowerCase();
+
+          const isSectionHeader = ptitleLower.includes('standard sample problems') || 
+                                  ptitleLower.includes('engineering application problems') || 
+                                  ptitleLower.includes('engineering problems') ||
+                                  ptitleLower.includes('real-life engineering');
+
+          const isProblem = !isSectionHeader && (
+            ptitleLower.includes('worked example') ||
+            ptitleLower.includes('practice problem') ||
+            ptitleLower.includes('active practice') ||
+            (ptitleLower.includes('sample problem') && !ptitleLower.endsWith('problems'))
+          );
+
+          if (!isProblem) {
+            // Reconstruct as part of theory text
+            theoryText += `\n\n#### ${part}`;
+          } else {
+            problemsToProcess.push({ title: ptitle, content: part, index: j });
+          }
+        }
+
+        // 2. Parse engineering applications from theory text if present
         const engineeringProblems = [];
-        
-        const engSplitRegex = /^(?:>\s*)?##\s*(?:3\.\s*)?(?:Real-Life\s+)?Engineering\s+Applications?\s*(?:Problems?)?\s*$/im;
+        const engSplitRegex = /^(?:>\s*)?#{2,4}\s*(?:3\.\s*)?(?:Real-Life\s+)?Engineering\s+Applications?\s*(?:Problems?)?\s*$/im;
         const engMatch = theoryText.match(engSplitRegex);
         if (engMatch) {
           const engIndex = theoryText.indexOf(engMatch[0]);
-          const engPart = parts[0].substring(engIndex);
+          const engPart = theoryText.substring(engIndex);
           
           const links = [];
           const linkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
@@ -494,98 +523,144 @@ export function getSessionDetails(courseName, sessionSlug) {
             });
           }
           
-          theoryText = parts[0].substring(0, engIndex).trim();
+          theoryText = theoryText.substring(0, engIndex).trim();
         }
 
-        parsedBlock.theoryHtml = renderMathAndMarkdown(theoryText);
+        // Clean any leftover blockquote note syntax from old notes in theoryText if legacy file
+        const cleanTheoryText = theoryText.replace(/^>\s?\[!note\]-?\s*Theory\s*&\s*Derivations\s*$/im, '')
+                                          .replace(/^>\s?/gm, '')
+                                          .trim();
+
+        parsedBlock.theoryHtml = renderMathAndMarkdown(cleanTheoryText);
         parsedBlock.engineeringProblems = engineeringProblems;
 
-        // Parse generic practice problems
-        for (let j = 1; j < parts.length; j++) {
-          const part = parts[j];
-          const plines = part.split('\n');
-          const ptitle = plines[0].trim();
+        // 3. Process problems (Worked Examples & Active Practice)
+        problemsToProcess.forEach((probObj) => {
+          const { title, content, index } = probObj;
+          const plines = content.split('\n');
           const pbody = plines.slice(1).join('\n');
 
-          const solutionLines = [];
-          const statementLines = [];
-          let insideSolution = false;
+          // Split body by level 5 headings: #####
+          const subParts = pbody.split(/^#####\s+/gm);
+          
+          let statementText = '';
+          let hintText = '';
+          let quickAnswerText = '';
+          let solutionText = '';
           let hasWorkspace = false;
 
-          const pbodyLines = pbody.split('\n');
-          for (let line of pbodyLines) {
-            if (line.trim().startsWith('> [!check]-') || line.trim().startsWith('> [!check]')) {
-              insideSolution = true;
-              continue;
-            }
-            if (line.trim().startsWith('> [!workspace]')) {
-              hasWorkspace = true;
-              continue;
-            }
+          // Check if it's legacy callout format (if it contains blockquote check brackets)
+          const isLegacyCallout = pbody.includes('> [!check') || pbody.includes('> [!workspace');
+
+          if (isLegacyCallout) {
+            // Legacy Callout Parser (backward compatibility)
+            const solutionLines = [];
+            const statementLines = [];
+            let insideSolution = false;
             
-            if (insideSolution) {
-              if (line.trim().startsWith('>')) {
-                solutionLines.push(line.replace(/^>\s?/, ''));
-              } else {
-                insideSolution = false;
+            const pbodyLines = pbody.split('\n');
+            for (let line of pbodyLines) {
+              if (line.trim().startsWith('> [!check]-') || line.trim().startsWith('> [!check]')) {
+                insideSolution = true;
+                continue;
               }
-            } else {
-              if (!line.trim().startsWith('>')) {
-                statementLines.push(line);
+              if (line.trim().startsWith('> [!workspace]')) {
+                hasWorkspace = true;
+                continue;
+              }
+              
+              if (insideSolution) {
+                if (line.trim().startsWith('>')) {
+                  solutionLines.push(line.replace(/^>\s?/, ''));
+                } else {
+                  insideSolution = false;
+                }
+              } else {
+                if (!line.trim().startsWith('>')) {
+                  statementLines.push(line);
+                }
+              }
+            }
+            statementText = statementLines.join('\n');
+            solutionText = solutionLines.join('\n');
+          } else {
+            // New Flat Heading Parser
+            statementText = subParts[0].trim();
+            for (let k = 1; k < subParts.length; k++) {
+              const subPart = subParts[k];
+              const splines = subPart.split('\n');
+              const subtitle = splines[0].trim().toLowerCase();
+              const subcontent = splines.slice(1).join('\n').trim();
+
+              if (subtitle.startsWith('hint')) {
+                hintText = subcontent;
+              } else if (subtitle.startsWith('quick answer') || subtitle.startsWith('answer')) {
+                quickAnswerText = subcontent;
+              } else if (subtitle.startsWith('solution') || subtitle.startsWith('worked solution')) {
+                solutionText = subcontent;
+              } else if (subtitle.startsWith('workspace')) {
+                hasWorkspace = true;
               }
             }
           }
 
-          const isWorked = ptitle.toLowerCase().includes('worked') || ptitle.toLowerCase().includes('example') || j === 1;
-          const finalHasWorkspace = isWorked ? false : hasWorkspace;
-          const solutionText = solutionLines.join('\n');
-          
-          let hint = '';
-          const hintMatch = solutionText.match(/^(?:\*\*|\*|>\s*)Hint:\s*(.*?)$/im);
-          if (hintMatch) {
-            hint = hintMatch[1].trim();
-          } else {
-            hint = "Refer to the 'Core Theory' tab or review the Worked Example demonstration for this skill.";
+          // Extract hint from solution text if not separately defined
+          if (!hintText) {
+            const hintMatch = solutionText.match(/^(?:\*\*|\*|>\s*)Hint:\s*(.*?)$/im);
+            if (hintMatch) {
+              hintText = hintMatch[1].trim();
+              solutionText = solutionText.replace(hintMatch[0], '').trim();
+            } else {
+              hintText = "Refer to the 'Core Theory' tab or review the Worked Example demonstration for this skill.";
+            }
           }
 
-          let quickAnswer = '';
-          const answerMatch = solutionText.match(/^(?:\*\*|\*|>\s*)(?:Final\s+)?Answer:\s*(.*?)$/im);
-          if (answerMatch) {
-            quickAnswer = answerMatch[1].trim();
-          } else {
-            const nonCmtLines = solutionLines.map(l => l.trim()).filter(l => l.length > 0 && !l.includes('---') && !l.startsWith('>'));
-            if (nonCmtLines.length > 0) {
-              const lastLine = nonCmtLines[nonCmtLines.length - 1];
-              if (lastLine.length < 150) {
-                quickAnswer = lastLine;
+          // Extract quick answer from solution text if not separately defined
+          if (!quickAnswerText) {
+            const answerMatch = solutionText.match(/^(?:\*\*|\*|>\s*)(?:Final\s+)?Answer:\s*(.*?)$/im);
+            if (answerMatch) {
+              quickAnswerText = answerMatch[1].trim();
+              solutionText = solutionText.replace(answerMatch[0], '').trim();
+            } else {
+              const nonCmtLines = solutionText.split('\n').map(l => l.trim()).filter(l => l.length > 0 && !l.includes('---'));
+              if (nonCmtLines.length > 0) {
+                const lastLine = nonCmtLines[nonCmtLines.length - 1];
+                if (lastLine.length < 150) {
+                  quickAnswerText = lastLine;
+                }
               }
             }
           }
 
           let cleanedSolutionText = solutionText;
-          if (answerMatch) {
-            cleanedSolutionText = cleanedSolutionText.replace(answerMatch[0], '');
-          }
-          if (hintMatch) {
-            cleanedSolutionText = cleanedSolutionText.replace(hintMatch[0], '');
-          }
-          cleanedSolutionText = cleanedSolutionText.trim();
-
-          let formattedAnswer = quickAnswer;
-          if (quickAnswer && !quickAnswer.toLowerCase().startsWith('answer') && !quickAnswer.toLowerCase().startsWith('final answer')) {
-            formattedAnswer = `**Answer:** ${quickAnswer}`;
+          // Clean legacy check solution headers if legacy format
+          if (isLegacyCallout) {
+            cleanedSolutionText = cleanedSolutionText.replace(/^##\s*Step-by-Step\s+Solution:?/im, '').trim();
           }
 
+          // Format answer block cleanly
+          let formattedAnswer = quickAnswerText;
+          if (quickAnswerText && !quickAnswerText.toLowerCase().startsWith('answer') && !quickAnswerText.toLowerCase().startsWith('final answer')) {
+            formattedAnswer = `**Answer:** ${quickAnswerText}`;
+          }
+
+          const isWorked = title.toLowerCase().includes('worked') || title.toLowerCase().includes('example') || index === 1;
+          const finalHasWorkspace = isWorked ? false : hasWorkspace;
+
+          // Strip top level step-by-step headers inside solution to prevent double headers
+          cleanedSolutionText = cleanedSolutionText.replace(/^######\s*Step-by-Step\s+Solution:?/im, '').trim();
+
+          // Compile Markdown fields
           parsedBlock.problems.push({
-            title: ptitle,
+            title,
             isWorked,
-            statementHtml: renderMathAndMarkdown(statementLines.join('\n')),
-            hintHtml: renderMathAndMarkdown(hint),
+            statementHtml: renderMathAndMarkdown(statementText),
+            hintHtml: renderMathAndMarkdown(hintText),
             quickAnswerHtml: formattedAnswer ? renderMathAndMarkdown(formattedAnswer) : '',
             solutionHtml: renderMathAndMarkdown(cleanedSolutionText),
             hasWorkspace: finalHasWorkspace
           });
-        }
+        });
       } else {
         parsedBlock.bodyHtml = renderMathAndMarkdown(body);
       }
