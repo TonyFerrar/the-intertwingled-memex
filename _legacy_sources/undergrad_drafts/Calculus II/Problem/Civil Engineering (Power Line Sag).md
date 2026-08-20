@@ -1,0 +1,1 @@
+A high-voltage power line hanging between two utility towers is modeled by the catenary curve $y = \frac{5}{2}(e^{x/5} + e^{-x/5})$ over the horizontal span $x \in [-5, 5]$ meters. Find the total physical length of the cable required.

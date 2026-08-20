@@ -1,0 +1,3 @@
+A mechanical engineer is designing an asymmetrical titanium component that acts as an offset alignment ring for an aircraft turbine assembly. The profile of the component is bounded by the curve $y = \sqrt{x}$, the $x$-axis ($y = 0$), and the line $x = 4 \text{ inches}$. To accommodate a central drive shaft, the component profile is rotated around an offset axis located at the vertical line $x = -1 \text{ inch}$.
+
+Using **Skill 2**, formulate and evaluate the component's exact material volume.

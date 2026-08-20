@@ -1,0 +1,1 @@
+**Problem:** Find the equation of the tangent plane to $z = \sqrt{x+y}$ at $(3, 1)$, where $z = 2$.

@@ -1,0 +1,1 @@
+3. Find the first four terms of the Taylor series for $ln(x)$ near $x=1$ and use it to approximate $ln(1.1)$.

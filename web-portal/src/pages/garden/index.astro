@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getGardenConcepts } from '../../utils/vaultLoader.js';
+
+const concepts = getGardenConcepts();
+---
+
+<BaseLayout title="Digital Garden">
+  <div class="space-y-6">
+    <div class="border-b border-mathBorder pb-4">
+      <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
+        <a href="/">Home</a> / <span class="text-mathTextMuted">Digital Garden</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">🌲 Zettelkasten Concept Garden</h1>
+      <p class="text-sm text-mathTextMuted mt-1">
+        Explore math concepts bidirectionally. Concept cards link parent rules, child operations, and course sessions.
+      </p>
+    </div>
+
+    <!-- Concepts Grid -->
+    {concepts.length > 0 ? (
+      <div class="grid md:grid-cols-2 gap-4">
+        {concepts.map(concept => (
+          <a
+            href={`/garden/${concept.slug}`}
+            class="border border-mathBorder rounded-xl p-5 bg-mathBgSecondary hover:border-accent hover:shadow-sm transition-all duration-200"
+          >
+            <h2 class="text-lg font-bold text-mathTextNormal hover:text-accent transition-colors flex items-center justify-between">
+              {concept.title}
+              <span class="text-[10px] font-semibold py-0.5 px-2 bg-mathBorder rounded-full text-mathTextMuted uppercase tracking-wider">
+                Concept
+              </span>
+            </h2>
+            <div class="flex items-center justify-between mt-4 text-xs text-mathTextMuted">
+              <span>Course: <b class="text-mathTextNormal font-semibold">{concept.course || 'Core Calculus'}</b></span>
+              <span>Updated: {concept.updated || 'N/A'}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="py-20 text-center text-sm text-mathTextMuted italic border border-mathBorder rounded-xl bg-mathBgSecondary">
+        No concept cards found in the Garden/ directory.
+      </div>
+    )}
+  </div>
+</BaseLayout>

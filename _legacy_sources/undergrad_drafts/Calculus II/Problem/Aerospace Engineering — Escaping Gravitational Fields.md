@@ -1,0 +1,3 @@
+An aerospace engineer is calculating the energy (work) required to launch a small satellite vertically away from Earth's surface into a higher orbit. According to Newton's Law of Universal Gravitation, the attractive force pulling the satellite back depends on its distance $r$ from the center of the Earth and is modeled by a negative exponent force function:
+$$F(r) = \frac{GMm}{r^2} = GMm \cdot r^{-2}$$
+Where $GMm$ is a constant equal to $4.0 \times 10^{14}\text{ N}\cdot\text{m}^2$ for this specific satellite. Compute the total work required to move the satellite from Earth's surface ($r_1 = 6.4 \times 10^6\text{ m}$) to a safe orbit altitude ($r_2 = 8.0 \times 10^6\text{ m}$).

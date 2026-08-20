@@ -1,0 +1,3 @@
+An automotive engineer is testing an emergency autonomous braking system. From the moment the brakes are fully engaged at $t = 0$ seconds, the vehicle's deceleration (negative acceleration) is modeled by the function:
+$$a(t) = -6t - 4 \quad (\text{in m/s}^2)$$
+The engineer records two vital initial boundary conditions: at the moment braking begins ($t = 0$), the vehicle's initial velocity is $v(0) = 24\text{ m/s}$, and its starting tracking position is $s(0) = 0\text{ meters}$. Find the exact position function $s(t)$ of the vehicle during its braking cycle.

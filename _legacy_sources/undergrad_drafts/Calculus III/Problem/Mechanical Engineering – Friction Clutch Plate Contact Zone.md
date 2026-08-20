@@ -1,0 +1,3 @@
+**Scenario:** A mechanical engineer is designing a wet-friction clutch plate for an automotive transmission. To manage heat dissipation and torque transfer, the friction material is only applied to an outer annular sector of the circular plate. The region is geometrically bounded between an inner radius of $r = 6\text{ cm}$ and an outer radius of $r = 10\text{ cm}$. Due to oil cooling channels, the friction pads only span the angles between $\theta = -\frac{\pi}{4}$ and $\theta = \frac{\pi}{4}$ (and its symmetrical opposite).
+
+Find the surface area of this specific pad region by bounding it and evaluating the polar double integral.

@@ -1,0 +1,3 @@
+**Scenario:** An embedded software engineer is writing a lightweight math library for a cheap, low-power microcontroller. This chip does not have a dedicated Floating Point Unit (FPU) and cannot inherently calculate the natural exponential function $e^x$. The processor can only do basic addition, subtraction, multiplication, and division. 
+
+**Problem:** How can the engineer program the microcontroller to evaluate $f(x) = e^{-x^2}$ (a crucial function for statistical bell curves and signal processing) using only standard arithmetic operations? Derive the polynomial instructions they must write into the software.

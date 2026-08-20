@@ -1,0 +1,3 @@
+An electrical engineer is testing the transient behavior of a specialized induction coil inside an RLC filter circuit. When the power grid experiences a momentary surge, the time-dependent current $i(t)$ (in Amperes) flowing through the component over time $t$ (in seconds) is modeled by a rate of change function. To find the general expression for the total net accumulated charge $Q(t)$ (in Coulombs) passing through the component, the engineer must evaluate the following indefinite integral:
+
+$$Q(t) = \int 8t e^{-4t^2}\,dt$$

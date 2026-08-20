@@ -1,0 +1,3 @@
+A chemical engineer is designing a continuous stirred-tank reactor (CSTR) to neutralize an industrial byproduct. The fluid enters the reactor at a steady volumetric flow rate of $v_0 = 10\text{ L/min}$. To meet environmental safety codes, the required volume $V$ of the reactor tank is governed by an integral equation involving the variable chemical reaction rate:
+$$\tau = \frac{V}{v_0} = \int_{0.1}^{0.9} \frac{1}{2x^2} \, dx$$
+where $\tau$ is the space-time (residence time) of the fluid, and $x$ is the chemical conversion fraction. Rearrange the formula to isolate and solve for the total volume $V$ (in liters) required to construct the tank.

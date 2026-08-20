@@ -1,0 +1,3 @@
+**Context:** Civil engineers design structural trusses to distribute weight safely across bridges. During a load test, a steel support diagonal experiences a compressive force vector $\vec{F}$ with a total magnitude of $45\text{ kN}$ acting at an angle of $35^\circ$ below the horizontal, pointing toward a concrete ground junction.
+
+**Problem:** Decompose this structural force vector into its horizontal and vertical component forces.

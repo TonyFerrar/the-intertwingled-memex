@@ -1,0 +1,3 @@
+**Context:** A software engineer is analyzing a recursive sorting algorithm that processes data packets in a massive cloud server. For every $n$-th recursion level, the algorithm requires a processing time defined by $T_n = \frac{2^n}{n!}$ milliseconds. To ensure the server doesn't crash, the total processing time (the sum of all recursions to infinity) must be a finite number. 
+
+**Problem:** Determine if the total processing time series $\sum_{n=1}^{\infty} \frac{2^n}{n!}$ converges or diverges.

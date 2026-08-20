@@ -1,0 +1,236 @@
+---
+import PrintLayout from '../../../../layouts/PrintLayout.astro';
+import { getCourseSessions, getSessionDetails } from '../../../../utils/vaultLoader.js';
+
+export function getStaticPaths() {
+  const courses = ['calc-1', 'calc-2', 'calc-3'];
+  const paths = [];
+
+  for (const course of courses) {
+    const sessions = getCourseSessions(course);
+    for (const sess of sessions) {
+      paths.push({
+        params: { course, session: sess.slug }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { course, session } = Astro.params;
+const details = getSessionDetails(course, session);
+
+if (!details) {
+  throw new Error(`Failed to load details for ${course}/${session}`);
+}
+
+const courseNames: Record<string, string> = {
+  'calc-1': 'MATH-181 (Calculus I)',
+  'calc-2': 'MATH-182 (Calculus II)',
+  'calc-3': 'MATH-281 (Calculus III)',
+};
+
+const courseCode = courseNames[course] || 'Calculus';
+
+// Read print mode parameter (worksheet vs. solutions)
+const url = new URL(Astro.request.url);
+const mode = url.searchParams.get('mode') || 'worksheet';
+const isSolutions = mode === 'solutions';
+---
+
+<PrintLayout title={`${details.title} - ${isSolutions ? 'Answer Key' : 'Student Worksheet'}`}>
+  <!-- Print Controls Toolbar (Hidden during actual print/PDF export) -->
+  <div class="no-print print-toolbar">
+    <button onclick="window.history.back()" class="print-btn back-btn">
+      ◀ Back to Session
+    </button>
+    <button onclick="window.print()" class="print-btn print-action-btn">
+      🖨️ Open Print/PDF Dialog
+    </button>
+  </div>
+
+  <style>
+    .print-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      user-select: none;
+    }
+    
+    .print-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    
+    .back-btn {
+      border: 1px solid #d1d5db;
+      background-color: #ffffff;
+      color: #374151;
+    }
+    .back-btn:hover {
+      background-color: #f9fafb;
+      color: #111827;
+      border-color: #9ca3af;
+    }
+    
+    .print-action-btn {
+      background-color: #0f172a;
+      color: #ffffff;
+      border: 1px solid #0f172a;
+    }
+    .print-action-btn:hover {
+      background-color: #1e293b;
+      border-color: #1e293b;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+
+  <div class="space-y-6">
+    <!-- Header Block -->
+    <div class="border-b border-gray-400 pb-3 flex justify-between items-end">
+      <div>
+        <h2 class="text-xs uppercase tracking-wider font-bold text-gray-500 font-mono">{courseCode} Curriculum</h2>
+        <h1 class="text-2xl font-extrabold text-black mt-1">{details.title}</h1>
+      </div>
+      <div class="text-right">
+        <span class="print-mode-label text-sm font-mono font-bold py-1 px-3 border-2 border-black uppercase bg-gray-50">
+          Handout Worksheet
+        </span>
+        <div class="text-xs text-gray-500 font-mono mt-1">Fall Semester 2026</div>
+      </div>
+    </div>
+
+    <!-- Hide all solutions, regroups, and intro by default on screen load (JS will toggle them) -->
+    <style>
+      .print-intro,
+      .print-solution-box,
+      .print-extensions,
+      .print-regular-section {
+        display: none;
+      }
+    </style>
+
+    <!-- Syllabus/Timeline info is stripped on Student worksheets to save paper, printed on solutions -->
+    {details.introHtml && (
+      <div class="print-intro p-4 bg-gray-50 border border-gray-300 rounded prose max-w-none text-sm leading-relaxed mb-6" set:html={details.introHtml} />
+    )}
+
+    <!-- Dynamic Session Blocks -->
+    <div class="space-y-8">
+      {details.blocks.map((block, idx) => {
+        if (block.isSkillBlock) {
+          return (
+            <div class="border border-gray-300 rounded-lg p-6 bg-white space-y-6 print-prevent-split">
+              <!-- Header -->
+              <h3 class="text-lg font-bold border-b border-gray-200 pb-2 text-black">
+                {block.header.replace(/^.*Skill Block \d+:\s*/, 'Skill Block: ')}
+              </h3>
+
+              <!-- Problems List -->
+              {block.problems.map((prob) => (
+                <div class="space-y-3 pt-4 border-t border-gray-100 first:border-t-0 first:pt-0">
+                  <h4 class="font-bold text-sm text-gray-700 uppercase tracking-wider">{prob.title}</h4>
+                  <div class="prose max-w-none text-black" set:html={prob.statementHtml} />
+                  
+                  {prob.solutionHtml && (
+                    <div class="print-solution-box p-4 border-l-4 border-emerald-500 bg-emerald-50/30 prose max-w-none text-black text-sm">
+                      <b class="text-emerald-800 block mb-1">Solution Key:</b>
+                      <div set:html={prob.solutionHtml} />
+                    </div>
+                  )}
+
+                  {prob.hasWorkspace && (
+                    <!-- Workspace for writing -->
+                    <div class="print-workspace-box print-workspace">
+                      Show your steps and calculations here.
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <!-- Extra practice (on solutions only) -->
+              {block.extensionsHtml && (
+                <div class="print-extensions pt-4 border-t border-gray-100 space-y-2">
+                  <h4 class="font-bold text-xs text-gray-500 uppercase tracking-wider">Extensions & Extra Problems</h4>
+                  <div class="prose max-w-none text-xs text-gray-600" set:html={block.extensionsHtml} />
+                </div>
+              )}
+            </div>
+          );
+        } else {
+          // Hide micro-lectures and regroups from student printed worksheets to conserve paper.
+          // Show them on the Answer Key view as an instructor lesson plan reference.
+          const cleanBlockHeader = block.header.replace(/^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}\s*(?:\(\d+\s*mins?\))?\s*[-—–]\s*/i, '');
+          return (
+            <div class="print-regular-section p-4 bg-gray-50 border border-gray-200 rounded-lg prose max-w-none text-sm text-gray-700 leading-relaxed print-prevent-split">
+              <h3 class="font-bold text-black mb-2 text-base">{cleanBlockHeader}</h3>
+              <div set:html={block.bodyHtml} />
+            </div>
+          );
+        }
+      })}
+    </div>
+  </div>
+
+  <script is:inline>
+    // Read mode query param on the client side
+    const urlParams = new URLSearchParams(window.location.search);
+    const isSolutions = urlParams.get('mode') === 'solutions';
+
+    // Toggle document title
+    document.title = document.title.replace('Print Layout', isSolutions ? 'Answer Key' : 'Student Worksheet');
+
+    // Toggle mode label text
+    const modeLabel = document.querySelector('.print-mode-label');
+    if (modeLabel) {
+      modeLabel.textContent = isSolutions ? 'Answer Key' : 'Handout Worksheet';
+    }
+
+    // Toggle visibility of intro section
+    const introBlock = document.querySelector('.print-intro');
+    if (introBlock) {
+      introBlock.style.display = isSolutions ? 'block' : 'none';
+    }
+
+    // Toggle visibility of solution boxes
+    document.querySelectorAll('.print-solution-box').forEach(box => {
+      box.style.display = isSolutions ? 'block' : 'none';
+    });
+
+    // Toggle visibility of workspace boxes
+    document.querySelectorAll('.print-workspace-box').forEach(box => {
+      box.style.display = isSolutions ? 'none' : 'flex';
+    });
+
+    // Toggle visibility of extensions section
+    document.querySelectorAll('.print-extensions').forEach(box => {
+      box.style.display = isSolutions ? 'block' : 'none';
+    });
+
+    // Toggle visibility of regular syllabus sections (Micro-Lectures, Regroups)
+    document.querySelectorAll('.print-regular-section').forEach(section => {
+      section.style.display = isSolutions ? 'block' : 'none';
+    });
+
+    // Force page reload on returning from print dialog to prevent browser repaint/blanking bugs
+    window.addEventListener('afterprint', () => {
+      window.location.reload();
+    });
+  </script>
+</PrintLayout>

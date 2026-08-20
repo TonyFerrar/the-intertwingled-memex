@@ -1,0 +1,1 @@
+A rectangular plot of land is to be fenced in using two types of fencing. Two opposite sides will use heavy-duty fencing selling for $4.50 a foot. The two remaining sides will use standard fencing selling for $3 a foot. How much of the heavy-duty and standard fencing should be used so that the greatest area can be fenced in at a cost of $18,000?

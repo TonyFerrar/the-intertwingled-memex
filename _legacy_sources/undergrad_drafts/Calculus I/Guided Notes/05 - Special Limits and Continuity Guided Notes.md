@@ -1,0 +1,9 @@
+# Session 05 + Special Limits and Continuity
+
+## Engineering Application 
+The three core mathematical skills taught in these notes—navigating composite boundaries, algebraically deflating indeterminate forms, and formally verifying continuity—serve as foundational pillars across real-life engineering disciplines, where systems inherently change, fail, or stabilize at critical boundaries. In system-of-systems engineering, such as automated biomedical drug delivery pumps or electrical control loops, mastering composite boundaries allows engineers to predict how cascading components handle shifting inputs and ensure output signals clamp safely at stable thresholds. When physical systems reach a structural paradox, mechanical and civil engineers use algebraic deflation to bypass dangerous mathematical singularities, allowing them to reveal true, finite limits of stress concentration at the microscopic tip of a structural crack or calculate the exact maximum sway of a skyscraper experiencing earthquake resonance. Finally, because real-world disruptions like an aerospace polymer freezing into a brittle state or a chemical batch reactor hitting an explosive thermal threshold represent mathematical discontinuities, engineers rely on formal verification to map out these precise phase transitions and program automated safety systems to handle critical operational boundaries.
+
+## Skills for Today's lesson
+- Skill 1: [[05 - Navigating Composite Boundaries (The Inside-Out Limit)]]
+- Skill 2: [[05 - Algebraic Deflation of Indeterminate Forms]]
+- Skill 3: [[05 - Formal Verification and Structural Mapping of Discontinuity]]

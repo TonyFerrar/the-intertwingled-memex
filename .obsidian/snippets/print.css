@@ -1,0 +1,233 @@
+/* ==========================================================================
+   Obsidian Publish, Digital Textbook & PDF Print Layouts
+   ========================================================================== */
+
+/* 1. Light/Dark Mode Variables & Theme Polishing */
+:root {
+    --text-normal: #2e2e2e;
+    --background-primary: #ffffff;
+    --background-secondary: #f9f9f9;
+    --border-color: #e5e5e5;
+    
+    /* Callout custom branding */
+    --callout-workspace-border: #999999;
+    --callout-workspace-bg: #fafafa;
+    --callout-check-bg: #f4faf4;
+    --callout-check-border: #4caf50;
+    --callout-note-bg: #f4f8fa;
+    --callout-note-border: #2196f3;
+}
+
+.theme-dark {
+    --text-normal: #e0e0e0;
+    --background-primary: #121212;
+    --background-secondary: #1a1a1a;
+    --border-color: #2a2a2a;
+    
+    --callout-workspace-border: #555555;
+    --callout-workspace-bg: #151515;
+    --callout-check-bg: #111a11;
+    --callout-check-border: #2e7d32;
+    --callout-note-bg: #11171a;
+    --callout-note-border: #1565c0;
+}
+
+/* Base Textbook Styles for Digital Reading */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-normal);
+    background-color: var(--background-primary);
+    line-height: 1.6;
+}
+
+/* Callout Styling (Digital view) */
+.callout[data-callout="workspace"] {
+    border: 1.5px dashed var(--callout-workspace-border);
+    background-color: var(--callout-workspace-bg);
+    min-height: 180px;
+    margin: 1.5em 0;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+/* CSS Tab Layout for Digital Reading */
+.tab-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2em 0;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-secondary);
+    overflow: hidden;
+}
+
+/* Hide Radio Buttons completely */
+.tab-container input[type="radio"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Header Navigation Bar */
+.tab-headers {
+    display: flex;
+    background-color: var(--background-secondary-alt);
+    border-bottom: 1.5px solid var(--border-color);
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.tab-headers label {
+    flex: 1;
+    padding: 14px 20px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95em;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.tab-headers label:hover {
+    color: var(--text-normal);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Active Tab Highlight using parent-based :has() targeting */
+.tab-container:has(#tab1-1:checked) .tab-headers label[for="tab1-1"],
+.tab-container:has(#tab1-2:checked) .tab-headers label[for="tab1-2"],
+.tab-container:has(#tab1-3:checked) .tab-headers label[for="tab1-3"],
+.tab-container:has(#tab2-1:checked) .tab-headers label[for="tab2-1"],
+.tab-container:has(#tab2-2:checked) .tab-headers label[for="tab2-2"],
+.tab-container:has(#tab2-3:checked) .tab-headers label[for="tab2-3"] {
+    color: var(--text-accent) !important;
+    border-bottom: 3px solid var(--text-accent) !important;
+    background-color: var(--background-primary) !important;
+}
+
+/* Tab Panel Display Logic */
+.tab-panel {
+    display: none;
+    padding: 25px;
+    background-color: var(--background-primary);
+    min-height: 250px;
+}
+
+.tab-container:has(#tab1-1:checked) #panel1-1,
+.tab-container:has(#tab1-2:checked) #panel1-2,
+.tab-container:has(#tab1-3:checked) #panel1-3,
+.tab-container:has(#tab2-1:checked) #panel2-1,
+.tab-container:has(#tab2-2:checked) #panel2-2,
+.tab-container:has(#tab2-3:checked) #panel2-3 {
+    display: block !important;
+}
+
+
+
+/* Printable PDF & Layout Styling rules */
+@media print {
+    /* 1. Strip all navigation bars, sidebars, search elements, and UI headers/footers */
+    .site-body-left-column,
+    .site-body-right-column,
+    .page-header,
+    .page-footer,
+    .publish-left-sidebar,
+    .publish-right-sidebar,
+    .publish-view-header,
+    .publish-view-footer,
+    .publish-navbar,
+    .search-button,
+    .search-bar,
+    .search-icon,
+    .nav-buttons,
+    .theme-toggle-button,
+    .published-container-header,
+    .published-section-header,
+    .site-header,
+    .workspace-ribbon,
+    .workspace-tab-header-container,
+    .workspace-split.mod-horizontal,
+    .workspace-split.mod-vertical,
+    .workspace-drawer,
+    .titlebar,
+    .status-bar,
+    .view-header,
+    .mobile-navbar {
+        display: none !important;
+    }
+
+    /* 2. Forces high-contrast black text on white backgrounds */
+    html, body, 
+    .publish-renderer, 
+    .markdown-preview-view, 
+    .markdown-rendered, 
+    .site-body-center-column,
+    .markdown-source-view,
+    .markdown-preview-sizer {
+        background-color: #ffffff !important;
+        color: #111111 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+    }
+
+    /* Override colors of standard text elements to match the print budget */
+    p, span, h1, h2, h3, h4, h5, h6, li, table, td, th, a {
+        color: #111111 !important;
+        background-color: transparent !important;
+    }
+
+    /* 3. Workspace Callout Styling (Dashed outline, minimum height of 180px for student writing) */
+    .callout[data-callout="workspace"] {
+        min-height: 180px !important;
+        border: 1.5px dashed #999999 !important;
+        background-color: #ffffff !important;
+        display: block !important;
+        margin: 1em 0 !important;
+        padding: 10px !important;
+        page-break-inside: avoid;
+    }
+
+    /* 4. Default printing: Hide solutions by default */
+    .callout[data-callout="check"] {
+        display: none !important;
+    }
+
+    /* 5. Mode: print-minimal (Worksheet Mode - Problems Only) */
+    /* Support standard class, properties has() container, and body has() container */
+    .print-minimal .callout[data-callout="note"],
+    .print-minimal .callout[data-callout="example"],
+    .print-minimal .theory-section,
+    .print-minimal blockquote:not([data-callout="workspace"]),
+    body:has([data-value="print-minimal"]) .callout[data-callout="note"],
+    body:has([data-value="print-minimal"]) .callout[data-callout="example"],
+    body:has([data-value="print-minimal"]) .theory-section,
+    body:has([data-value="print-minimal"]) blockquote:not([data-callout="workspace"]),
+    .markdown-preview-sizer:has([data-value="print-minimal"]) .callout[data-callout="note"],
+    .markdown-preview-sizer:has([data-value="print-minimal"]) .callout[data-callout="example"] {
+        display: none !important;
+    }
+
+    /* 6. Mode: print-solutions (Answer Key Mode - Shows all Solutions) */
+    .print-solutions .callout[data-callout="check"],
+    body:has([data-value="print-solutions"]) .callout[data-callout="check"],
+    .markdown-preview-sizer:has([data-value="print-solutions"]) .callout[data-callout="check"] {
+        display: block !important;
+    }
+    
+    .print-solutions .callout[data-callout="check"] .callout-content,
+    body:has([data-value="print-solutions"]) .callout[data-callout="check"] .callout-content,
+    .markdown-preview-sizer:has([data-value="print-solutions"]) .callout[data-callout="check"] .callout-content {
+        display: block !important;
+    }
+}

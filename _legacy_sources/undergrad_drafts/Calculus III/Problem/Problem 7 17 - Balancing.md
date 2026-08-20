@@ -1,0 +1,1 @@
+Given $f(x,y) = x^2 + y^2$, find $\nabla f$ and describe the field. Is $\nabla f$ conservative?

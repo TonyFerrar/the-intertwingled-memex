@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const courses = [
+  { id: 'calc-1', name: 'Calculus I', code: 'MATH-181', desc: 'Differential calculus of single variable functions, limits, continuity, derivative rules, optimization, and introduction to integration.', icon: '📐' },
+  { id: 'calc-2', name: 'Calculus II', code: 'MATH-182', desc: 'Integral calculus of single variable functions, techniques of integration, applications, improper integrals, infinite sequences, and power series.', icon: '🌀' },
+  { id: 'calc-3', name: 'Calculus III', code: 'MATH-281', desc: 'Multivariable calculus, vectors, vector-valued functions, partial derivatives, multiple integrals, and line integrals.', icon: '🕸️' },
+];
+---
+
+<BaseLayout title="UNLV Calculus Portal">
+  <div class="space-y-8">
+    <!-- Hero Block -->
+    <section class="py-8 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl text-white shadow-md">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Active Calculus OER Portal</h1>
+      <p class="text-lg text-blue-100 mt-2 max-w-xl">
+        A custom digital learning reference and interactive Digital Garden for UNLV Calculus courses. Built for mobile-first in-class active learning.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-4">
+        <a href="/garden" class="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg shadow hover:bg-blue-50 transition-colors text-sm">
+          🌲 Browse Digital Garden
+        </a>
+      </div>
+    </section>
+
+    <!-- Course Cards Grid -->
+    <section class="grid md:grid-cols-3 gap-6">
+      {courses.map(course => (
+        <a href={`/courses/${course.id}`} class="group border border-mathBorder rounded-xl p-6 bg-mathBgSecondary hover:border-accent hover:shadow transition-all duration-200">
+          <span class="text-4xl block mb-4">{course.icon}</span>
+          <h2 class="text-xl font-bold text-mathTextNormal group-hover:text-accent transition-colors flex items-center gap-2">
+            {course.name}
+            <span class="text-xs py-0.5 px-2 bg-mathBorder rounded font-mono text-mathTextMuted">{course.code}</span>
+          </h2>
+          <p class="text-sm text-mathTextMuted mt-2 leading-relaxed">
+            {course.desc}
+          </p>
+          <span class="text-xs font-bold text-accent group-hover:underline mt-4 block">
+            Explore 26 Sessions ➜
+          </span>
+        </a>
+      ))}
+    </section>
+
+    <!-- Project Goals / About -->
+    <section class="p-6 border border-mathBorder rounded-xl bg-mathBgSecondary/40 leading-relaxed">
+      <h3 class="font-bold text-lg text-mathTextNormal mb-2">About this Curriculum</h3>
+      <p class="text-sm text-mathTextMuted">
+        This curriculum implements active learning by structuring class sessions into 3 distinct Skill Blocks, replacing standard lectures with active worked examples, hands-on student practices, and peer discussion. The entire curriculum is structured inside a Zettelkasten Digital Garden, allowing students to explore prerequisite concepts bidirectionally.
+      </p>
+    </section>
+  </div>
+</BaseLayout>

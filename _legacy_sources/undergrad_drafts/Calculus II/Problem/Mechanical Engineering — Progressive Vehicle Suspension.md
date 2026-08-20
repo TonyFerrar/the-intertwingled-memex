@@ -1,0 +1,3 @@
+To improve off-road stability, an automotive engineer designs a progressive suspension system utilizing a non-linear coil spring. Unlike standard linear springs, this progressive spring stiffens rapidly under deep compression to prevent the vehicle frame from hitting the ground. The variable force required to compress the spring by $x$ meters is modeled by the function:
+$$F(x) = k_1 x + k_2 x^3$$
+Where $k_1 = 30,000\text{ N/m}$ (initial linear stiffness) and $k_2 = 300,000\text{ N/m}^3$ (progressive stiffness factor). Calculate the total work required to compress this suspension spring by $0.2\text{ meters}$ from its resting state.

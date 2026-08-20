@@ -1,0 +1,3 @@
+Aerospace engineers are calculating the total work $W$ required to launch a payload weighing $m = 10\text{ kg}$ from a planetary station out into deep space (effectively an infinite distance away). The gravitational force pulling back on the rocket is modeled by $F(x) = \frac{100}{x^2}$, where $x = 2\text{ meters}$ represents the initial launch pad distance from the planet's core. The total work is given by:
+
+$$W = \int_{2}^{\infty} \frac{100}{x^2} \, dx$$

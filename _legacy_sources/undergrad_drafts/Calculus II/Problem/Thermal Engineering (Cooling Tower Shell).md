@@ -1,0 +1,1 @@
+A thermal systems engineer is designing a hyperbola-like industrial cooling tower component. The outer shape is modeled by revolving the curve $x = \frac{1}{3}y^3$ about the vertical $y$-axis over the height interval $y \in [0, 1]$ meters. Calculate the outer surface area to determine heat exchange efficiency.

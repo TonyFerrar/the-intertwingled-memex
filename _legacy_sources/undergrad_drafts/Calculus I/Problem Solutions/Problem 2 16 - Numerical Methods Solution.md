@@ -1,0 +1,3 @@
+### **Problem 2 Solution**
+1.  **Formula for B4:** `=PI() * ($B$1^2) * A4` (or `=PI() * $B$1 * $B$1 * A4`)
+2.  **Explanation:** Without the `$`, using Autofill will cause cell references to shift downwards dynamically. In cell `B5`, the formula would incorrectly change to reference `B2` (an empty cell) instead of keeping the radius value in `B1`. Adding the `$` anchors the row and/or column address, ensuring that the radius remains permanently pulled from cell `B1` during autofill actions.

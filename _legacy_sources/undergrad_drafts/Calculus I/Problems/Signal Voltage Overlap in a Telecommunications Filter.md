@@ -1,0 +1,2 @@
+A firmware engineer is designing a digital bandpass filter to separate overlapping high-frequency communication signals. The rate of voltage interaction between two adjacent frequency channels over a specific spectral band is modeled by a rational function with a higher-degree numerator. To map the general distribution function of the cumulative voltage interference $V(f)$ relative to the frequency variable $f$, the engineer must solve the following indefinite integral:
+$$V(f) = \int \frac{f^5}{f^3 + 2}\,df$$

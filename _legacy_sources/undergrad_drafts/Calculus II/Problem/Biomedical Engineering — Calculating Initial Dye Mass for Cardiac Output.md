@@ -1,0 +1,3 @@
+A medical hardware engineer is calibrating an automated cardiovascular diagnostic monitor that uses the dye dilution method. The system is programmed to flag an error if a clinician accidentally injects the wrong initial mass of indicator dye ($D$). During a validation test on a calibration loop, the machine measures a constant fluid flow rate (cardiac output) of $R = 5.0\text{ L/min}$. The downstream sensor records the dye concentration curve over a 2-minute window ($t=0$ to $t=2$), matching the function:
+$$C(t) = 4e^{-0.5t}\text{ mg}\cdot\text{min/L}$$
+Using the cardiac output formula $R = \frac{D}{\int_{t_1}^{t_2} C(t) \, dt}$, rearrange the equation to find the exact initial mass $D$ of dye that was injected into the system.

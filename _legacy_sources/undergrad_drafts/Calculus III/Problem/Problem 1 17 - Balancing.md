@@ -1,0 +1,1 @@
+Given $F(x,y) = \langle xy, x^2-y \rangle$, find $F(2,1)$, $\|F(2,1)\|$, and interpret.

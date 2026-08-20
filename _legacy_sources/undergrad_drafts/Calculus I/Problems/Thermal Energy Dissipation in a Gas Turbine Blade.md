@@ -1,0 +1,3 @@
+Mechanical engineers are designing internal cooling passages for a high-efficiency gas turbine blade. The rate of heat energy dissipation per unit length changes drastically along the radial distance $r$ (in centimeters) from the rotor hub due to varying centrifugal forces and gas temperatures. The heat dissipation profile requires evaluating an exponential rate function. To determine the general equation for the total cumulative thermal energy dissipated $E(r)$ (in Joules), the engineer must evaluate the following indefinite integral:
+
+$$E(r) = \int r^2 e^{-0.5r^3}\,dr$$

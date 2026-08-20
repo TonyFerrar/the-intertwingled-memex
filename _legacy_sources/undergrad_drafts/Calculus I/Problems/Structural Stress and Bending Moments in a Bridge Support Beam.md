@@ -1,0 +1,2 @@
+A civil engineer is analyzing the internal bending stress distribution along a structural steel support beam for a highway bridge. Due to an asymmetrical soil load pushing against the retaining wall at the base of the span, the internal bending moment rate with respect to the distance $x$ (in meters) along the beam requires modeling a linear variable shift. To establish the general formula for the total accumulated bending moment $M(x)$ (in Newton-meters) along the beam, the engineer must evaluate the following indefinite integral:
+$$M(x) = \int x\sqrt{5-x}\,dx$$

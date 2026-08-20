@@ -1,0 +1,3 @@
+**Scenario:** A smart watch uses a lithium-ion battery. The battery's voltage discharge over time (in hours) under low-power sleep mode is modeled by the exponential decay function $V(t) = 4.2 e^{-0.05t}$. Waking up the watch's main Floating Point Unit (FPU) to calculate $e^x$ drains the battery rapidly. 
+
+**Problem:** To preserve power, the ultra-low-power sub-processor estimates the voltage at $t = 2$ hours using a 2nd-degree Maclaurin polynomial for the exponential function. Calculate the estimated voltage using this approximation.

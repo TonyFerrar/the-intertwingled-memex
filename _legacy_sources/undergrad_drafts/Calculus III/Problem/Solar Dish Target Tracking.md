@@ -1,0 +1,1 @@
+**Problem:** A green energy engineer is designing a parabolic solar concentrating dish that focuses sunlight onto a central thermal collector. The dish surface is parameterized by $\vec{r}(r, \theta) = \langle r\cos\theta, \, r\sin\theta, \, 0.5r^2 \rangle$. Determine the surface normal vector $\vec{n}$ at the physical panel coordinate where $r = 2$ and $\theta = \frac{\pi}{4}$.

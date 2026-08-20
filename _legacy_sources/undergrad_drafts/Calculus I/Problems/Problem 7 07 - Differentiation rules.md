@@ -1,0 +1,1 @@
+Find the $42^{\text{nd}}$ and $55^{\text{th}}$ derivative of $f(x)=\cos x$.

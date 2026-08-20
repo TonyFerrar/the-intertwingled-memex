@@ -1,0 +1,1 @@
+A woman has a farm that is adjacent to a river. Suppose she wants to build a rectangular pen for her cows with 1200 feet of fencing. If one side of the pen is the river (her cows will not swim away), what is the area of the largest pen she can build?

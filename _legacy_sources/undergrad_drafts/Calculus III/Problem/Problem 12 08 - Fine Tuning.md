@@ -1,0 +1,1 @@
+**Conceptual:** If contours are horizontal lines, what can you say about $\frac{\partial f}{\partial y}$?

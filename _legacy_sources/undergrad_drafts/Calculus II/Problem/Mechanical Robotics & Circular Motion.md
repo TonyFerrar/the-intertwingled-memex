@@ -1,0 +1,2 @@
+**Scenario:** A mechanical engineer is programming a robotic CNC (Computer Numerical Control) arm that cuts circular gaskets out of sheet metal. The arm's software is programmed to cut along the polar path $r = 4\cos(\theta)$ (where $r$ is measured in inches). However, the machine's internal motors can only interpret cutting paths as geometric boundaries on an $(x, y)$ coordinate plane.
+**Task:** Convert the robot's cutting command $r = 4\cos(\theta)$ into a Cartesian equation so the machine can recognize the exact size and center of the gasket it needs to cut.

@@ -1,0 +1,1 @@
+Let $R = \{(x,y) : 0 \le x \le 1, x^{2} \le y \le x\}$. Evaluate $\iint_{R} \sqrt{y} \, dA$ as a Type 1 region.

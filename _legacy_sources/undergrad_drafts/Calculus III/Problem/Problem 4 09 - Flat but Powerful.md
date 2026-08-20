@@ -1,0 +1,1 @@
+**Problem:** Find the equation of the tangent plane to $z = \sin(xy)$ at $(x_{0}, y_{0}) = (0, \pi)$, where $z_{0} = 0$.

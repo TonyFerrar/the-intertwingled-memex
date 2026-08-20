@@ -1,0 +1,1 @@
+Use the cross-partial test to decide if $F(x,y) = \langle y^2, 2xy+1 \rangle$ is conservative.

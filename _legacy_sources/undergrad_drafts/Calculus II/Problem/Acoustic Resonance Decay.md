@@ -1,0 +1,3 @@
+**Context:** An acoustic engineer is analyzing the decay of sound waves inside a concert hall. The residual energy of the sound waves bouncing off the walls at the $n$-th reflection is modeled by the series $\sum_{n=1}^{\infty} n e^{-n}$. If the sum of this infinite series converges, the concert hall will quickly settle into silence (good acoustics). If it diverges, the sound energy builds up to infinity, creating an infinite echo chamber (bad acoustics).
+
+**Problem:** Determine if the acoustic energy series $\sum_{n=1}^{\infty} \frac{n}{e^n}$ converges or diverges.

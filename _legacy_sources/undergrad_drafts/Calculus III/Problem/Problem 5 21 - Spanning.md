@@ -1,0 +1,1 @@
+A flat sheet of metal has the shape in accordance to the surface $z = 1 + x + 2y$ that lies above the rectangle $0 \le x \le 4$ and $0 \le y \le 2$. If the density is given by the shape

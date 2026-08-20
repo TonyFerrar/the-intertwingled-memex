@@ -1,0 +1,1 @@
+Compute all second-order partial derivatives of $f(x, y) = 2x^3y^2 + 5xy$.

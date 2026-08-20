@@ -1,0 +1,3 @@
+An aerospace propulsion engineer is designing a curved protective metal casing that shields a high-pressure rocket fuel vent. The interior clearance contour of the housing follows the curve $y = \sqrt{x-2}$ from an inner radius of $x = 2 \text{ cm}$ to an outer sealing rim at $x = 6 \text{ cm}$. The boundary is capped below by the injector's mechanical sealing plate on the $x$-axis ($y = 0$). The structural housing is formed by revolving this cross-section around the central fuel line ($y$-axis).
+
+Find the total material volume enclosed within this protective structural shell using algebraic back-substitution.

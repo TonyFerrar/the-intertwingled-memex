@@ -1,0 +1,1 @@
+Convert the polar point $(r, \theta) = \left(6, \frac{\pi}{3}\right)$ to rectangular coordinates $(x, y)$. Provide exact values.

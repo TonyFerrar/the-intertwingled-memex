@@ -1,0 +1,3 @@
+**Context:** A construction tower crane lifting a heavy concrete beam exerts a downward vertical force vector due to gravity of $\vec{F}_g = \langle 0, 0, -50 \rangle$ kilonewtons (kN) on its central structural support node. Simultaneously, a severe storm hits the construction site, generating a horizontal wind load vector hitting the structure at $\vec{F}_w = \langle 12, -5, 0 \rangle$ kN.
+
+**Task:** 1. Find the total combined force vector $\vec{F}_{\text{total}}$ acting on the crane's node.

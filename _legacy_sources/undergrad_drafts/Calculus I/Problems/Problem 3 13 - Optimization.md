@@ -1,0 +1,1 @@
+A box with an open top is to be constructed from a 15 inch by 24 inch piece of cardboard by cutting squares of equal sides length from the corners and folding up the sides. Find the dimensions of the box of largest volume that can be constructed.

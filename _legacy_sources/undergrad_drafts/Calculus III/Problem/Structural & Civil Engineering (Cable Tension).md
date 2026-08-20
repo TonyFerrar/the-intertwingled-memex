@@ -1,0 +1,3 @@
+**Context:** During a takeoff sequence, a commercial drone's propulsion system generates a thrust vector $\vec{T}$ with a total magnitude of $|\vec{T}| [cite_start]= 7\text{ Newtons}$ (N) anchored at its center of mass. Because of a sudden localized wind gust, the drone is currently angled upward, making a $30^{\circ}$ angle with the horizontal ground plane (x-axis).
+
+**Task:** 1. Determine the horizontal ($T_x$) and vertical ($T_z$) components of the drone's thrust vector $\vec{T}$. (Note: $\cos(30^{\circ}) [cite_start]= \sqrt{3}/2$ and $\sin(30^{\circ}) = 1/2$). 2. Explain how an aerospace flight control system uses these components to maintain stable flight.

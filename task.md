@@ -1,0 +1,6 @@
+- [x] Build Segmented App-Style Pill Tabs in `SkillBlock.astro`
+- [x] Create Step-by-Step Interactive Practice Card Flow in `SkillBlock.astro` (collapsible Hints, Quick Answers, and Full Solutions)
+- [x] Implement Hero Formula Cards in `vaultLoader.js` and styling sheets
+- [x] Create Desktop Desmos Slider Drawer in `BaseLayout.astro` and session page views
+- [x] Build Interactive Class Timeline Stepper at the top of `[session].astro`
+- [x] Verify build outputs and run dev server tests

@@ -1,0 +1,1 @@
+You are designing a rectangular poster meant to contain a $60\text{-in}^2$ area of text enclosed by a 3-inch margin at the top and bottom of the poster and a 5-inch margin at each side. What overall dimensions of the poster will minimize the amount of paper used?

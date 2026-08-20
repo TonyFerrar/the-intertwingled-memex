@@ -1,0 +1,1 @@
+Find $f_{xx}$, $f_{yy}$, and $f_{xy}$ for $f(x, y) = e^{x^2y}$. Verify if $f_{xy} = f_{yx}$.

@@ -1,0 +1,3 @@
+During a manufacturing plant malfunction, a valve slips and begins leaking an acidic industrial solvent into a municipal emergency retention pond. Over an 8-hour emergency repair shift, the rate of the chemical leak drops continuously as technicians slowly tighten secondary manual isolation valves. The rate of the leak is modeled by the function:
+$$L'(t) = \frac{100}{t+1}\text{ liters/hour}$$
+where $t$ represents hours ($0 \le t \le 8$). Before the accident began, the pond already contained $50\text{ liters}$ of stagnant, neutralized chemical runoff from an earlier rainstorm. Calculate the total volume of solvent present in the pond at the end of the 8-hour shift.

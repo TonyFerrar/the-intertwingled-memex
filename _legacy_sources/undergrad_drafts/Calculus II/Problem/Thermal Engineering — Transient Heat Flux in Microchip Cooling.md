@@ -1,0 +1,3 @@
+To prevent computer hardware from overheating, thermal engineers use liquid-cooling blocks that pull heat away from high-performance microchips. During a heavy processing spike, the rate of heat transfer (heat flux) entering the cooling fluid changes continuously over time as the liquid warms up. The rate of heat absorption is defined by the exponential decay model:
+$$Q'(t) = 15 + 45e^{-0.1t}\text{ Joules/second (Watts)}$$
+where $t$ is measured in seconds. If the cooling system can absorb a maximum total of $500\text{ Joules}$ of heat energy before the liquid starts boiling, calculate the total heat energy absorbed by the system during the first $10\text{ seconds}$ of operation to verify if it remains safe.

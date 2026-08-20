@@ -1,0 +1,3 @@
+Aerospace engineers are calculating the total shear drag force accumulation $F_d(x)$ along the surface chord of a experimental wing section inside a high-speed wind tunnel. Due to boundary layer effects, the rate of change of the drag force with respect to the distance $x$ (in meters) from the leading edge is modeled by a rational composite function. To find the general algebraic formula for the total accumulated drag force over the surface, the engineer must solve the following indefinite integral:
+
+$$F_d(x) = \int \frac{x}{(1 + x^2)^3}\,dx$$

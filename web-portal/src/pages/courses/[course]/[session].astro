@@ -1,0 +1,377 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SkillBlock from '../../../components/SkillBlock.astro';
+import InteractiveGraph from '../../../components/InteractiveGraph.astro';
+import { getCourseSessions, getSessionDetails } from '../../../utils/vaultLoader.js';
+
+export function getStaticPaths() {
+  const courses = ['calc-1', 'calc-2', 'calc-3'];
+  const paths = [];
+
+  for (const course of courses) {
+    const sessions = getCourseSessions(course);
+    for (const sess of sessions) {
+      paths.push({
+        params: { course, session: sess.slug }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { course, session } = Astro.params;
+const details = getSessionDetails(course, session);
+
+if (!details) {
+  throw new Error(`Failed to load details for ${course}/${session}`);
+}
+
+const courseNames: Record<string, string> = {
+  'calc-1': 'Calculus I',
+  'calc-2': 'Calculus II',
+  'calc-3': 'Calculus III',
+};
+
+const courseTitle = courseNames[course] || 'Calculus';
+
+// Split title if it starts with "Session XX - " or "Discussion XX - "
+let displayTitle = details.title;
+let displayCode = details.code;
+
+const titleParts = details.title.split(/\s*-\s*(.+)/);
+if (titleParts.length >= 2) {
+  if (/^(?:Session|Discussion|Review|Calc)/i.test(titleParts[0])) {
+    displayCode = titleParts[0].trim();
+    displayTitle = titleParts[1].trim();
+  }
+}
+
+// Detect if a Desmos placeholder exists in the introduction or blocks
+// E.g. search for desmos links to render them interactively
+const desmosLinks = [];
+const desmosRegex = /https:\/\/www\.desmos\.com\/calculator\/[a-zA-Z0-9_-]+/g;
+
+let match;
+while ((match = desmosRegex.exec(details.introHtml)) !== null) {
+  desmosLinks.push(match[0]);
+}
+
+// Scrape blocks for desmos links too
+for (const block of details.blocks) {
+  while ((match = desmosRegex.exec(block.bodyRaw || '')) !== null) {
+    desmosLinks.push(match[0]);
+  }
+}
+
+// Deduplicate links
+const uniqueDesmosLinks = [...new Set(desmosLinks)];
+
+// Parse timeline steps from blocks
+const timelineSteps = details.blocks.map((block, idx) => {
+  const headerText = block.header;
+  const timeMatch = headerText.match(/^(\d{2}:\d{2}\s*-\s*\d{2}:\d{2})/);
+  const timeStr = timeMatch ? timeMatch[1] : '';
+  
+  let cleanTitle = headerText;
+  if (timeMatch) {
+    cleanTitle = headerText.replace(/^.*?—\s*/, '').replace(/:\s*.*$/, '').replace(/^\s*Skill Block\s*\d+:\s*/i, '');
+  }
+  
+  return {
+    id: `block-${idx}`,
+    time: timeStr,
+    title: cleanTitle
+  };
+}).filter(step => step.time);
+---
+
+<BaseLayout title={details.title} courseName={course}>
+  <div class="space-y-6">
+    <!-- Breadcrumbs & Print Actions -->
+    <div class="border-b border-mathBorder pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
+          <a href="/">Courses</a> / 
+          <a href={`/courses/${course}`}>{courseTitle}</a> / 
+          <span class="text-mathTextMuted">{displayCode}</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{displayTitle}</h1>
+      </div>
+      
+      <!-- Print Actions Panel -->
+      <div class="flex flex-wrap gap-2 select-none">
+        <a
+          href={`/courses/${course}/${session}/print?mode=worksheet`}
+          target="_blank"
+          class="px-4 py-2 border border-mathBorder rounded-lg text-sm font-bold bg-mathBgSecondary text-mathTextNormal hover:bg-mathBorder flex items-center gap-1.5 shadow-sm transition-colors"
+        >
+          🖨️ Student Worksheet
+        </a>
+        <a
+          href={`/courses/${course}/${session}/print?mode=solutions`}
+          target="_blank"
+          class="px-4 py-2 border border-mathBorder rounded-lg text-sm font-bold bg-mathBgSecondary text-mathTextNormal hover:bg-mathBorder flex items-center gap-1.5 shadow-sm transition-colors"
+        >
+          🔑 Answer Key
+        </a>
+      </div>
+    </div>
+
+    <!-- Interactive Desmos Graph (if found) -->
+    {uniqueDesmosLinks.map(link => (
+      <InteractiveGraph url={link} />
+    ))}
+
+    <!-- Session Intro / Overview -->
+    <!-- Sticky Timeline Stepper -->
+    {timelineSteps.length > 0 && (
+      <div class="sticky top-[58px] z-30 bg-mathBgPrimary/95 backdrop-blur-md mb-6 select-none w-full">
+        <div class="timeline-container">
+          {timelineSteps.map((step) => (
+            <button 
+              class="timeline-btn"
+              data-target={step.id}
+            >
+              <span class="timeline-time">{step.time}</span>
+              <span class="timeline-title max-w-[130px] truncate">{step.title}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Session Intro / Overview -->
+    <section class="prose max-w-none text-mathTextNormal" set:html={details.introHtml} />
+
+    <!-- Session Timeline Breakdown (Segmented Presenter Mode Carousel) -->
+    <div class="space-y-6">
+      {details.blocks.map((block, idx) => {
+        const blockId = `block-${idx}`;
+        const isDefaultVisible = idx === 0;
+
+        // Find adjacent segments in the filtered timelineSteps list
+        const currentStepIdx = timelineSteps.findIndex(s => s.id === blockId);
+        const hasPrev = currentStepIdx > 0;
+        const hasNext = currentStepIdx < timelineSteps.length - 1;
+        const prevTarget = hasPrev ? timelineSteps[currentStepIdx - 1].id : null;
+        const nextTarget = hasNext ? timelineSteps[currentStepIdx + 1].id : null;
+        const prevStepTitle = hasPrev ? timelineSteps[currentStepIdx - 1].title : '';
+        const nextStepTitle = hasNext ? timelineSteps[currentStepIdx + 1].title : '';
+        
+        const cleanBlockHeader = block.header.replace(/^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}\s*(?:\(\d+\s*mins?\))?\s*[-—–]\s*/i, '');
+
+        if (block.isSkillBlock) {
+          return (
+            <div id={blockId} class={`timeline-block ${isDefaultVisible ? '' : 'hidden'} scroll-mt-24`}>
+              <div class="border border-mathBorder rounded-2xl bg-mathBgSecondary shadow-md p-6 md:p-8 flex flex-col min-h-[420px]">
+                <div class="flex-1">
+                  <SkillBlock
+                    header={cleanBlockHeader}
+                    problems={block.problems}
+                    extensionsHtml={block.extensionsHtml}
+                    engineeringProblems={block.engineeringProblems}
+                    blockId={blockId}
+                  >
+                    <div slot="theory" set:html={block.theoryHtml} />
+                  </SkillBlock>
+                </div>
+
+                {currentStepIdx !== -1 && (
+                  <div class="carousel-nav flex items-center justify-between border-t border-mathBorder pt-6 mt-6 select-none">
+                    <button 
+                      class="prev-segment-btn px-4 py-2 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder/50 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                      data-target={prevTarget}
+                      disabled={!hasPrev}
+                    >
+                      {hasPrev ? `◀ Previous: ${prevStepTitle}` : '◀ Previous'}
+                    </button>
+                    <span class="segment-indicator text-xs font-bold text-mathTextMuted font-mono">
+                      Segment {currentStepIdx + 1} of {timelineSteps.length}
+                    </span>
+                    <button 
+                      class="next-segment-btn px-4 py-2 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder/50 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                      data-target={nextTarget}
+                      disabled={!hasNext}
+                    >
+                      {hasNext ? `Next: ${nextStepTitle} ▶` : 'Next ▶'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        } else {
+          // Regular Timeline Section (Micro-Lecture, Regroup, Wrap-up)
+          const isWrapUp = block.header.toLowerCase().includes('wrap-up');
+          const isDiscussion = block.header.toLowerCase().includes('discussion') || block.header.toLowerCase().includes('regroup');
+          
+          return (
+            <div id={blockId} class={`timeline-block ${isDefaultVisible ? '' : 'hidden'} scroll-mt-24`}>
+              <div class={`border rounded-2xl shadow-md p-6 md:p-8 flex flex-col min-h-[420px] ${
+                isWrapUp ? 'bg-indigo-50/10 border-indigo-200 dark:border-indigo-900/40' : 
+                isDiscussion ? 'bg-orange-50/10 border-orange-200 dark:border-orange-900/40' : 'bg-mathBgSecondary border-mathBorder'
+              }`}>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-mathTextNormal mb-4 flex items-center gap-2">
+                    <span class="text-base">📅</span>
+                    {cleanBlockHeader}
+                  </h3>
+                  <div class="prose max-w-none text-mathTextNormal leading-relaxed" set:html={block.bodyHtml} />
+                </div>
+
+                {currentStepIdx !== -1 && (
+                  <div class="carousel-nav flex items-center justify-between border-t border-mathBorder pt-6 mt-6 select-none">
+                    <button 
+                      class="prev-segment-btn px-4 py-2 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder/50 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                      data-target={prevTarget}
+                      disabled={!hasPrev}
+                    >
+                      {hasPrev ? `◀ Previous: ${prevStepTitle}` : '◀ Previous'}
+                    </button>
+                    <span class="segment-indicator text-xs font-bold text-mathTextMuted font-mono">
+                      Segment {currentStepIdx + 1} of {timelineSteps.length}
+                    </span>
+                    <button 
+                      class="next-segment-btn px-4 py-2 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder/50 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                      data-target={nextTarget}
+                      disabled={!hasNext}
+                    >
+                      {hasNext ? `Next: ${nextStepTitle} ▶` : 'Next ▶'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }
+      })}
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const steps = document.querySelectorAll('.timeline-btn');
+      const blocks = document.querySelectorAll('.timeline-block');
+
+      const activateBlock = (targetId) => {
+        // 1. Toggle visibility of timeline content blocks
+        blocks.forEach(block => {
+          if (block.id === targetId) {
+            block.classList.remove('hidden');
+          } else {
+            block.classList.add('hidden');
+          }
+        });
+
+        // 2. Toggle active styles on stepper buttons
+        steps.forEach(btn => {
+          const btnTarget = btn.getAttribute('data-target');
+          if (btnTarget === targetId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // 3. Highlight the matching objective in the Session Objectives overview list
+        const objectiveItems = document.querySelectorAll('.callout-abstract ul li');
+        if (objectiveItems.length > 0) {
+          // Dynamically find targets that correspond to a Skill Block
+          const skillBlockTargets = Array.from(steps)
+            .filter(btn => {
+              const titleEl = btn.querySelector('.timeline-title');
+              return titleEl && titleEl.textContent.toLowerCase().includes('skill block');
+            })
+            .map(btn => btn.getAttribute('data-target'));
+
+          const activeObjIdx = skillBlockTargets.indexOf(targetId);
+
+          objectiveItems.forEach((li, index) => {
+            if (activeObjIdx === -1) {
+              // Reset all items to default state if not on a specific Skill Block
+              li.style.fontWeight = 'normal';
+              li.style.opacity = '1';
+              li.style.color = '';
+            } else if (index === activeObjIdx) {
+              // Highlight currently active Skill Block objective
+              li.style.fontWeight = 'bold';
+              li.style.opacity = '1';
+              li.style.color = 'var(--text-accent)';
+            } else {
+              // Dim other objectives to direct user focus
+              li.style.fontWeight = 'normal';
+              li.style.opacity = '0.35';
+              li.style.color = '';
+            }
+          });
+        }
+
+        // 4. Trigger immediate SVG dimensions check and toggles bindings
+        if (window.initToggles) {
+          window.initToggles();
+        }
+        if (window.initEngDrawers) {
+          window.initEngDrawers();
+        }
+      };
+
+      // Click event binding for top stepper pills
+      steps.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          if (targetId) {
+            activateBlock(targetId);
+            
+            // Scroll stepper area back into view smoothly
+            const stepperEl = btn.closest('.sticky');
+            stepperEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      });
+
+      // Click event binding for carousel next/prev buttons
+      document.querySelectorAll('.prev-segment-btn, .next-segment-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          if (targetId) {
+            activateBlock(targetId);
+            
+            // Scroll stepper area back into view smoothly
+            const stepperEl = document.querySelector('.sticky');
+            if (stepperEl) {
+              // Scroll with margin top offset matching double sticky header height (60px header + stepper)
+              const offset = 120;
+              const bodyRect = document.body.getBoundingClientRect().top;
+              const elementRect = stepperEl.getBoundingClientRect().top;
+              const elementPosition = elementRect - bodyRect;
+              const offsetPosition = elementPosition - offset;
+              window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+            }
+          }
+        });
+      });
+
+      // Click event binding for Answer Key spoiler alert confirm box
+      const answerKeyBtn = document.querySelector('a[href*="mode=solutions"]');
+      if (answerKeyBtn) {
+        answerKeyBtn.addEventListener('click', (e) => {
+          const confirmed = confirm('⚠️ SPOILER ALERT!\n\nYou are about to open the complete Answer Key containing all worked solutions. Are you sure you want to proceed?');
+          if (!confirmed) {
+            e.preventDefault();
+          }
+        });
+      }
+
+
+
+      // Activate first block by default on load
+      if (steps.length > 0) {
+        const firstTarget = steps[0].getAttribute('data-target');
+        if (firstTarget) {
+          activateBlock(firstTarget);
+        }
+      }
+    });
+  </script>
+</BaseLayout>

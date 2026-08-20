@@ -1,0 +1,1 @@
+A chemical engineer is designing a highly specialized curved impeller blade for a industrial chemical mixing tank. The curved edge of the blade follows the equation $y = \frac{1}{2}x^3$ cm from $x = 0$ to $x = 1$ cm. The blade element is manufactured by revolving this curve entirely about the central $x$-axis. Find the exact surface area of the blade component.

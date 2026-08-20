@@ -1,0 +1,10 @@
+# Session 06 + RoC and Definition of Derivative 
+
+## Engineering Application
+In an engineering context, the core skills covered in these notes—specifically managing instantaneous rates of change, calculating tangent line equations, and evaluating structural differentiability—serve as the mathematical architecture for designing, analyzing, and optimizing complex real-world physical systems. The conceptual transition from an average rate of change to an instantaneous rate of change via a limit quotient ($\lim_{h \to 0}$) forms the absolute foundation of kinematics in aerospace and automotive engineering for tracking real-time vehicle velocity and acceleration, as well as in electrical engineering to analyze dynamic, time-varying current and voltage differentials across capacitors and inductors. Furthermore, the specific workflow of using a derivative to construct a tangent line equation, known in industry as linearization, allows robotics and control systems engineers to simplify highly complex, non-linear physical feedback loops into high-speed linear approximations that an onboard flight controller can process millisecond by millisecond. Finally, mastering the rules of differentiability and its visual breakdowns—such as understanding that a function is non-differentiable at sharp corners, cusps, or vertical tangents—is a safety-critical necessity for mechanical, structural, and civil engineers; it dictates why physical parts cannot have sharp geometric corners due to catastrophic stress concentrations, and demands that highway exit ramps and high-speed railway tracks be mathematically smooth and perfectly differentiable (using transition spirals) to prevent vehicles from experiencing lethal, instantaneous shifts in centrifugal forces.
+
+
+## Skills for Today's lesson
+- Skill 1: [[06 - Conceptual & Graphical Interpretation]]
+- Skill 2: [[06 - Algebraic Manipulation & Fluency]]
+- Skill 3: [[06 - Functional Application & Synthesis]]

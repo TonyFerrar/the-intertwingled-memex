@@ -1,0 +1,1 @@
+Convert the Cartesian coordinates $(x, y) = (3, 2)$ into polar coordinates $(r, \theta)$. Express $\theta$ in radians (rounded to three decimal places) and $r$ in exact radical form.

@@ -1,0 +1,3 @@
+A communications engineer is analyzing an audio signal that propagates through a fiber-optic cable in both past and future time ($-\infty < t < \infty$). The voltage curve of this specific transient signal is modeled by the two-sided attenuation function $v(t) = e^{-\vert{}t\vert{}}$. To find the total electrical energy $E$ carried by the signal, the engineer must integrate across the entire infinite timeline:
+
+$$E = \int_{-\infty}^{\infty} e^{-\vert{}t\vert{}} \, dt$$

@@ -1,0 +1,1 @@
+2. Suppose $f(2)=1$, $f^{\prime}(2)=1$, $f^{\prime\prime}(2)=1$ and $f^{(3)}(2)=12$. Find the third order Taylor polynomial for $f(x)$ centered at $x=2$ and use it to approximate $f(2.1)$.

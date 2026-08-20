@@ -1,0 +1,3 @@
+An environmental engineer is studying a digital elevation model contour map of a valley to determine where rainwater will pool. The elevation values are marked in meters on a 2D survey plot. Looking at a prospective retention basin location at coordinate point $P$, the engineer notes that the contour lines run perfectly straight from east to west (horizontally). Moving vertically north from point $P$, the contour labels change from $105\text{ m} \rightarrow 100\text{ m} \rightarrow 95\text{ m}$, with lines spaced tightly at $0.5\text{ cm}$ intervals on the map.
+
+Visually determine the signs of $\frac{\partial E}{\partial x}$ and $\frac{\partial E}{\partial y}$, and interpret what the spacing tells you about the terrain.

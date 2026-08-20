@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCourseSessions } from '../../utils/vaultLoader.js';
+
+export function getStaticPaths() {
+  return [
+    { params: { course: 'calc-1' } },
+    { params: { course: 'calc-2' } },
+    { params: { course: 'calc-3' } },
+  ];
+}
+
+const { course } = Astro.params;
+
+// Resolve course names
+const courseNames: Record<string, string> = {
+  'calc-1': 'Calculus I (MATH-181)',
+  'calc-2': 'Calculus II (MATH-182)',
+  'calc-3': 'Calculus III (MATH-281)',
+};
+
+const courseTitle = courseNames[course] || 'Calculus Course';
+
+const courseDescriptions: Record<string, string> = {
+  'calc-1': 'MATH-181 (Calculus I) covers limits, continuity, derivatives, optimization, and an introduction to integration with active learning classroom practice.',
+  'calc-2': 'MATH-182 (Calculus II) covers advanced techniques of integration, numerical approximation, physical applications, infinite series, power series, and polar coordinate curves.',
+  'calc-3': 'MATH-281 (Calculus III) covers vector geometry, vector-valued functions, partial derivatives, optimization with constraints, multiple integration, line integrals, and vector fields.',
+};
+const courseDesc = courseDescriptions[course] || 'Curriculum map and syllabus details.';
+
+// Query vault sessions
+const sessions = getCourseSessions(course);
+
+// Group sessions by week based on their sortKey
+const weeks: Array<{ number: number; sessions: typeof sessions }> = [];
+for (let w = 1; w <= 13; w++) {
+  const weekSessions = sessions.filter(s => {
+    // If it has a valid sortKey, extract the week number (sortKey is week * 10 + seq)
+    const sWeek = s.sortKey ? Math.floor(s.sortKey / 10) : 99;
+    return sWeek === w;
+  });
+  
+  if (weekSessions.length > 0) {
+    weeks.push({
+      number: w,
+      sessions: weekSessions
+    });
+  }
+}
+
+// Check if there are any sessions that fell outside our 1-13 week schema (e.g. key = 99)
+const unsortedSessions = sessions.filter(s => {
+  const sWeek = s.sortKey ? Math.floor(s.sortKey / 10) : 99;
+  return sWeek < 1 || sWeek > 13;
+});
+if (unsortedSessions.length > 0) {
+  weeks.push({
+    number: 99, // Render at the bottom
+    sessions: unsortedSessions
+  });
+}
+---
+
+<BaseLayout title={courseTitle} courseName={course}>
+  <div class="space-y-8 max-w-5xl mx-auto">
+    <!-- Header Block -->
+    <div class="border-b border-mathBorder pb-5">
+      <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-2">
+        <a href="/">Courses</a> / <span class="text-mathTextMuted">{courseTitle}</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{courseTitle} Syllabus Map</h1>
+      <p class="text-sm text-mathTextMuted mt-2 max-w-3xl leading-relaxed">
+        {courseDesc}
+      </p>
+    </div>
+
+    <!-- Sessions List (Timeline format) -->
+    {weeks.length > 0 ? (
+      <div class="relative pl-6 md:pl-8 border-l border-mathBorder/80 space-y-12 ml-4 mt-6">
+        {weeks.map(week => (
+          <div class="relative">
+            <!-- Timeline node marker -->
+            <div class="absolute -left-[30px] md:-left-[38px] top-1.5 w-3.5 h-3.5 rounded-full bg-mathBgPrimary border-2 border-accent shadow-sm"></div>
+            
+            <!-- Week Header -->
+            <div class="mb-4">
+              <h2 class="text-lg font-bold text-mathTextNormal flex items-center gap-2 leading-none">
+                {week.number === 99 ? 'Supplemental Files' : `Week ${week.number}`}
+              </h2>
+              {week.number !== 99 && (
+                <span class="text-[10px] text-mathTextMuted font-mono uppercase tracking-wider mt-1 block">
+                  Weekly Curriculum & Discussion Map
+                </span>
+              )}
+            </div>
+
+            <!-- Activities Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {week.sessions.map(sess => {
+                // Clean the titles by stripping session prefix
+                const cleanTitle = sess.title
+                  .replace(/^(?:Session|Discussion|Calc-\d+\s+Session|Calc-\d+\s+Discussion)\s*\d*\s*[-–—:]\s*/i, '')
+                  .trim();
+                
+                const isDiscussion = sess.code.startsWith('D');
+                const isReview = sess.code.toLowerCase().includes('review') || sess.code === 'Review';
+                
+                let badgeClass = "bg-accent/10 text-accent border border-accent/20";
+                let typeLabel = "Class Session";
+                
+                if (isDiscussion) {
+                  badgeClass = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+                  typeLabel = "Discussion Lab";
+                } else if (isReview) {
+                  badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                  typeLabel = "Exam Review";
+                }
+                
+                return (
+                  <a 
+                    href={`/courses/${course}/${sess.slug}`} 
+                    class="group block border border-mathBorder rounded-xl p-4 bg-mathBgSecondary/30 hover:bg-mathBgSecondary/70 hover:border-accent hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200 no-underline hover:no-underline flex flex-col justify-between h-full"
+                  >
+                    <div>
+                      <div class="flex items-center justify-between mb-3 select-none">
+                        <span class={`text-[10px] font-mono font-extrabold px-2 py-0.5 rounded tracking-wide uppercase ${badgeClass}`}>
+                          {sess.code}
+                        </span>
+                        <span class="text-[9px] text-mathTextMuted font-mono uppercase">
+                          {typeLabel}
+                        </span>
+                      </div>
+                      <h3 class="text-sm font-bold text-mathTextNormal group-hover:text-accent transition-colors leading-snug line-clamp-3">
+                        {cleanTitle}
+                      </h3>
+                    </div>
+                    
+                    {sess.updated && (
+                      <div class="mt-4 pt-2 border-t border-mathBorder/40 flex items-center justify-between select-none">
+                        <span class="text-[9px] text-mathTextMuted font-mono">
+                          Updated: {sess.updated}
+                        </span>
+                        <span class="text-[10px] text-accent font-extrabold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                          Open ➔
+                        </span>
+                      </div>
+                    )}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="py-12 text-center text-sm text-mathTextMuted italic bg-mathBgSecondary/20 border border-mathBorder rounded-xl">
+        No curriculum map matches found for this course directory.
+      </div>
+    )}
+  </div>
+</BaseLayout>

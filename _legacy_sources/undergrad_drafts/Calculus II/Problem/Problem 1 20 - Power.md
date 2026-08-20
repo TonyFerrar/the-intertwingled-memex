@@ -1,0 +1,1 @@
+1. The first three Taylor polynomials for the function $f(x)=\sqrt{1+x}$ centered at $x=0$ are $p_{0}=1$, $p_{1}=1+\frac{x}{2}$, and $p_{2}=1+\frac{x}{2}-\frac{x^{2}}{8}$. Use these to find three approximations of $f(.1)=\sqrt{1.1}$.

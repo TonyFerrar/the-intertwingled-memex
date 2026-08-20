@@ -1,0 +1,1 @@
+Find the dot product of $\vec{u} = 3\hat{i} - 2\hat{j}$ and $\vec{v} = 4\hat{i} - 5\hat{j}$.

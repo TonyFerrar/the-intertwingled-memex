@@ -1,0 +1,2 @@
+**Scenario:** A software engineer is programming the virtual UI for a submarine's radar tracking system. The game engine renders everything on a Cartesian pixel grid, where the origin $(0,0)$ is the center of the radar screen. The radar detects an enemy vessel at a distance of $r = 120$ pixels, at an angle of $\theta = \frac{11\pi}{6}$ radians (relative to the positive x-axis, representing East). 
+**Task:** Calculate the exact $(x,y)$ pixel coordinates the graphics hardware must use to render the blinking red dot on the screen.

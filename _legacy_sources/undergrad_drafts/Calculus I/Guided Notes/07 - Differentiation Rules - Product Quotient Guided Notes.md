@@ -1,0 +1,10 @@
+# Session 07 + Differentiation Rules 
+
+## Engineering Application
+The foundational calculus rules covered in these materials—such as the product, quotient, trigonometric, and higher-order derivative rules—serve as the mathematical architecture for a wide array of real-life engineering applications. For instance, aerospace and mechanical engineers utilize the Product Rule to analyze the rate of change of stress and bending moments along structurally dynamic components like airplane wings or bridge beams. Meanwhile, chemical and electrical engineers apply the Quotient Rule to calculate fluid concentration variations in mixing systems or to evaluate polynomial transfer functions when filtering audio and data frequencies. Because any rotating or vibrating system operates in cycles, mechanical engineers utilize trigonometric derivatives to transform mathematical models of harmonic position into exact values for velocity and acceleration, allowing them to design optimal dampening systems for automotive suspensions and earthquake-resistant skyscrapers. Furthermore, autonomous robotics and vehicular programming heavily track higher-order derivatives—such as the third derivative, which represents physical "jerk"—to ensure automated systems move smoothly without causing equipment wear or passenger whiplash. Finally, calculating the equation of a geometric tangent line enables optimization via gradient descent algorithms in machine learning software , while numerical tabular differentiation allows materials and test engineers to calculate exact physical degradation rates directly from raw sensor data logs where an explicit algebraic formula does not exist.
+
+
+## Skills in Today's Lesson
+- Skill 1: [[07 - Advanced Algebraic Pre- and Post-Processing]]
+- Skill 2: [[07 - Structural Pattern Recognition & Rule Execution]]
+- Skill 3: [[07 - Contextual & Tabular Translation of the Derivative]]

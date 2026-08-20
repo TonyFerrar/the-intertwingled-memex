@@ -1,0 +1,15 @@
+# OS / IDE Caches
+.DS_Store
+Thumbs.db
+.obsidian/workspace.json
+
+# Web Portal Dependencies & Build
+web-portal/node_modules/
+web-portal/.astro/
+web-portal/dist/
+web-portal/npm-debug.log*
+web-portal/yarn-debug.log*
+web-portal/yarn-error.log*
+
+# Generated PDF Exports
+*.pdf

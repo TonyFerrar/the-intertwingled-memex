@@ -1,0 +1,3 @@
+An aerospace engineer is analyzing the supersonic airflow across the nose cone of a new prototype aircraft fuselage. The curved top surface of the nose cone is modeled in a wind tunnel simulation by the equation $z = 20 - 0.05x^2 - 0.1y^2$, where $x$, $y$, and $z$ are measured in centimeters. To calculate the exact directional pressure vector of oncoming air molecules, the engineer needs to determine the tangent plane to the nose cone at the critical physical coordinate point $(10, 5)$. At this coordinate, the height of the fuselage surface is $z_0 = 12.5\text{ cm}$.
+
+Find the equation of the tangent plane at this point.

@@ -1,0 +1,1 @@
+An aerospace engineer is designing a small research rocket nose cone by revolving the aerodynamic profile curve $y = \sqrt{3x}$ over the interval $x \in [0, 12]$ cm about the $x$-axis. Calculate the exact surface area of the nose cone to determine how much thermal spray coating to order.

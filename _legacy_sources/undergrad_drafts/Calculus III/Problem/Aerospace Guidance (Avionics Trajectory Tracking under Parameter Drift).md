@@ -1,0 +1,2 @@
+**Problem:** A spacecraft is performing an atmospheric re-entry curve. Its positioning track relative to mission control is modeled by $\vec{r}(\tau) = \langle \cos(\tau), \, \sin(\tau), \, 5\tau^2 \rangle$, where $\tau$ represents a normalized system timeline. Due to external atmospheric friction, the timeline drifts relative to true mission clock time $t$ (in seconds) according to the engine heat parameter scale $\tau = f(t) = \sqrt{t}$. 
+Calculate the true temporal velocity vector of the spacecraft $\frac{d}{dt}[\vec{r}(f(t))]$ at true time $t = 4$ seconds.

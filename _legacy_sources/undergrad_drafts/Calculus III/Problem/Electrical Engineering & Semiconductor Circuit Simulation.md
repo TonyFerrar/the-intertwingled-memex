@@ -1,0 +1,5 @@
+In microchip design, a precision semiconductor transistor acts as a current valve. The electrical current ($I$, in milliamperes) flowing through the transistor is highly non-linear and depends on the gate voltage ($V_g$) and drain voltage ($V_d$). The component behavior is modeled by the function $I(V_g, V_d) = \sqrt{V_g^3 + V_d^2}$.
+
+The standard operating sweet spot (base point) for the circuit is designed around $V_g = 2\text{V}$ and $V_d = 4\text{V}$, yielding a baseline current of $I(2,4) = \sqrt{2^3 + 4^2} = \sqrt{8 + 16} = \sqrt{24}\text{ mA}$. During high-speed data switching, power supply noise causes the voltages to fluctuate slightly to a target point of $V_g = 2.02\text{V}$ and $V_d = 3.95\text{V}$.
+
+Use a linear approximation around the clean operating point $(2,4)$ to estimate the fluctuated current. *(Use $\sqrt{24} \approx 4.8990\text{ mA}$ for evaluation)*.

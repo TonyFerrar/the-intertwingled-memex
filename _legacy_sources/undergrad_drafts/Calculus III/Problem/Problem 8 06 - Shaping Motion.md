@@ -1,0 +1,1 @@
+Given the position vector $\vec{r}(t)=-t^{5}\hat{i}-7t^{2}\hat{j}$, decompose the acceleration vector into its tangential and normal components at $t=1.$

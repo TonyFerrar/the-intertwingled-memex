@@ -1,0 +1,3 @@
+An automated intravenous (IV) infusion pump delivers an anti-inflammatory drug directly into a patient's bloodstream. Once inside the body, the patient's kidneys and liver continuously clear the medication. The net rate of change of the drug's mass in the patient's body is tracked by the variable function:
+$$A'(t) = -30e^{-0.15t}\text{ mg/hour}$$
+where $t$ is the number of hours since the IV pump was turned off. If the patient has exactly $250\text{ mg}$ of active drug remaining in their system at the moment the pump stops ($t = 0$), calculate the mass of the drug left in their system after $6$ hours.

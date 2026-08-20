@@ -1,0 +1,3 @@
+An electrical engineer is analyzing a transient surge-protection circuit designed to protect delicate microchips from lightning strikes. When a voltage spike hits, a large capacitor safely captures the electrical energy and then safely dissipates it across a resistor over time. The rate of power dissipation (energy leaving the circuit per second) drops exponentially and is modeled by the function:
+$$P(t) = 50e^{-200t}\text{ Watts (Joules/second)}$$
+where $t$ represents seconds. Integrate this power rate function from $t = 0$ to $t = 0.02\text{ seconds}$ to find the total heat energy dissipated by the resistor during the critical initial phase of the surge.

@@ -1,0 +1,1 @@
+Convert the equation of a circle $x^2 + y^2 = a^2$ (where $a > 0$) into polar coordinates.

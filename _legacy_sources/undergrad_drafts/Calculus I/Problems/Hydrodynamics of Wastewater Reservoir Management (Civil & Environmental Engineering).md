@@ -1,0 +1,3 @@
+A civil engineer is managing a flood control municipal reservoir basin. During a sustained storm, water enters the reservoir via open canals while simultaneously draining out of a primary lower pipeline. The net rate of change of fluid volume inside the reservoir, measured in cubic meters per hour, is given by the variable multi-term function:
+$$\frac{dV}{dt} = 15t^2 + \frac{8}{t} - 3\cos(t) \quad (\text{for } t \ge 1)$$
+Find the general equation for the absolute volume of water $V(t)$ stored within the municipal reservoir system.

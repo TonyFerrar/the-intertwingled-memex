@@ -1,0 +1,3 @@
+Civil and mechanical engineers designing hydraulic transport lines must compute fluid properties passing through non-standard pipeline junctions. Consider a fluid moving through a flat, skewed channel region $R$ in an industrial filter mechanism. The walls of the channel are bounded by the lines $y - 3x = -2$, $y - 3x = 2$, $2x + y = 1$, and $2x + y = 4$. 
+
+Due to friction effects near the boundaries, the velocity field distribution of the liquid is modeled by the function $V(x,y) = (y - 3x)^2$ (measured in meters per second, $\text{m/s}$). Find the integrated velocity profile across the cross-sectional area of this filter channel.

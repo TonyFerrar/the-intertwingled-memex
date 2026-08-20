@@ -1,0 +1,1 @@
+Let $\vec{r} = \vec{OP} = (2\hat{i} + \hat{j})\text{ m}$. A force $\vec{F} = \langle 0, 12, 0 \rangle\text{ N}$ is applied at $P$. Find the torque about $O$ that is produced, measured in $\text{N} \cdot \text{m}$.

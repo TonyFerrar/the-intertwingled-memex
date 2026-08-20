@@ -1,0 +1,1 @@
+Find $\vec{a} \cdot \vec{b}$ if $|\vec{a}| = 16\text{ N}$, $|\vec{b}| = 5\text{ m}$, and the angle between $\vec{a}$ and $\vec{b}$ is $77^\circ$. Express the answer rounded to two decimal places.

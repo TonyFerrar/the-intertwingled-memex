@@ -1,0 +1,3 @@
+**Context:** Renewable energy engineers write software algorithms for solar tracking arrays. To maximize energy capture, the angle between incoming sunlight rays and the face of the solar panel must be monitored. Suppose the flat surface normal vector pointing straight out of a solar panel is tracking along the vector $\vec{n} = \langle 2, 2, 1 \rangle$. At a specific time of day, the vector pointing directly toward the incoming sun rays is $\vec{s} = \langle 0, 3, 4 \rangle$.
+
+**Problem:** Use the dot product to find the angle $\theta$ between the panel's normal orientation vector $\vec{n}$ and the sun ray vector $\vec{s}$.

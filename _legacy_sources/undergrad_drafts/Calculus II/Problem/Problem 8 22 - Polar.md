@@ -1,0 +1,1 @@
+Find the total arc length of the cardioid $r = 1 + \sin\theta$ over the interval $0 \le \theta \le 2\pi$.

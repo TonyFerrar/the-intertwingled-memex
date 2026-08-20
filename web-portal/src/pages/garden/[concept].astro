@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InteractiveGraph from '../../components/InteractiveGraph.astro';
+import { getGardenConcepts, getConceptDetails } from '../../utils/vaultLoader.js';
+
+export function getStaticPaths() {
+  const concepts = getGardenConcepts();
+  return concepts.map(concept => ({
+    params: { concept: concept.slug }
+  }));
+}
+
+const { concept } = Astro.params;
+const details = getConceptDetails(concept);
+
+if (!details) {
+  throw new Error(`Failed to load details for concept: ${concept}`);
+}
+
+// Scrape for Desmos graphs in concept description
+const desmosLinks = [];
+const desmosRegex = /https:\/\/www\.desmos\.com\/calculator\/[a-zA-Z0-9_-]+/g;
+
+let match;
+while ((match = desmosRegex.exec(details.contentHtml)) !== null) {
+  desmosLinks.push(match[0]);
+}
+
+const uniqueDesmosLinks = [...new Set(desmosLinks)];
+---
+
+<BaseLayout title={details.title}>
+  <div class="space-y-6">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-mathBorder pb-4">
+      <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
+        <a href="/">Home</a> / 
+        <a href="/garden">Digital Garden</a> / 
+        <span class="text-mathTextMuted">{details.title}</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{details.title}</h1>
+    </div>
+
+    <!-- Live Desmos Graph Embeds -->
+    {uniqueDesmosLinks.map(link => (
+      <InteractiveGraph url={link} />
+    ))}
+
+    <!-- Concept Card Body -->
+    <article class="prose max-w-none text-mathTextNormal leading-relaxed border border-mathBorder rounded-2xl p-6 md:p-8 bg-mathBgSecondary/25 shadow-sm">
+      <div set:html={details.contentHtml} />
+    </article>
+  </div>
+</BaseLayout>

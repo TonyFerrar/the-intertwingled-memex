@@ -1,0 +1,1 @@
+Given $z = 3x^2y + \sin(y)$ where $x = e^t$ and $y = \cos(t)$, find $\frac{dz}{dt}$.

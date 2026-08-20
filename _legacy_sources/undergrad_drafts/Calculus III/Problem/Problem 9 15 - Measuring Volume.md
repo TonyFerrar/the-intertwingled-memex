@@ -1,0 +1,1 @@
+Given a triple integral with region bounded by $z \in [0, 1-2x+2y]$, rewrite in the order $dx\,dz\,dy$ (splitting if needed) and evaluate.

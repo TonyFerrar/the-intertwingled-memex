@@ -1,0 +1,3 @@
+A wireless communications hardware engineer is designing a low-pass filter to handle an ultra-high-frequency data transmission stream. The power spectral density (the distribution of electrical power across different frequencies $f$) of the incoming signal at high frequencies is modeled by the function $S(f) = \frac{1}{f^3 + \sin^2(f)}$ for $f \ge 1$. To verify that the total high-frequency electrical power $P$ entering the filter circuit is finite and will not overheat the hardware components, the engineer must determine the convergence of:
+
+$$P = \int_{1}^{\infty} \frac{1}{f^3 + \sin^2(f)} \, df$$

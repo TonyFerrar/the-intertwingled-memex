@@ -1,0 +1,1 @@
+A CNC machinist must program a precise cutting path for an experimental parabolic mirror bracket. The path follows the curve $y = \frac{x^2}{4} - \frac{\ln(x)}{2}$ from $x = 1$ to $x = 2$ cm. Calculate the exact length of the toolpath to optimize cutting time.

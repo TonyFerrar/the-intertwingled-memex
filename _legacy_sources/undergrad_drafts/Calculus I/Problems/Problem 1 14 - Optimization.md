@@ -1,0 +1,1 @@
+A $432\text{-m}^2$ rectangular patch is to be enclosed by a fence and divided into two equal parts by another fence parallel to one of the sides. What dimensions for the outer rectangle will require the smallest total length of fencing material needed? How much fencing material will be needed?

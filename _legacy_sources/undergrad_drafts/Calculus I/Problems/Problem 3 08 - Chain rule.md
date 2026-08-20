@@ -1,0 +1,1 @@
+Suppose $f(3)=2$ and $f^{\prime}(3)=8$. Let $g(x)=x^{2}f(3x)$. Find the equation of the line tangent to $g(x)$ at $x=1$.

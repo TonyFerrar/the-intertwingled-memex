@@ -1,0 +1,1 @@
+Find the dot product of $\vec{u} = \langle 6, 7 \rangle$ and $\vec{v} = \langle 7, -6 \rangle$.

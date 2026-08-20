@@ -1,0 +1,1 @@
+Calculate $\vec{p} \times \vec{q}$ given $\vec{p} = 2\hat{i} + 4\hat{j} - 4\hat{k}$ and $\vec{q} = -4\hat{i} - 5\hat{j} - 2\hat{k}$.

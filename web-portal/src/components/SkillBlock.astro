@@ -1,0 +1,333 @@
+---
+export interface Props {
+  header: string;
+  problems: Array<{
+    title: string;
+    isWorked: boolean;
+    statementHtml: string;
+    hintHtml: string;
+    quickAnswerHtml: string;
+    solutionHtml: string;
+    hasWorkspace: boolean;
+  }>;
+  extensionsHtml?: string;
+  engineeringProblems?: Array<{
+    title: string;
+    discipline: string;
+    emoji: string;
+    statementHtml: string;
+    solutionHtml: string;
+    applicationHtml: string;
+  }>;
+  blockId: string;
+}
+
+const { header, problems, extensionsHtml, engineeringProblems, blockId } = Astro.props;
+
+// Categorize problems inside the component dynamically
+const worked = problems.filter(p => p.isWorked);
+const practice = problems.filter(p => !p.isWorked);
+---
+
+<div class="my-8 border border-mathBorder rounded-xl bg-mathBgSecondary overflow-hidden shadow-sm print-prevent-split">
+  <!-- Skill Block Header -->
+  <div class="bg-mathBgSecondary py-4 px-6 border-b border-mathBorder flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 select-none">
+    <h3 class="text-lg font-bold text-mathTextNormal leading-tight">{header}</h3>
+    {engineeringProblems && engineeringProblems.length > 0 && (
+      <button class="eng-drawer-toggle px-3 py-1.5 bg-accent/10 border border-accent/25 hover:bg-accent/20 text-accent font-extrabold text-xs rounded-lg transition-all flex items-center gap-1.5 cursor-pointer select-none">
+        ⚙️ Engineering Applications
+      </button>
+    )}
+  </div>
+
+  {engineeringProblems && engineeringProblems.length > 0 && (
+    <div class="eng-drawer-content hidden border-b border-mathBorder bg-mathBgPrimary/50 p-6 transition-all">
+      <h3 class="text-xs uppercase font-extrabold text-mathTextMuted tracking-wider mb-4 select-none">
+        Real-Life Engineering Applications
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {engineeringProblems.map((prob) => (
+          <div class="border border-mathBorder rounded-xl bg-mathBgSecondary overflow-hidden shadow-sm flex flex-col justify-between">
+            {/* Card Header */}
+            <div class="bg-mathBgSecondary/80 border-b border-mathBorder py-3 px-4 flex items-center gap-2 select-none">
+              <span class="text-xl">{prob.emoji}</span>
+              <div>
+                <span class="text-[9px] text-accent font-extrabold uppercase tracking-wider block leading-none">
+                  {prob.discipline}
+                </span>
+                <h4 class="text-sm font-bold text-mathTextNormal mt-1 leading-tight">
+                  {prob.title}
+                </h4>
+              </div>
+            </div>
+            
+            {/* Card Body */}
+            <div class="p-4 space-y-4 flex-grow">
+              <div class="prose max-w-none text-xs text-mathTextNormal leading-relaxed" set:html={prob.statementHtml} />
+              
+              {prob.applicationHtml && (
+                <div class="p-3 bg-mathBgPrimary/40 border border-mathBorder/50 rounded-lg mt-3">
+                  <span class="text-[9px] font-extrabold text-mathTextMuted uppercase tracking-wider block mb-1 select-none">
+                    🎯 Why This Matters:
+                  </span>
+                  <div class="prose max-w-none text-[11px] text-mathTextMuted leading-relaxed" set:html={prob.applicationHtml} />
+                </div>
+              )}
+            </div>
+
+            {/* Card Footer (Collapsible worked solution) */}
+            {prob.solutionHtml && (
+              <details class="group border-t border-mathBorder overflow-hidden bg-mathBgPrimary">
+                <summary class="flex justify-between items-center py-2.5 px-4 font-bold text-xs text-accent hover:text-accent/80 cursor-pointer select-none bg-mathBgSecondary/10 hover:bg-mathBgSecondary/20 transition-colors">
+                  <span>💡 Show Worked Derivation</span>
+                  <svg width="14" height="14" class="w-3.5 h-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-4 border-t border-mathBorder prose max-w-none text-xs text-mathTextNormal bg-mathBgPrimary" set:html={prob.solutionHtml} />
+              </details>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Interactive Tabs (Option 3 CSS-only layout) -->
+  <div class="tab-container flex flex-col bg-mathBgPrimary">
+    <!-- Scoped Radio inputs -->
+    <input type="radio" id={`tab-${blockId}-1`} name={`tabs-${blockId}`} class="tab-radio tab-radio-1" checked />
+    <input type="radio" id={`tab-${blockId}-2`} name={`tabs-${blockId}`} class="tab-radio tab-radio-2" />
+    <input type="radio" id={`tab-${blockId}-3`} name={`tabs-${blockId}`} class="tab-radio tab-radio-3" />
+
+    <!-- Tactile Segmented Pill Navigation Header -->
+    <div class="tab-headers flex p-1.5 gap-2 bg-mathBgSecondary border-b border-mathBorder select-none">
+      <label for={`tab-${blockId}-1`} class="tab-label tab-label-1 flex-1 py-2 px-3 text-center cursor-pointer font-bold text-xs md:text-sm text-mathTextMuted rounded-lg transition-all hover:text-mathTextNormal">
+        📚 1. Core Theory
+      </label>
+      <label for={`tab-${blockId}-2`} class="tab-label tab-label-2 flex-1 py-2 px-3 text-center cursor-pointer font-bold text-xs md:text-sm text-mathTextMuted rounded-lg transition-all hover:text-mathTextNormal">
+        💡 2. Worked Example
+      </label>
+      <label for={`tab-${blockId}-3`} class="tab-label tab-label-3 flex-1 py-2 px-3 text-center cursor-pointer font-bold text-xs md:text-sm text-mathTextMuted rounded-lg transition-all hover:text-mathTextNormal">
+        ✍️ 3. Active Practice
+      </label>
+    </div>
+
+    <!-- Panel 1: Theory -->
+    <div class="tab-panel tab-panel-1 p-6">
+      <slot name="theory" />
+    </div>
+
+    <!-- Panel 2: Worked Example -->
+    <div class="tab-panel tab-panel-2 p-6 space-y-6">
+      {worked.length > 0 ? (
+        worked.map((prob) => (
+          <div class="space-y-4">
+            <div class="p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
+              <h4 class="font-bold text-mathTextNormal mb-2">{prob.title}</h4>
+              <div class="prose max-w-none text-mathTextNormal" set:html={prob.statementHtml} />
+            </div>
+            
+            {prob.solutionHtml && (
+              <details class="group border border-emerald-200 dark:border-emerald-900 rounded-lg overflow-hidden bg-mathBgPrimary">
+                <summary class="flex justify-between items-center p-4 font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer select-none bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100/35 transition-colors">
+                  <span>💡 Reveal Worked Solution</span>
+                  <svg width="20" height="20" class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-4 border-t border-emerald-100 dark:border-emerald-950 prose max-w-none text-mathTextNormal" set:html={prob.solutionHtml} />
+              </details>
+            )}
+          </div>
+        ))
+      ) : (
+        <p class="text-sm text-mathTextMuted italic">No pre-worked demo problem provided for this skill.</p>
+      )}
+    </div>
+
+    <!-- Panel 3: Active Practice (Step-by-Step Card Flow) -->
+    <div class="tab-panel tab-panel-3 p-6 space-y-10">
+      {practice.length > 0 ? (
+        practice.map((prob) => (
+          <div class="practice-problem-container space-y-4 pt-8 border-t border-mathBorder first:border-0 first:pt-0">
+            <div class="p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
+              <h4 class="font-bold text-mathTextNormal mb-2">{prob.title}</h4>
+              <div class="prose max-w-none text-mathTextNormal" set:html={prob.statementHtml} />
+            </div>
+            
+            {prob.hasWorkspace && (
+              <!-- Workspace placeholder -->
+              <div class="border-2 border-dashed border-mathTextMuted/40 rounded-lg p-6 flex flex-col items-center justify-center bg-mathBgSecondary min-h-[160px]">
+                <span class="text-sm font-semibold text-mathTextMuted uppercase tracking-wider">Practice Space</span>
+                <span class="text-xs text-mathTextMuted mt-1">Solve this problem on paper or tablet.</span>
+              </div>
+            )}
+
+            <!-- Interactive Progressive Toggles -->
+            <div class="flex flex-wrap gap-2 select-none pb-2">
+              <button class="hint-btn px-3 py-1.5 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder transition-all flex items-center gap-1">
+                💡 Get a Hint
+              </button>
+              {prob.quickAnswerHtml && (
+                <button class="answer-btn px-3 py-1.5 border border-mathBorder rounded-lg text-xs font-bold text-mathTextMuted hover:text-mathTextNormal hover:bg-mathBorder transition-all flex items-center gap-1">
+                  ✔️ Check Answer
+                </button>
+              )}
+              {prob.solutionHtml && (
+                <button class="solution-btn px-3 py-1.5 border border-emerald-500 rounded-lg text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex items-center gap-1">
+                  🔍 View Full Derivation
+                </button>
+              )}
+            </div>
+
+            <!-- Hint Panel -->
+            <div class="hint-box hidden p-4 border border-mathBorder rounded-lg bg-mathBgSecondary/40 text-sm text-mathTextMuted animate-fade-in" set:html={prob.hintHtml} />
+
+            <!-- Answer Panel -->
+            {prob.quickAnswerHtml && (
+              <div class="answer-box hidden p-4 border border-mathBorder rounded-lg bg-mathBgSecondary/80 text-sm font-bold text-mathTextNormal animate-fade-in" set:html={prob.quickAnswerHtml} />
+            )}
+
+            <!-- Full Solution Panel -->
+            {prob.solutionHtml && (
+              <div class="solution-box hidden p-5 border-l-4 border-emerald-500 rounded-r-lg bg-emerald-50/10 dark:bg-emerald-950/10 text-mathTextNormal animate-fade-in">
+                <h5 class="font-extrabold text-xs text-emerald-700 dark:text-emerald-400 mb-3 uppercase tracking-wider">Step-by-Step Execution</h5>
+                <div class="prose max-w-none text-mathTextNormal" set:html={prob.solutionHtml} />
+              </div>
+            )}
+          </div>
+        ))
+      ) : (
+        <p class="text-sm text-mathTextMuted italic">No active practice problems for this block.</p>
+      )}
+    </div>
+  </div>
+
+  <!-- Extensions (if any) -->
+  {extensionsHtml && (
+    <div class="border-t border-mathBorder bg-mathBgSecondary/50 p-4">
+      <details class="group border border-mathBorder rounded-lg overflow-hidden bg-mathBgPrimary">
+        <summary class="flex justify-between items-center p-3 font-semibold text-mathTextMuted cursor-pointer select-none bg-mathBgSecondary hover:bg-mathBorder/30 transition-colors">
+          <span>🔍 Extra Practice & Extensions</span>
+          <svg width="16" height="16" class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="p-4 border-t border-mathBorder prose max-w-none text-mathTextNormal" set:html={extensionsHtml} />
+      </details>
+    </div>
+  )}
+</div>
+
+<!-- Interactive Class Toggling Script -->
+<script is:inline>
+  const initToggles = () => {
+    document.querySelectorAll('.practice-problem-container').forEach(container => {
+      const hintBtn = container.querySelector('.hint-btn');
+      const answerBtn = container.querySelector('.answer-btn');
+      const solutionBtn = container.querySelector('.solution-btn');
+
+      const hintBox = container.querySelector('.hint-box');
+      const answerBox = container.querySelector('.answer-box');
+      const solutionBox = container.querySelector('.solution-box');
+
+      const closeAll = () => {
+        if (hintBox) hintBox.classList.add('hidden');
+        if (answerBox) answerBox.classList.add('hidden');
+        if (solutionBox) solutionBox.classList.add('hidden');
+
+        // Fetch active buttons from the DOM dynamically to clear highlight classes
+        const activeHint = container.querySelector('.hint-btn');
+        const activeAnswer = container.querySelector('.answer-btn');
+        const activeSolution = container.querySelector('.solution-btn');
+
+        if (activeHint) activeHint.classList.remove('bg-mathBorder', 'text-mathTextNormal');
+        if (activeAnswer) activeAnswer.classList.remove('bg-mathBorder', 'text-mathTextNormal');
+        if (activeSolution) activeSolution.classList.remove('bg-emerald-500', 'text-white');
+      };
+
+      if (hintBtn && hintBox) {
+        const newHintBtn = hintBtn.cloneNode(true);
+        hintBtn.parentNode.replaceChild(newHintBtn, hintBtn);
+        newHintBtn.addEventListener('click', () => {
+          const isCurrentlyHidden = hintBox.classList.contains('hidden');
+          closeAll();
+          if (isCurrentlyHidden) {
+            hintBox.classList.remove('hidden');
+            newHintBtn.classList.add('bg-mathBorder', 'text-mathTextNormal');
+          }
+        });
+      }
+
+      if (answerBtn && answerBox) {
+        const newAnswerBtn = answerBtn.cloneNode(true);
+        answerBtn.parentNode.replaceChild(newAnswerBtn, answerBtn);
+        newAnswerBtn.addEventListener('click', () => {
+          const isCurrentlyHidden = answerBox.classList.contains('hidden');
+          closeAll();
+          if (isCurrentlyHidden) {
+            answerBox.classList.remove('hidden');
+            newAnswerBtn.classList.add('bg-mathBorder', 'text-mathTextNormal');
+          }
+        });
+      }
+
+      if (solutionBtn && solutionBox) {
+        const newSolutionBtn = solutionBtn.cloneNode(true);
+        solutionBtn.parentNode.replaceChild(newSolutionBtn, solutionBtn);
+        newSolutionBtn.addEventListener('click', () => {
+          const isCurrentlyHidden = solutionBox.classList.contains('hidden');
+          closeAll();
+          if (isCurrentlyHidden) {
+            solutionBox.classList.remove('hidden');
+            newSolutionBtn.classList.add('bg-emerald-500', 'text-white');
+          }
+        });
+      }
+    });
+  };
+
+  // Expose globally so parent page scripts can re-trigger bindings on segment change
+  window.initToggles = initToggles;
+
+  // Handle Engineering Drawer Toggles
+  function initEngDrawers() {
+    document.querySelectorAll('.eng-drawer-toggle').forEach(btn => {
+      // Prevent duplicate event listeners
+      if (btn.getAttribute('data-eng-listener')) return;
+      btn.setAttribute('data-eng-listener', 'true');
+      
+      btn.addEventListener('click', () => {
+        const container = btn.closest('.print-prevent-split');
+        const drawer = container ? container.querySelector('.eng-drawer-content') : null;
+        if (drawer) {
+          const isHidden = drawer.classList.contains('hidden');
+          if (isHidden) {
+            drawer.classList.remove('hidden');
+            btn.classList.remove('bg-accent/10', 'text-accent');
+            btn.classList.add('bg-accent', 'text-white');
+          } else {
+            drawer.classList.add('hidden');
+            btn.classList.remove('bg-accent', 'text-white');
+            btn.classList.add('bg-accent/10', 'text-accent');
+          }
+        }
+      });
+    });
+  }
+  window.initEngDrawers = initEngDrawers;
+
+  // Run immediately, and also listen for DOM shifts (like page changes or transitions)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initToggles();
+      initEngDrawers();
+    });
+  } else {
+    initToggles();
+    initEngDrawers();
+  }
+</script>
+
+<style>
+  .tab-container input[type="radio"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>

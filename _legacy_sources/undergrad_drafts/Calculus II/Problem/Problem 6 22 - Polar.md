@@ -1,0 +1,1 @@
+Find the area enclosed by exactly one loop of the four-leaved rose curve $r = \cos(2\theta)$.

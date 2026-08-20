@@ -1,0 +1,1 @@
+$$\int \frac{x}{\sqrt{3 - 2x - x^2}} \, dx$$

@@ -1,0 +1,1 @@
+Find an equation of the line tangent to the function $g(x)=2x \sin x$ at $x=\frac{3\pi}{2}$.

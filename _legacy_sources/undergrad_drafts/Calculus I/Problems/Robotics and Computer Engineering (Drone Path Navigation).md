@@ -1,0 +1,3 @@
+**Context:** Robotics engineers write guidance software for autonomous aerial drones. Suppose a quadcopter drone attempts to fly forward through a canyon. The drone's onboard propulsion creates an intentional velocity vector of $\vec{v}_d = \langle 4, 7, -1 \rangle\text{ m/s}$. Simultaneously, a localized wind gust blowing through the canyon introduces an unintended velocity vector of $\vec{v}_w = \langle -1, -3, -2 \rangle\text{ m/s}$.
+
+**Problem:** Compute the drone's true resultant velocity vector $\vec{v}_R$. Then, determine the unit vector $\hat{u}_R$ representing the exact true directional path of the drone's travel.

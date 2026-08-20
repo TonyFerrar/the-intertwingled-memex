@@ -1,0 +1,2 @@
+**Scenario:** An optical engineer is testing a new high-powered LED designed for a car headlight. Instead of emitting light uniformly in a sphere, the manufacturer's data sheet defines the LED's forward light intensity boundary as $x^2 + y^2 = 15y$ (where units are in lux at a specific distance). To program the lighting simulation software, the engineer needs to input this boundary in polar coordinates.
+**Task:** Convert the Cartesian boundary $x^2 + y^2 = 15y$ into a polar equation isolated for $r$.

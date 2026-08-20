@@ -1,0 +1,10 @@
+Problem 1
+> The **average rate of change** of a function $f(x)$ over an interval $[a, b]$ is given by the formula: $$\text{Average Rate of Change} = \frac{f(b) - f(a)}{b - a}$$ This represents the slope of the secant line connecting the points $(a, f(a))$ and $(b, f(b))$. --- ### (a) $f(x) = 3x^2 - 3x + 5$ on $[-1, 2]$ Here, $a = -1$ and $b = 2$. 
+> **Step 1: Evaluate the function at the endpoints.** * For $x = 2$: $$f(2) = 3(2)^2 - 3(2) + 5$$ $$f(2) = 3(4) - 6 + 5$$ $$f(2) = 12 - 6 + 5 = 11$$ * For $x = -1$: $$f(-1) = 3(-1)^2 - 3(-1) + 5$$ $$f(-1) = 3(1) + 3 + 5$$ $$f(-1) = 3 + 3 + 5 = 11$$ 
+> **Step 2: Plug these values into the average rate of change formula.** $$\text{Average Rate of Change} = \frac{f(2) - f(-1)}{2 - (-1)}$$ $$\text{Average Rate of Change} = \frac{11 - 11}{2 + 1} = \frac{0}{3} = 0$$ 
+> **Final Answer:** $$0$$ 
+> ---
+> ### (b) $g(t) = 3\cos^2(t)$ on $\left[0, \frac{\pi}{6}\right]$ Here, $a = 0$ and $b = \frac{\pi}{6}$. 
+> **Step 1: Evaluate the function at the endpoints.** * For $t = \frac{\pi}{6}$: $$g\left(\frac{\pi}{6}\right) = 3\left[\cos\left(\frac{\pi}{6}\right)\right]^2$$ Since $\cos\left(\frac{\pi}{6}\right) = \frac{\sqrt{3}}{2}$: $$g\left(\frac{\pi}{6}\right) = 3\left(\frac{\sqrt{3}}{2}\right)^2 = 3\left(\frac{3}{4}\right) = \frac{9}{4}$$ * For $t = 0$: $$g(0) = 3[\cos(0)]^2$$ Since $\cos(0) = 1$: $$g(0) = 3(1)^2 = 3$$ 
+> **Step 2: Plug these values into the formula.** $$\text{Average Rate of Change} = \frac{g\left(\frac{\pi}{6}\right) - g(0)}{\frac{\pi}{6} - 0}$$ $$\text{Average Rate of Change} = \frac{\frac{9}{4} - 3}{\frac{\pi}{6}}$$ Simplify the numerator $\left(\frac{9}{4} - \frac{12}{4} = -\frac{3}{4}\right)$: $$\text{Average Rate of Change} = \frac{-\frac{3}{4}}{\frac{\pi}{6}}$$ Multiply by the reciprocal of the denominator: $$\text{Average Rate of Change} = -\frac{3}{4} \cdot \frac{6}{\pi} = -\frac{18}{4\pi}$$ Reduce the fraction: $$\text{Average Rate of Change} = -\frac{9}{2\pi}$$ 
+> **Final Answer:** $$-\frac{9}{2\pi}$$

@@ -1,0 +1,3 @@
+A civil engineer is designing a concrete containment basin for hot industrial runoff. The internal containment wall follows the curve $x = y^2 + 2$ from a base height of $y = 0$ to a rim height of $y = 2 \text{ meters}$. The outer boundary of the containment structure is fixed at a flat outer radius of $x = 6 \text{ meters}$. To integrate an underground drainage track beneath the foundation, the entire cross-section is rotated around an anchor reference line located at the horizontal line $y = -1 \text{ meter}$.
+
+Using **Skill 2**, formulate the shell components to find the total volume of concrete needed to construct this reservoir.

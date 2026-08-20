@@ -1,0 +1,4 @@
+
+# Choosing between Shells, Washers, and Disks
+
+A critical skill for finding volumes of revolution is the ability to determine when the **shell method** is more efficient than the disk or washer methods. The shell method is particularly useful when revolving a region that requires rewriting functions in terms of an opposite variable that is difficult to manipulate (e.g., $f(x)=x^3+x$), or in situations in which a single function is being revolved to produce a volume with a cavity. You are frequently asked to compare methods and identify which one facilitates easier calculation for a given region.

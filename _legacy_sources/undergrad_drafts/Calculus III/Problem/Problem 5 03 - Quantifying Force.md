@@ -1,0 +1,1 @@
+Calculate $\vec{r} \times \vec{F}$ where $\vec{r} = \langle 3, 2 \rangle$ and $\vec{F} = \langle -2, 5 \rangle$.

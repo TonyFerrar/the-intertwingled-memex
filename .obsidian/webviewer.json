@@ -1,0 +1,7 @@
+{
+  "openExternalURLs": true,
+  "enableAdblocking": true,
+  "homepage": "https://gemini.google.com/app",
+  "searchEngine": "google",
+  "markdownPath": "_raw"
+}

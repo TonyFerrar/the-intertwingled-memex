@@ -1,0 +1,1 @@
+Let $R$ be bounded by $y=x^{2}$ and $y=2x$. Set up $\iint_{R}(x+y) \, dA$ as a Type I (vertical slices) region and evaluate.

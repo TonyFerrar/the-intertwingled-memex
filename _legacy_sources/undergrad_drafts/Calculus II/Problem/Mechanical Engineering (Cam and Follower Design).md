@@ -1,0 +1,2 @@
+**Scenario:** A mechanical engineer is designing an egg-shaped cam for an internal combustion engine. As the cam rotates, it pushes a "follower" rod up and down to open and close an engine valve. The profile of the cam is given by the polar equation $r = 30 + 10\cos(\theta)$, where $r$ is the distance from the camshaft center to the edge (in millimeters). 
+**Task:** Calculate the radial rate of change $\frac{dr}{d\theta}$ exactly when the cam is at $\theta = \frac{\pi}{2}$ radians. 

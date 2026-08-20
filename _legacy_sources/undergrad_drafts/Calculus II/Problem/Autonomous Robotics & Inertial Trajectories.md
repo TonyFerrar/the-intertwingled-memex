@@ -1,0 +1,2 @@
+**Scenario:** An autonomous warehouse robot is programmed to move in an expanding search spiral defined by $r = \frac{10}{\pi}\theta$ (where $r$ is in meters). When the robot reaches exactly $\theta = \pi$, it hits a patch of spilled oil, loses all wheel traction, and slides out of control. Physics dictates it will slide along the exact Cartesian tangent line of its path at the moment it lost traction.
+**Task:** Find the Cartesian slope $\frac{dy}{dx}$ of the tangent line where the robot loses traction to determine its crash trajectory.

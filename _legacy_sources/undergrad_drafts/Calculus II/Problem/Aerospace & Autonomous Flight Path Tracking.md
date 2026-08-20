@@ -1,0 +1,1 @@
+An autonomous survey drone is tracking an environment along a curved baseline path modeled by $y = \frac{2}{3}(2x+1)^{3/2}$ meters, starting from a ground coordinate of $x = 0$ to a maximum checkpoint at $x = 4$ meters. Compute the exact distance the drone travels.

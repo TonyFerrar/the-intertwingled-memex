@@ -1,0 +1,3 @@
+An aerospace mission specialist is programming the trajectory equations for a deep-space science probe scheduled to fly through an unmapped, highly irregular interstellar gas cloud. The mechanical drag force field slowing the probe down as it travels away from the cloud's center is modeled by the function $F(r) = \frac{3 + \cos(r)}{r^2}$ for a distance $r \ge 1$ million meters. To verify if a spacecraft traveling along an infinite path can successfully escape the cloud's continuous drag without losing all its kinetic energy, the engineer must test the convergence of total energy loss:
+
+$$E_{\text{loss}} = \int_{1}^{\infty} \frac{3 + \cos(r)}{r^2} \, dr$$

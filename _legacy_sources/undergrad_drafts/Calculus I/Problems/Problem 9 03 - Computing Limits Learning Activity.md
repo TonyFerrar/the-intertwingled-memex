@@ -1,0 +1,1 @@
+9. $\lim_{x\to\frac{\pi}{2}}\frac{1-\sin^{2}x}{2\cos x}$

@@ -1,0 +1,1 @@
+Find the dot product of $\vec{u} = \langle 1, 2, 3 \rangle$ and $\vec{v} = \langle -2, 0, 4 \rangle$.

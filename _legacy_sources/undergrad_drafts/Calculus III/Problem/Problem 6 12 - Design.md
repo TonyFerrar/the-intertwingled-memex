@@ -1,0 +1,1 @@
+Minimize $f(x,y) = x^2 + y^2$ subject to $4x + 3y = 12$.

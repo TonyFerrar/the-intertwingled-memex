@@ -1,0 +1,492 @@
+---
+export interface Props {
+  title: string;
+  courseName?: string;
+}
+
+const { title, courseName } = Astro.props;
+
+// Mock list of courses for the sidebar
+const courses = [
+  { id: 'calc-1', name: 'Calculus I (MATH-181)' },
+  { id: 'calc-2', name: 'Calculus II (MATH-182)' },
+  { id: 'calc-3', name: 'Calculus III (MATH-281)' },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | UNLV Calculus Portal</title>
+  
+  <!-- KaTeX CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+
+  <style is:global>
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    :root {
+      --background-primary: #ffffff;
+      --background-secondary: #f9f9f9;
+      --background-secondary-alt: #f1f1f1;
+      --text-normal: #1a1a1a;
+      --text-muted: #666666;
+      --text-accent: #2196f3;
+      --border-color: #e2e8f0;
+      
+      --callout-workspace-border: #94a3b8;
+      --callout-workspace-bg: #f8fafc;
+      --callout-note-border: #2196f3;
+      --callout-check-border: #10b981;
+    }
+
+    /* Dark Mode Preferences */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background-primary: #0f172a;
+        --background-secondary: #1e293b;
+        --background-secondary-alt: #334155;
+        --text-normal: #f8fafc;
+        --text-muted: #94a3b8;
+        --text-accent: #38bdf8;
+        --border-color: #334155;
+        
+        --callout-workspace-border: #475569;
+        --callout-workspace-bg: #1e293b;
+        --callout-note-border: #0284c7;
+        --callout-check-border: #059669;
+      }
+    }
+
+    body {
+      background-color: var(--background-primary);
+      color: var(--text-normal);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    a {
+      color: var(--text-accent) !important;
+      text-decoration: none;
+      transition: color 0.15s ease, filter 0.15s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      filter: brightness(1.15);
+    }
+
+
+    /* Segmented Pill Tabs Layout */
+    .tab-container {
+      display: flex;
+      flex-direction: column;
+      margin: 1.5em 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tab-container .tab-radio {
+      position: absolute !important;
+      opacity: 0 !important;
+      z-index: -1 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .tab-headers {
+      display: flex;
+      flex-direction: row;
+      background-color: var(--background-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.5rem 0.5rem 0; /* Padding only at top and sides, tabs rest on the bottom border */
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: none; /* Hide scrollbar for Firefox */
+    }
+    .tab-headers::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome/Safari */
+    }
+    @media (min-width: 768px) {
+      .tab-headers {
+        overflow: visible; /* Prevent clipping on desktop so folder tab covers the bottom border line */
+      }
+    }
+
+    .tab-label {
+      position: relative; /* Enable z-index overlay stacking context */
+      flex: 1;
+      text-align: center;
+      padding: 0.625rem 1rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 8px 8px 0 0; /* Rounded top folder corners */
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: block;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px; /* Align active tab border over header container bottom border */
+      z-index: 1;
+      white-space: nowrap; /* Avoid labels breaking on small mobile screens */
+    }
+
+    .tab-label:hover {
+      color: var(--text-normal);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-container:has(.tab-radio-1:checked) .tab-panel-1,
+    .tab-container:has(.tab-radio-2:checked) .tab-panel-2,
+    .tab-container:has(.tab-radio-3:checked) .tab-panel-3 {
+      display: block !important;
+    }
+
+    /* Tactile Connected Folder Tab active states */
+    .tab-container:has(.tab-radio-1:checked) .tab-label-1,
+    .tab-container:has(.tab-radio-2:checked) .tab-label-2,
+    .tab-container:has(.tab-radio-3:checked) .tab-label-3 {
+      color: var(--text-accent) !important;
+      background-color: var(--background-primary) !important; /* Flows seamlessly into content background */
+      border-color: var(--border-color) !important;
+      border-bottom: 1px solid var(--background-primary) !important; /* Overlays and covers the bottom grey line */
+      z-index: 2;
+    }
+
+    /* Math Block Container (clean centering for step-by-step solutions) */
+    .math-block-container {
+      padding: 0.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    /* Absolute Hidden Enforce (ensures hints/answers hide correctly on load) */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Math Formula Hero Cards */
+    .callout-formula {
+      background-color: var(--background-secondary);
+      border-left: 4px solid var(--text-accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Horizontal Timeline Stepper (Modern Underlined Tab Menu) */
+    .timeline-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding: 0 0.5rem;
+      scrollbar-width: none;
+      width: 100%;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .timeline-container::-webkit-scrollbar {
+      display: none;
+    }
+    .timeline-step {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.5rem;
+      flex-shrink: 0;
+    }
+    .timeline-btn {
+      display: flex;
+      flex-direction: column;
+      background: none;
+      border: none;
+      padding: 0.75rem 0.25rem 0.625rem 0.25rem;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.15s ease;
+      outline: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+    }
+    .timeline-btn:hover {
+      color: var(--text-normal);
+    }
+    .timeline-btn.active {
+      border-bottom-color: var(--text-accent) !important;
+      color: var(--text-accent) !important;
+    }
+    .timeline-btn.active .timeline-time {
+      color: var(--text-accent) !important;
+      opacity: 0.8;
+    }
+    .timeline-btn.active .timeline-title {
+      color: var(--text-normal) !important;
+      font-weight: 700;
+    }
+    .timeline-time {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .timeline-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-normal);
+    }
+
+    /* Centered Content Wrapper (increased to 1024px to prevent tab wrapping on desktop) */
+    .content-wrapper {
+      max-width: 1024px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+
+    /* Sidebar Base Styles (Drawer on mobile, sticky sidebar on desktop) */
+    .aside-sidebar {
+      position: fixed;
+      top: 58px; /* Below the sticky header */
+      left: 0;
+      bottom: 0;
+      z-index: 45;
+      width: 16rem; /* Drawer width */
+      background-color: var(--background-secondary);
+      border-right: 1px solid var(--border-color) !important;
+      padding-top: 3.5rem !important; /* Move items down to align with content */
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      display: block !important;
+    }
+    .aside-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Mobile Overlay Backdrop */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      top: 58px;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Desktop View Sidebar Reset */
+    @media (min-width: 768px) {
+      .aside-sidebar {
+        position: sticky;
+        top: 58px;
+        height: calc(100vh - 58px);
+        width: 18rem; /* w-72 equivalent */
+        flex-shrink: 0;
+        transform: none !important;
+        transition: none;
+        z-index: 10;
+      }
+      .sidebar-overlay {
+        display: none !important;
+      }
+    }
+
+
+
+    /* Standard Callout Styling */
+    .callout {
+      border-left-width: 4px;
+      margin: 1.5em 0;
+      padding: 1.25em;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .callout-note {
+      background-color: var(--background-secondary);
+      border-left-color: var(--callout-note-border);
+    }
+
+    .callout-check {
+      background-color: var(--background-secondary);
+      border-left-color: var(--callout-check-border);
+    }
+    
+    .callout-example {
+      background-color: var(--background-secondary);
+      border-left-color: var(--text-accent);
+    }
+
+    .callout-workspace {
+      border: 1.5px dashed var(--callout-workspace-border);
+      background-color: var(--callout-workspace-bg);
+      min-height: 180px;
+      margin: 1.5em 0;
+      padding: 15px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-45 w-full border-b border-mathBorder bg-mathBgSecondary py-4 px-6 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-3">
+      <!-- Mobile Menu Toggle Button -->
+      <button id="mobile-menu-toggle" class="md:hidden p-1.5 text-mathTextNormal hover:bg-mathBorder rounded transition-colors mr-1" aria-label="Toggle Navigation">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+      <span class="text-2xl">🌱</span>
+      <a href="/" class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="/garden/limits" class="text-sm font-semibold hover:underline">Digital Garden</a>
+      <span class="text-mathTextMuted">|</span>
+      <span class="text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Mobile Sidebar overlay backdrop -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="aside-sidebar border-r border-mathBorder bg-mathBgSecondary p-6 select-none">
+      <div class="sticky top-20 space-y-6">
+        <div>
+          <h3 class="text-xs font-bold text-mathTextMuted uppercase tracking-wider mb-3">Courses</h3>
+          <ul class="space-y-2">
+            {courses.map(course => (
+              <li>
+                <a
+                  href={`/courses/${course.id}`}
+                  class={`block p-2 rounded text-sm font-semibold transition-colors hover:bg-mathBorder ${
+                    courseName === course.id ? 'text-accent bg-mathBorder' : 'text-mathTextNormal'
+                  }`}
+                >
+                  {course.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="pt-4 border-t border-mathBorder">
+          <h3 class="text-xs font-bold text-mathTextMuted uppercase tracking-wider mb-3">Resources</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="/garden" class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
+                🌲 Zettelkasten Concept Garden
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.desmos.com/calculator"
+                target="_blank"
+                class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder"
+              >
+                📊 Open Desmos Calculator
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 p-6 md:p-10 w-full">
+      <div class="content-wrapper">
+        <slot />
+      </div>
+    </main>
+  </div>
+
+  <footer class="border-t border-mathBorder bg-mathBgSecondary py-6 text-center text-xs text-mathTextMuted">
+    <p>© 2026 Tony Ferrar. Released under Creative Commons (CC BY-NC-SA 4.0).</p>
+    <p class="mt-1 font-mono text-[10px]">A public OER learning resource built with Astro & KaTeX.</p>
+  </footer>
+
+  <!-- Desmos Side Drawer -->
+  <div id="desmos-drawer" class="fixed top-0 right-0 z-50 h-full w-[480px] max-w-[90%] bg-mathBgSecondary border-l border-mathBorder shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col hidden lg:flex">
+    <div class="p-4 border-b border-mathBorder flex items-center justify-between bg-mathBgSecondary select-none">
+      <span class="font-bold text-mathTextNormal flex items-center gap-1.5">📊 Desmos Graph Visualizer</span>
+      <button id="close-desmos-drawer" class="p-1 hover:bg-mathBorder rounded text-mathTextMuted hover:text-mathTextNormal transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 bg-mathBgPrimary relative">
+      <iframe id="desmos-drawer-iframe" src="" class="w-full h-full border-0"></iframe>
+      <div id="desmos-loader" class="absolute inset-0 flex items-center justify-center bg-mathBgPrimary text-mathTextMuted text-xs font-semibold select-none">
+        Spinning up Graphing Simulator...
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile sidebar menu toggle
+      const toggleMenuBtn = document.getElementById('mobile-menu-toggle');
+      const asideSidebar = document.querySelector('.aside-sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+      if (toggleMenuBtn && asideSidebar && sidebarOverlay) {
+        toggleMenuBtn.addEventListener('click', () => {
+          asideSidebar.classList.toggle('open');
+          sidebarOverlay.classList.toggle('show');
+        });
+        sidebarOverlay.addEventListener('click', () => {
+          asideSidebar.classList.remove('open');
+          sidebarOverlay.classList.remove('show');
+        });
+      }
+
+      const drawer = document.getElementById('desmos-drawer');
+      const iframe = document.getElementById('desmos-drawer-iframe');
+      const loader = document.getElementById('desmos-loader');
+      const closeBtn = document.getElementById('close-desmos-drawer');
+
+      // Trigger launches
+      document.querySelectorAll('.open-desmos-drawer-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const url = btn.getAttribute('data-url');
+          if (url) {
+            loader.classList.remove('hidden');
+            iframe.src = url;
+            drawer.classList.remove('translate-x-full');
+          }
+        });
+      });
+
+      // Close drawer
+      closeBtn?.addEventListener('click', () => {
+        drawer.classList.add('translate-x-full');
+        setTimeout(() => { iframe.src = ''; }, 300); // clear source to save CPU
+      });
+
+      // Hide loader when loaded
+      iframe?.addEventListener('load', () => {
+        loader.classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>

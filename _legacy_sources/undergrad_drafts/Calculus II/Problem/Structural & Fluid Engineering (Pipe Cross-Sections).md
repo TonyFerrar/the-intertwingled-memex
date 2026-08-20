@@ -1,0 +1,2 @@
+**Scenario:** A civil engineer is designing a specialized storm drain. To prevent sediment buildup, the bottom of the drain isn't perfectly circular; its cross-sectional boundary is modeled by the polar equation $r = 2 + 2\sin(\theta)$ (where $r$ is the radius in feet). During a heavy storm, the water level reaches the horizontal midpoint of the pipe ($\theta = 0$ to $\theta = \pi$). 
+**Task:** Calculate the cross-sectional area of the water flowing through the top half of this pipe to determine its maximum fluid capacity.

@@ -1,0 +1,1 @@
+6. $\lim_{x\to1}\frac{x-1}{\sqrt{x}-1}$

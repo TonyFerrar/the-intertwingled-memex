@@ -1,0 +1,3 @@
+A mechanical design engineer is analyzing a high-pressure hydraulic metal bracket used in a heavy-duty mining excavator. The curved load-bearing surface of the bracket follows the geometric profile $z = \ln(x^2 + y)$, where dimensions are tracked in inches. During operation, a hydraulic piston exerts a massive directional crushing force directly against a localized point located at the surface coordinate $(1, e-1)$. At this point, the mechanical depth evaluates cleanly to $z_0 = \ln(1^2 + e - 1) = \ln(e) = 1\text{ inch}$.
+
+Determine the equation of the tangent plane on the bracket's surface where the load is concentrated.

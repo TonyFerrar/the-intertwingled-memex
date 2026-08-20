@@ -1,0 +1,3 @@
+**Scenario:** A mechanical engineer is modeling the thermal expansion of a steel bridge beam. The length of the beam $L$ as a function of temperature $T$ is given by the complex non-linear equation $L(T) = L_0 \sqrt{1 + \alpha(T - T_0)}$, where $T_0$ is standard room temperature. To run millions of structural simulations quickly, the physics engine cannot compute square roots repeatedly without lagging.
+
+**Problem:** The engineer needs a linear and a quadratic approximation function centered around the resting temperature $T = T_0$ to substitute into the simulation code. Find the first three terms of the Taylor series for $f(T) = \sqrt{1 + \alpha(T - T_0)}$ centered at $T_0$.

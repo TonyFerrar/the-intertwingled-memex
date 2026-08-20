@@ -1,0 +1,3 @@
+An electrical engineer is monitoring a large capacitor bank used to smooth out voltage drops in an industrial power grid. When a major industrial machine kicks on at $t = 0$ seconds, the rate of change of the electrical charge $q(t)$ entering the capacitor is given by the current function:
+$$\frac{dq}{dt} = 10e^{-2t} \quad (\text{in Amperes})$$
+A hardware constraint dictates that at the exact moment the machine activates ($t = 0$), the capacitor already holds a residual background charge of $q(0) = 3\text{ Coulombs}$. Find the exact charge function $q(t)$ stored inside the capacitor over time.

@@ -1,0 +1,1 @@
+Find the third derivative of $f(t)=4t^{3}-\frac{3}{t^{5}}$.

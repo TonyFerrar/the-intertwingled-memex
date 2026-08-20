@@ -1,0 +1,1 @@
+Set up and evaluate the integral to find the area of the region that lies inside the circle $r = 3\sin\theta$ and outside the cardioid $r = 1 + \sin\theta$.

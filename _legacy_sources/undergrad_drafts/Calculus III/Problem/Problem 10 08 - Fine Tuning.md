@@ -1,0 +1,1 @@
+Sketch contours for $f(x,y)=x^{2}+y^{2}$ and estimate $\frac{\partial f}{\partial x}(2,0)$.

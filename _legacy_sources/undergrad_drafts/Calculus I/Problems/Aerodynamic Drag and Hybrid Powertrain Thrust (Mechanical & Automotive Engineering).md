@@ -1,0 +1,3 @@
+An automotive engineer is designing a performance map for a high-efficiency electric vehicle. When accelerating along a straight track, the vehicle's net power-to-weight delivery is opposed by aerodynamic wind resistance. Telemetry data shows that the net acceleration rate $a(t)$ over time is modeled by a multi-term linear function:
+$$a(t) = 0.4t^3 - 0.05t + 2e^t \quad (\text{in m/s}^2)$$
+Find the general velocity formula $v(t)$ of the vehicle by integrating this multi-term acceleration profile.

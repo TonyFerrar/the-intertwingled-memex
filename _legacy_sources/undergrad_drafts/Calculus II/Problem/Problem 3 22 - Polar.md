@@ -1,0 +1,1 @@
+Convert the polar equation $r = 2\cos\theta$ into rectangular coordinates and identify the shape of its graph.
