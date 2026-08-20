@@ -31,7 +31,7 @@ const practice = problems.filter(p => !p.isWorked);
 
 <div class="my-8 border border-mathBorder rounded-xl bg-mathBgSecondary overflow-hidden shadow-sm print-prevent-split">
   <!-- Skill Block Header -->
-  <div class="bg-mathBgSecondary py-4 px-6 border-b border-mathBorder flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 select-none">
+  <div class="bg-mathBgSecondary py-3 px-4 sm:py-4 sm:px-6 border-b border-mathBorder flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 select-none">
     <h3 class="text-lg font-bold text-mathTextNormal leading-tight">{header}</h3>
     {engineeringProblems && engineeringProblems.length > 0 && (
       <button class="eng-drawer-toggle px-3 py-1.5 bg-accent/10 border border-accent/25 hover:bg-accent/20 text-accent font-extrabold text-xs rounded-lg transition-all flex items-center gap-1.5 cursor-pointer select-none">
@@ -112,27 +112,27 @@ const practice = problems.filter(p => !p.isWorked);
     </div>
 
     <!-- Panel 1: Theory -->
-    <div class="tab-panel tab-panel-1 p-6">
+    <div class="tab-panel tab-panel-1 p-3 sm:p-6">
       <slot name="theory" />
     </div>
 
     <!-- Panel 2: Worked Example -->
-    <div class="tab-panel tab-panel-2 p-6 space-y-6">
+    <div class="tab-panel tab-panel-2 p-3 sm:p-6 space-y-6">
       {worked.length > 0 ? (
         worked.map((prob) => (
           <div class="space-y-4">
-            <div class="p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
+            <div class="p-3 sm:p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
               <h4 class="font-bold text-mathTextNormal mb-2">{prob.title}</h4>
               <div class="prose max-w-none text-mathTextNormal" set:html={prob.statementHtml} />
             </div>
             
             {prob.solutionHtml && (
               <details class="group border border-emerald-200 dark:border-emerald-900 rounded-lg overflow-hidden bg-mathBgPrimary">
-                <summary class="flex justify-between items-center p-4 font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer select-none bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100/35 transition-colors">
+                <summary class="flex justify-between items-center p-3 sm:p-4 font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer select-none bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100/35 transition-colors">
                   <span>💡 Reveal Worked Solution</span>
                   <svg width="20" height="20" class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </summary>
-                <div class="p-4 border-t border-emerald-100 dark:border-emerald-950 prose max-w-none text-mathTextNormal" set:html={prob.solutionHtml} />
+                <div class="p-3 sm:p-4 border-t border-emerald-100 dark:border-emerald-950 prose max-w-none text-mathTextNormal" set:html={prob.solutionHtml} />
               </details>
             )}
           </div>
@@ -143,11 +143,11 @@ const practice = problems.filter(p => !p.isWorked);
     </div>
 
     <!-- Panel 3: Active Practice (Step-by-Step Card Flow) -->
-    <div class="tab-panel tab-panel-3 p-6 space-y-10">
+    <div class="tab-panel tab-panel-3 p-3 sm:p-6 space-y-6 sm:space-y-10">
       {practice.length > 0 ? (
         practice.map((prob) => (
-          <div class="practice-problem-container space-y-4 pt-8 border-t border-mathBorder first:border-0 first:pt-0">
-            <div class="p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
+          <div class="practice-problem-container space-y-4 pt-6 sm:pt-8 border-t border-mathBorder first:border-0 first:pt-0">
+            <div class="p-3 sm:p-4 border border-mathBorder rounded-lg bg-mathBgSecondary">
               <h4 class="font-bold text-mathTextNormal mb-2">{prob.title}</h4>
               <div class="prose max-w-none text-mathTextNormal" set:html={prob.statementHtml} />
             </div>
@@ -187,7 +187,7 @@ const practice = problems.filter(p => !p.isWorked);
 
             <!-- Full Solution Panel -->
             {prob.solutionHtml && (
-              <div class="solution-box hidden p-5 border-l-4 border-emerald-500 rounded-r-lg bg-emerald-50/10 dark:bg-emerald-950/10 text-mathTextNormal animate-fade-in">
+              <div class="solution-box hidden p-3 sm:p-5 border-l-4 border-emerald-500 rounded-r-lg bg-emerald-50/10 dark:bg-emerald-950/10 text-mathTextNormal animate-fade-in">
                 <h5 class="font-extrabold text-xs text-emerald-700 dark:text-emerald-400 mb-3 uppercase tracking-wider">Step-by-Step Execution</h5>
                 <div class="prose max-w-none text-mathTextNormal" set:html={prob.solutionHtml} />
               </div>

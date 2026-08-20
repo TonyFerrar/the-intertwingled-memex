@@ -317,10 +317,16 @@ const courses = [
     /* Standard Callout Styling */
     .callout {
       border-left-width: 4px;
-      margin: 1.5em 0;
-      padding: 1.25em;
+      margin: 1rem 0;
+      padding: 0.75rem 0.875rem;
       border-radius: 0 6px 6px 0;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+    @media (min-width: 640px) {
+      .callout {
+        margin: 1.5em 0;
+        padding: 1.25em;
+      }
     }
 
     .callout-note {
@@ -350,7 +356,7 @@ const courses = [
 </head>
 <body class="flex flex-col min-h-screen">
   <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-45 w-full border-b border-mathBorder bg-mathBgSecondary py-4 px-6 flex items-center justify-between shadow-sm">
+  <header class="sticky top-0 z-45 w-full border-b border-mathBorder bg-mathBgSecondary py-4 px-3 sm:px-6 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-3">
       <!-- Mobile Menu Toggle Button -->
       <button id="mobile-menu-toggle" class="md:hidden p-1.5 text-mathTextNormal hover:bg-mathBorder rounded transition-colors mr-1" aria-label="Toggle Navigation">
@@ -358,13 +364,16 @@ const courses = [
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
-      <span class="text-2xl">🌱</span>
-      <a href={link('/')} class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
+      <span class="text-xl sm:text-2xl">🌱</span>
+      <a href={link('/')} class="text-base sm:text-xl font-bold tracking-tight hover:text-accent transition-colors">
+        <span class="inline sm:hidden">UNLV Calculus</span>
+        <span class="hidden sm:inline">UNLV Calculus Reference Portal</span>
+      </a>
     </div>
-    <div class="flex items-center gap-4">
-      <a href={link('/garden/limits')} class="text-sm font-semibold hover:underline">Digital Garden</a>
+    <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+      <a href={link('/garden/limits')} class="font-semibold hover:underline">Digital Garden</a>
       <span class="text-mathTextMuted">|</span>
-      <span class="text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
+      <span class="text-[10px] sm:text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
     </div>
   </header>
 
@@ -416,7 +425,7 @@ const courses = [
     </aside>
 
     <!-- Main Content Container -->
-    <main class="flex-1 p-6 md:p-10 w-full">
+    <main class="flex-1 p-3 sm:p-6 md:p-10 w-full">
       <div class="content-wrapper">
         <slot />
       </div>
