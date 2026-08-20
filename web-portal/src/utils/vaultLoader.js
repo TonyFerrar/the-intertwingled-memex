@@ -645,88 +645,75 @@ export function getOERPortalHome() {
   };
 }
 
-/**
- * Returns the 10 most recently updated, published notes across courses, garden, and blog folders.
- */
 export function getRecentlyUpdatedNotes() {
-  const notes = [];
+  const posts = getBlogPosts();
+  return posts.slice(0, 10).map(post => ({
+    title: post.title,
+    type: 'blog',
+    course: '',
+    updated: post.updated,
+    url: `/blog/${post.slug}`
+  }));
+}
 
-  const processDir = (dirPath, typeDefault) => {
-    if (!fs.existsSync(dirPath)) return;
-    const files = fs.readdirSync(dirPath);
-    for (const file of files) {
-      if (!file.endsWith('.md') || file.toLowerCase() === 'index.md') continue;
-      const filePath = path.join(dirPath, file);
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-      
-      let data = {};
-      try {
-        const parsed = matter(preprocessFrontmatter(fileContent));
-        data = parsed.data;
-      } catch (e) {
-        continue;
-      }
-
-      // Skip drafts: blog notes require explicit publish: true, standard notes skip if publish is false
-      if (data.publish === false) continue;
-      if (typeDefault === 'blog' && data.publish !== true) continue;
-
-      let updatedStr = '';
-      if (data.updated) {
-        if (data.updated instanceof Date) {
-          updatedStr = data.updated.toISOString().split('T')[0];
-        } else {
-          updatedStr = String(data.updated);
-        }
-      }
-
-      const slug = file.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      const noteType = data.type || typeDefault;
-
-      let url = '';
-      if (noteType === 'course-session') {
-        const courseFolder = path.basename(dirPath).toLowerCase();
-        url = `/courses/${courseFolder}/${slug}`;
-      } else if (noteType === 'blog') {
-        url = `/blog/${slug}`;
-      } else {
-        url = `/garden/${slug}`;
-      }
-
-      notes.push({
-        title: data.title || file.replace('.md', ''),
-        type: noteType,
-        course: data.course || '',
-        updated: updatedStr,
-        url
-      });
-    }
-  };
-
-  // Scan courses
-  const coursesDir = path.join(VAULT_ROOT, 'Courses');
-  if (fs.existsSync(coursesDir)) {
-    const courseDirs = fs.readdirSync(coursesDir);
-    for (const cDir of courseDirs) {
-      const fullPath = path.join(coursesDir, cDir);
-      if (fs.statSync(fullPath).isDirectory()) {
-        processDir(fullPath, 'course-session');
-      }
-    }
-  }
-
-  // Scan concept garden
-  processDir(GARDEN_DIR, 'concept');
-
-  // Scan blog folder
+/**
+ * Returns all published blog posts sorted by last updated date descending.
+ * Each post includes its title, slug, formatted date, description, and fully rendered HTML body.
+ */
+export function getBlogPosts() {
   const blogDir = path.join(VAULT_ROOT, 'Blog');
-  processDir(blogDir, 'blog');
-
-  // Filter and sort by updated date descending
-  return notes
-    .filter(n => n.updated)
-    .sort((a, b) => b.updated.localeCompare(a.updated))
-    .slice(0, 10);
+  if (!fs.existsSync(blogDir)) return [];
+  const files = fs.readdirSync(blogDir);
+  
+  const posts = [];
+  for (const file of files) {
+    if (!file.endsWith('.md')) continue;
+    const filePath = path.join(blogDir, file);
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    
+    let parsed;
+    try {
+      parsed = matter(preprocessFrontmatter(fileContent));
+    } catch (e) {
+      continue;
+    }
+    
+    const data = parsed.data;
+    if (data.publish !== true) continue;
+    
+    let updatedStr = '';
+    if (data.updated) {
+      if (data.updated instanceof Date) {
+        updatedStr = data.updated.toISOString().split('T')[0];
+      } else {
+        updatedStr = String(data.updated);
+      }
+    }
+    
+    const slug = file.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+    
+    // Split content to remove H1 heading if present and get description snippet
+    let body = parsed.content.trim();
+    const titleMatch = body.match(/^#\s*(.*?)\n/m);
+    const postTitle = titleMatch ? titleMatch[1].trim() : (data.title || file.replace('.md', ''));
+    
+    if (titleMatch) {
+      body = body.substring(titleMatch.index + titleMatch[0].length).trim();
+    }
+    
+    const bodyHtml = renderMathAndMarkdown(body);
+    const description = data.description || (body.replace(/[#*`_\[\]]/g, '').substring(0, 160).trim() + '...');
+    
+    posts.push({
+      title: postTitle,
+      slug,
+      updated: updatedStr,
+      description,
+      bodyHtml
+    });
+  }
+  
+  return posts.sort((a, b) => b.updated.localeCompare(a.updated));
 }
 
 /**

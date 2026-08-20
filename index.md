@@ -5,7 +5,7 @@ publish: true
 updated: 2026-08-18
 ---
 
-# UNLV Engineering Calculus Vault
+# Welcome to Tony's Interwingled Memex
 
 Welcome to the central hub for the UNLV Engineering Calculus Vault. This digital space serves as a persistent, organized environment for academic course materials, curriculum planning, and active learning resources built on the **Modeling Practices in Calculus (MPC)** pedagogical framework.
 
@@ -21,7 +21,7 @@ Explore current course structures, session lecture notes, and discussion materia
 - **[[Garden/|The Digital Garden]]** — Atomic concepts, mathematical definitions, and Zettelkasten notes.
 - **[[Garden/|Blog]]** — Thoughts on pedagogy, engineering education, and instructional design.
 
-### 🛠️ department & Projects
+### 🛠️ Department & Projects
 - **[[Department/|UNLV Department Materials]]** — Administration, guidelines, and Graduate Assistant (GA) training resources.
 - **[[Projects/|Projects]]** — Educational software, interactive visualizations, and curricula design projects.
 

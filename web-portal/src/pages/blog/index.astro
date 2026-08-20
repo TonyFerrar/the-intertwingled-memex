@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBlogPosts } from '../../utils/vaultLoader.js';
+
+const posts = getBlogPosts();
+const latestPost = posts[0];
+const otherPosts = posts.slice(1);
+
+const base = import.meta.env.BASE_URL;
+const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
+---
+
+<BaseLayout title={latestPost ? latestPost.title : "Blog"}>
+  <div class="max-w-6xl mx-auto">
+    {posts.length > 0 ? (
+      <div class="flex flex-col lg:flex-row gap-10">
+        <!-- Main Column (Full Reading View of Latest Post) -->
+        <article class="flex-1 lg:max-w-3xl border-b lg:border-b-0 lg:border-r border-mathBorder/50 pb-10 lg:pb-0 lg:pr-10">
+          <header class="mb-6 select-none">
+            <span class="text-xs uppercase font-mono font-extrabold tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              Latest Post
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-mathTextNormal tracking-tight mt-3">
+              {latestPost.title}
+            </h1>
+            <p class="text-xs text-mathTextMuted font-mono mt-2">
+              Published on: {latestPost.updated || '—'}
+            </p>
+          </header>
+          
+          <div class="prose max-w-none text-mathTextNormal leading-relaxed">
+            <Fragment set:html={latestPost.bodyHtml} />
+          </div>
+        </article>
+
+        <!-- Sidebar / Grid Column (Other Articles List) -->
+        <aside class="w-full lg:w-80 shrink-0 space-y-6">
+          <h2 class="text-lg font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2 select-none">
+            📖 Archive & Writings
+          </h2>
+          
+          {otherPosts.length > 0 ? (
+            <div class="space-y-4">
+              {otherPosts.map(post => (
+                <a href={link(`/blog/${post.slug}`)} class="group block border border-mathBorder rounded-xl p-4 bg-mathBgSecondary/20 hover:bg-mathBgSecondary/55 hover:border-accent transition-all duration-200 no-underline hover:no-underline flex flex-col justify-between">
+                  <div>
+                    <h3 class="text-sm font-bold text-mathTextNormal group-hover:text-accent transition-colors leading-tight">
+                      {post.title}
+                    </h3>
+                    <p class="text-[10px] text-mathTextMuted font-mono mt-1">
+                      {post.updated}
+                    </p>
+                    <p class="text-xs text-mathTextMuted mt-2 line-clamp-3">
+                      {post.description}
+                    </p>
+                  </div>
+                  <span class="text-[10px] font-bold text-accent group-hover:underline mt-3 block select-none">
+                    Read Article ➜
+                  </span>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div class="py-6 text-center text-xs text-mathTextMuted italic bg-mathBgSecondary/10 border border-mathBorder/40 rounded-xl select-none">
+              No older articles.
+            </div>
+          )}
+        </aside>
+      </div>
+    ) : (
+      <div class="py-16 text-center text-sm text-mathTextMuted italic bg-mathBgSecondary/20 border border-mathBorder rounded-xl select-none">
+        No published blog posts found. Check back soon!
+      </div>
+    )}
+  </div>
+</BaseLayout>

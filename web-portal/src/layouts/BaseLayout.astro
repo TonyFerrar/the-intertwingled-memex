@@ -443,7 +443,7 @@ const courses = [
     <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
       <a href={link('/garden/limits')} class="font-semibold hover:underline">Digital Garden</a>
       <span class="text-mathTextMuted">|</span>
-      <a href={link('/courses')} class="text-[10px] sm:text-xs py-1 px-2 bg-mathBorder rounded font-mono hover:bg-mathBorder hover:text-accent transition-all">OER Curriculum</a>
+      <a href={link('/#oer-portal')} class="text-[10px] sm:text-xs py-1 px-2 bg-mathBorder rounded font-mono hover:bg-mathBorder hover:text-accent transition-all">OER Curriculum</a>
     </div>
   </header>
 
@@ -457,17 +457,6 @@ const courses = [
         <div>
           <h3 class="text-xs font-bold text-mathTextMuted uppercase tracking-wider mb-3">Courses</h3>
           <ul class="space-y-2">
-            <li>
-              <a
-                href={link('/courses')}
-                class={`block p-2 rounded text-sm font-bold transition-colors hover:bg-mathBorder flex items-center gap-2 ${
-                  courseName === 'oer-portal' ? 'text-accent bg-mathBorder' : 'text-mathTextNormal'
-                }`}
-              >
-                <span>📚</span> Active OER Portal
-              </a>
-            </li>
-            <div class="border-b border-mathBorder/50 my-1"></div>
             {courses.map(course => (
               <li>
                 <a
@@ -489,6 +478,16 @@ const courses = [
             <li>
               <a href={link('/garden')} class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
                 🌲 Zettelkasten Concept Garden
+              </a>
+            </li>
+            <li>
+              <a
+                href={link('/blog')}
+                class={`block p-2 rounded text-sm font-semibold transition-colors hover:bg-mathBorder flex items-center gap-2 ${
+                  Astro.url.pathname.includes('/blog') ? 'text-accent bg-mathBorder' : 'text-mathTextNormal'
+                }`}
+              >
+                <span>📰</span> Blog
               </a>
             </li>
             <li>

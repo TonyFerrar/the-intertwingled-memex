@@ -1,9 +1,28 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getVaultHome, getRecentlyUpdatedNotes } from '../utils/vaultLoader.js';
+import { getVaultHome, getRecentlyUpdatedNotes, getOERPortalHome, getCourseIndex } from '../utils/vaultLoader.js';
 
 const vaultHome = getVaultHome();
 const recentNotes = getRecentlyUpdatedNotes();
+const oerHome = getOERPortalHome();
+
+// Resolve course indices for embedded OER portal section
+const courseIds = ['calc-1', 'calc-2', 'calc-3'];
+const oerCourses = courseIds.map(id => {
+  const idx = getCourseIndex(id);
+  const meta: Record<string, { code: string; icon: string }> = {
+    'calc-1': { code: 'MATH-181', icon: '📐' },
+    'calc-2': { code: 'MATH-182', icon: '🌀' },
+    'calc-3': { code: 'MATH-281', icon: '🕸️' },
+  };
+  return {
+    id,
+    title: idx ? idx.title : id.toUpperCase(),
+    desc: idx ? idx.description : 'Curriculum details and session mapping.',
+    code: meta[id]?.code || '',
+    icon: meta[id]?.icon || '📐'
+  };
+});
 
 const base = import.meta.env.BASE_URL;
 const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
@@ -18,15 +37,70 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
 
 <BaseLayout title={vaultHome.title}>
   <div class="space-y-12 max-w-5xl mx-auto">
-    <!-- Hero Section -->
-    <section class="py-8 px-6 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-mathBorder/60 rounded-2xl shadow-lg">
-      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{vaultHome.title}</h1>
-      <div class="prose prose-invert max-w-none text-slate-200 mt-4 leading-relaxed text-sm sm:text-base">
-        <Fragment set:html={vaultHome.introHtml} />
+    <!-- Hero Section with Background image grid pattern -->
+    <section class="relative py-12 px-8 overflow-hidden border border-mathBorder/60 rounded-2xl shadow-xl bg-slate-950">
+      <!-- Ambient Glows -->
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(79,70,229,0.18),transparent_50%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(15,23,42,0.8),transparent_70%)]"></div>
+      <!-- CSS SVG dot pattern -->
+      <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:24px_24px] opacity-75"></div>
+      
+      <div class="relative z-10 max-w-3xl">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{vaultHome.title}</h1>
+        <div class="prose prose-invert max-w-none text-slate-200 mt-4 leading-relaxed text-sm sm:text-base">
+          <Fragment set:html={vaultHome.introHtml} />
+        </div>
       </div>
     </section>
 
-    <!-- Navigation Hubs -->
+    <!-- Calculus OER Portal Embedded Section (replacing plain Course Directory) -->
+    <section id="oer-portal" class="space-y-6">
+      <div class="border-b border-mathBorder/50 pb-2">
+        <h2 class="text-2xl font-extrabold text-mathTextNormal flex items-center gap-2">
+          📚 {oerHome.title}
+        </h2>
+        <div class="text-sm text-mathTextMuted mt-1 leading-relaxed max-w-2xl">
+          <Fragment set:html={oerHome.overviewHtml} />
+        </div>
+      </div>
+
+      <!-- Course Cards Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        {oerCourses.map(course => (
+          <a href={link(`/courses/${course.id}`)} class="group border border-mathBorder rounded-xl p-5 bg-mathBgSecondary/30 hover:bg-mathBgSecondary/70 hover:border-accent hover:shadow transition-all duration-200 no-underline hover:no-underline flex flex-col justify-between h-full">
+            <div>
+              <span class="text-4xl block mb-4 select-none">{course.icon}</span>
+              <h3 class="text-lg font-bold text-mathTextNormal group-hover:text-accent transition-colors flex items-center gap-2">
+                {course.title}
+                {course.code && (
+                  <span class="text-xs py-0.5 px-2 bg-mathBorder rounded font-mono text-mathTextMuted select-none">
+                    {course.code}
+                  </span>
+                )}
+              </h3>
+              <p class="text-sm text-mathTextMuted mt-2 leading-relaxed">
+                {course.desc}
+              </p>
+            </div>
+            <span class="text-xs font-bold text-accent group-hover:underline mt-6 block select-none">
+              Explore Syllabus Map ➜
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <!-- About this Curriculum box inside OER portal section -->
+      {oerHome.aboutHtml && (
+        <div class="p-6 border border-mathBorder rounded-xl bg-mathBgSecondary/20 leading-relaxed">
+          <h4 class="font-bold text-sm text-mathTextNormal uppercase tracking-wider mb-2">About this Curriculum</h4>
+          <div class="prose text-xs sm:text-sm text-mathTextMuted max-w-none">
+            <Fragment set:html={oerHome.aboutHtml} />
+          </div>
+        </div>
+      )}
+    </section>
+
+    <!-- Other Navigation Hubs (Zettelkasten, Department & Projects) -->
     {vaultHome.sections.map(section => (
       <section class="space-y-4">
         <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2">
@@ -46,7 +120,7 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
                 )}
               </div>
               <span class="text-[11px] font-bold text-accent group-hover:underline mt-4 block select-none">
-                Explore ➜
+                Explore Hub ➜
               </span>
             </a>
           ))}
@@ -54,13 +128,13 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
       </section>
     ))}
 
-    <!-- Recently Updated Section -->
+    <!-- Dynamic Published Blog Feed -->
     <section class="space-y-4">
       <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2">
-        🕒 Recently Updated Notes
+        📰 Published Blog Feed
       </h2>
       <p class="text-xs text-mathTextMuted">
-        The table below lists the most recently updated notes in this vault that are marked for publication.
+        The table below lists recently published blog notes in this vault.
       </p>
 
       {recentNotes.length > 0 ? (
@@ -68,15 +142,14 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
           <table class="w-full text-left border-collapse text-sm">
             <thead>
               <tr class="border-b border-mathBorder bg-mathBgSecondary/50 font-semibold text-mathTextNormal text-xs uppercase tracking-wider select-none">
-                <th class="p-3 pl-4">Note / Topic</th>
+                <th class="p-3 pl-4">Article Title</th>
                 <th class="p-3">Type</th>
-                <th class="p-3">Course</th>
-                <th class="p-3 pr-4 text-right">Last Updated</th>
+                <th class="p-3 pr-4 text-right">Published Date</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-mathBorder/40">
               {recentNotes.map(note => {
-                const typeInfo = typeLabels[note.type] || { label: note.type, badge: 'bg-gray-500/10 text-gray-400 border-gray-500/20' };
+                const typeInfo = typeLabels[note.type] || { label: note.type, badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
                 return (
                   <tr class="hover:bg-mathBgSecondary/40 transition-colors">
                     <td class="p-3 pl-4">
@@ -89,9 +162,6 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
                         {typeInfo.label}
                       </span>
                     </td>
-                    <td class="p-3 font-mono text-xs text-mathTextMuted">
-                      {note.course || '—'}
-                    </td>
                     <td class="p-3 pr-4 text-right font-mono text-xs text-mathTextMuted">
                       {note.updated || '—'}
                     </td>
@@ -103,7 +173,7 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
         </div>
       ) : (
         <div class="py-8 text-center text-sm text-mathTextMuted italic bg-mathBgSecondary/20 border border-mathBorder rounded-xl">
-          No published notes found.
+          No published blog posts found.
         </div>
       )}
     </section>
