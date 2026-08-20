@@ -16,7 +16,7 @@ updated: 2026-08-18
 - Precision in Mechanics Handling Constants, Limits, and Core Rules
 
 ## Session Timeline
-- **00:00 - 00:10 (10 mins)**: Micro-Lecturexx
+- **00:00 - 00:10 (10 mins)**: Micro-Lecture
 - **00:10 - 00:25 (15 mins)**: Skill Block 1
 - **00:25 - 00:30 (5 mins)**: Regroup 1
 - **00:30 - 00:45 (15 mins)**: Skill Block 2
