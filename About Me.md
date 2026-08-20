@@ -4,14 +4,27 @@ description: "Tony's profile, research background, and teaching philosophy."
 ---
 # About Me
 
-Hi there! Welcome to my personal page! 
+Howdy! I am Tony Ferrar.
+**Chair and Associate Professor in Residence**
+_Department of Applied and Interdisciplinary Engineering_
+_Howard R. Hughes College of Engineering, UNLV_
 
-## 👤 Biography
-Here is where you can write your biography. Share your academic journey, professional history, or personal background.
+![[Tony Climbing Caustic.jpeg]]
 
-## 🔬 Research Interests
-*   **System Modeling:** Describe your research focus or engineering methodologies.
-*   **Curriculum Design:** Mention your pedagogical frameworks and active learning studies.
+## My Vision: Engineering the Future of Synthesis
 
-## 🎓 Teaching Philosophy
-Detail your approach to engineering education, active learning, and student mentorship.
+As the founding Chair of the Department of Applied and Interdisciplinary Engineering, I don’t believe in silos. I believe that the greatest innovations of the 21st century happen at the intersections: where Computer Science meets Mechanical Engineering, or where Entertainment Engineering meets Civil infrastructure.
+
+My "superpower" is finding connections between seemingly unrelated ideas. I manage this department like a tech startup - prioritizing agility, innovation, and entrepreneurial thinking over rigid tradition. Whether I’m using marketing tactics to make Calculus "viral" to my students or drawing engineering lessons from the grit and physics of rock climbing, my goal is to teach students how to see the hidden patterns in the universe.
+
+## The "Rigorous Empathy" Promise
+
+At many institutions, engineering is seen as a "weed-out" major. In the Department of Applied and Interdisciplinary Engineering, we take the opposite approach. Our department is built on **Rigorous Empathy.** 
+- **The "Rigorous" Part:** We hold our students to the high standards required of the engineering profession. You will learn the math, you will master the physics, and you will become a world-class problem solver.
+- **The "Empathy" Part:** We see you as a person, not a number. We recognize that school is only one part of your life. We design our systems to be flexible and adaptable, offering mentorship that extends beyond the classroom - into personal finance, time management, and career navigation.
+
+**We don’t boast about who we drop; we boast about who we graduate.**
+
+## Beyond the Classroom
+
+When I’m not in the lab or the lecture hall, you can usually find me exploring the history of the universe, diving into philosophy, or scaling a rock face. I believe that a well-rounded engineer is a more effective engineer, and I bring that passion for lifelong learning into everything I do at UNLV.
