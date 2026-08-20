@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://anthonyferrar.github.io',
+  site: 'https://tonyferrar.github.io',
   base: '/the-interwingled-memex',
   integrations: [tailwind()],
   server: {
