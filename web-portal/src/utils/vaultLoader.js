@@ -5,7 +5,7 @@ import { marked } from 'marked';
 import katex from 'katex';
 
 // Constants
-const VAULT_ROOT = path.resolve('/Users/anthonyferrar/Library/Mobile Documents/iCloud~md~obsidian/Documents/0 Main Vault/The Interwingled Memex');
+const VAULT_ROOT = path.resolve(process.cwd(), '..');
 const COURSES_DIR = path.join(VAULT_ROOT, 'Courses');
 const GARDEN_DIR = path.join(VAULT_ROOT, 'Garden');
 
