@@ -389,6 +389,105 @@ export function getCourseSessions(courseName) {
 }
 
 /**
+ * Resolves a session from a link target name by finding a filename or slug match in the course sessions database.
+ */
+function resolveSessionFromLink(linkTarget, sessions) {
+  const targetClean = linkTarget.split('/').pop().replace(/\.md$/, '').trim().toLowerCase();
+  return sessions.find(s => {
+    const fileClean = s.fileName.replace(/\.md$/, '').trim().toLowerCase();
+    return fileClean === targetClean || s.slug === targetClean;
+  });
+}
+
+/**
+ * Parsers a course index landing page to dynamically extract title, description, and weekly timelines.
+ */
+export function getCourseIndex(courseName) {
+  const coursePath = resolveCoursePath(courseName);
+  if (!coursePath) return null;
+
+  const indexPath = path.join(coursePath, 'index.md');
+  if (!fs.existsSync(indexPath)) {
+    return null;
+  }
+
+  const fileContent = fs.readFileSync(indexPath, 'utf-8');
+  
+  // Extract frontmatter and body
+  const { data, content: body } = matter(preprocessFrontmatter(fileContent));
+
+  // Resolve all sessions for this course
+  const sessions = getCourseSessions(courseName);
+
+  // Extract Title Heading
+  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const title = titleMatch ? titleMatch[1].trim() : (data.title || courseName);
+
+  // Extract overview text between H1 and the first H2 heading
+  let bodyWithoutTitle = body;
+  if (titleMatch) {
+    bodyWithoutTitle = body.substring(titleMatch.index + titleMatch[0].length).trim();
+  }
+  
+  const firstH2Match = bodyWithoutTitle.match(/^##\s+/m);
+  let overviewMarkdown = '';
+  let scheduleMarkdown = '';
+
+  if (firstH2Match) {
+    overviewMarkdown = bodyWithoutTitle.substring(0, firstH2Match.index).trim();
+    scheduleMarkdown = bodyWithoutTitle.substring(firstH2Match.index).trim();
+  } else {
+    overviewMarkdown = bodyWithoutTitle;
+  }
+
+  const overviewHtml = renderMathAndMarkdown(overviewMarkdown);
+
+  // Parse H2 sections for Weeks / Schedule
+  const h2Parts = scheduleMarkdown.split(/^##\s+/gm);
+  const weeks = [];
+
+  for (const part of h2Parts) {
+    if (!part.trim()) continue;
+    const plines = part.split('\n');
+    const h2Title = plines[0].trim();
+    const h2Content = plines.slice(1).join('\n').trim();
+
+    // Skip Course Objectives or non-timeline headings
+    const h2TitleLower = h2Title.toLowerCase();
+    if (h2TitleLower.includes('objective') || h2TitleLower.includes('matrix') || h2TitleLower.includes('resource')) {
+      continue;
+    }
+
+    // Extract links: [[linkTarget]]
+    const linkRegex = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g;
+    const lmatches = [];
+    let lmatch;
+    while ((lmatch = linkRegex.exec(h2Content)) !== null) {
+      lmatches.push(lmatch[1].trim());
+    }
+
+    const resolvedSessions = [];
+    for (const linkTarget of lmatches) {
+      const resolved = resolveSessionFromLink(linkTarget, sessions);
+      if (resolved) {
+        resolvedSessions.push(resolved);
+      }
+    }
+
+    weeks.push({
+      title: h2Title,
+      sessions: resolvedSessions
+    });
+  }
+
+  return {
+    title,
+    overviewHtml,
+    weeks: weeks.filter(w => w.sessions.length > 0)
+  };
+}
+
+/**
  * Recursively search and expand Obsidian transclusions ![[Filename]] or ![[Filename#Header]]
  */
 function expandTransclusions(text, visited = new Set()) {

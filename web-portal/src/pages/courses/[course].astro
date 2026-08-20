@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCourseSessions } from '../../utils/vaultLoader.js';
+import { getCourseIndex } from '../../utils/vaultLoader.js';
 
 export function getStaticPaths() {
   return [
@@ -12,53 +12,15 @@ export function getStaticPaths() {
 
 const { course } = Astro.params;
 
-// Resolve course names
-const courseNames: Record<string, string> = {
-  'calc-1': 'Calculus I (MATH-181)',
-  'calc-2': 'Calculus II (MATH-182)',
-  'calc-3': 'Calculus III (MATH-281)',
-};
+// Load course index dynamically from note
+const courseIndex = getCourseIndex(course);
 
-const courseTitle = courseNames[course] || 'Calculus Course';
-
-const courseDescriptions: Record<string, string> = {
-  'calc-1': 'MATH-181 (Calculus I) covers limits, continuity, derivatives, optimization, and an introduction to integration with active learning classroom practice.',
-  'calc-2': 'MATH-182 (Calculus II) covers advanced techniques of integration, numerical approximation, physical applications, infinite series, power series, and polar coordinate curves.',
-  'calc-3': 'MATH-281 (Calculus III) covers vector geometry, vector-valued functions, partial derivatives, optimization with constraints, multiple integration, line integrals, and vector fields.',
-};
-const courseDesc = courseDescriptions[course] || 'Curriculum map and syllabus details.';
-
-// Query vault sessions
-const sessions = getCourseSessions(course);
-
-// Group sessions by week based on their sortKey
-const weeks: Array<{ number: number; sessions: typeof sessions }> = [];
-for (let w = 1; w <= 13; w++) {
-  const weekSessions = sessions.filter(s => {
-    // If it has a valid sortKey, extract the week number (sortKey is week * 10 + seq)
-    const sWeek = s.sortKey ? Math.floor(s.sortKey / 10) : 99;
-    return sWeek === w;
-  });
-  
-  if (weekSessions.length > 0) {
-    weeks.push({
-      number: w,
-      sessions: weekSessions
-    });
-  }
+if (!courseIndex) {
+  throw new Error(`Failed to load course index for ${course}`);
 }
 
-// Check if there are any sessions that fell outside our 1-13 week schema (e.g. key = 99)
-const unsortedSessions = sessions.filter(s => {
-  const sWeek = s.sortKey ? Math.floor(s.sortKey / 10) : 99;
-  return sWeek < 1 || sWeek > 13;
-});
-if (unsortedSessions.length > 0) {
-  weeks.push({
-    number: 99, // Render at the bottom
-    sessions: unsortedSessions
-  });
-}
+const courseTitle = courseIndex.title;
+const weeks = courseIndex.weeks;
 
 const base = import.meta.env.BASE_URL;
 const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
@@ -71,10 +33,10 @@ const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.starts
       <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-2">
         <a href={link('/')}>Courses</a> / <span class="text-mathTextMuted">{courseTitle}</span>
       </div>
-      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{courseTitle} Syllabus Map</h1>
-      <p class="text-sm text-mathTextMuted mt-2 max-w-3xl leading-relaxed">
-        {courseDesc}
-      </p>
+      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{courseTitle}</h1>
+      <div class="prose text-sm text-mathTextMuted mt-4 max-w-3xl leading-relaxed">
+        <Fragment set:html={courseIndex.overviewHtml} />
+      </div>
     </div>
 
     <!-- Sessions List (Timeline format) -->
@@ -88,9 +50,9 @@ const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.starts
             <!-- Week Header -->
             <div class="mb-4">
               <h2 class="text-lg font-bold text-mathTextNormal flex items-center gap-2 leading-none">
-                {week.number === 99 ? 'Supplemental Files' : `Week ${week.number}`}
+                {week.title}
               </h2>
-              {week.number !== 99 && (
+              {week.title.toLowerCase().startsWith('week') && (
                 <span class="text-[10px] text-mathTextMuted font-mono uppercase tracking-wider mt-1 block">
                   Weekly Curriculum & Discussion Map
                 </span>
