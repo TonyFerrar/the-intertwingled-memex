@@ -10,19 +10,29 @@ updated: 2026-08-18
 
 # Session 01 - Using Functions to Understand and Predict Systems
 
-> [!abstract] Session Objectives & Overview
-> By the end of this session, you will be able to:
-> - Review domain, range, and evaluation of algebra/piecewise functions.
-> - Work with function compositions and inverse functions.
-> - Master trigonometric unit circle values and logarithmic symmetry rules.
+## Session Objectives
+By the end of this session, you will be able to:
+- Review domain, range, and evaluation of algebra/piecewise functions.
+- Work with function compositions and inverse functions.
+- Master trigonometric unit circle values and logarithmic symmetry rules.
 
-## Timeline & Session Breakdown
+## Session Timeline
+- **00:00 - 00:10 (10 mins)**: Micro-Lecture
+- **00:10 - 00:25 (15 mins)**: Skill Block 1
+- **00:25 - 00:30 (5 mins)**: Regroup 1
+- **00:30 - 00:45 (15 mins)**: Skill Block 2
+- **00:45 - 00:50 (5 mins)**: Regroup 2
+- **00:50 - 01:05 (15 mins)**: Skill Block 3
+- **01:05 - 01:10 (5 mins)**: Regroup 3
+- **01:10 - 01:15 (5 mins)**: Synthesis Wrap-up
 
-### 00:00 - 00:10 (10 mins) — Micro-Lecture: Motivation & Theory
-> [!example] Engineering Context: Mathematical Modeling
-> Before launching into the calculus sequence, engineers must possess fluent mechanics with standard functions, trigonometry, and logarithms to represent physical boundaries, coordinate rotations, and exponential decay models.
+## Session Content
 
-### 00:10 - 00:25 (15 mins) — Skill Block 1: Basic Functions & Piecewise Evaluation
+### Micro-Lecture
+#### Engineering Context: Mathematical Modeling
+Before launching into the calculus sequence, engineers must possess fluent mechanics with standard functions, trigonometry, and logarithms to represent physical boundaries, coordinate rotations, and exponential decay models.
+
+### Skill Block 1
 #### Problem 1
 Let $f(x) = 3x^2 - x$. 
  Find the following: 
@@ -36,10 +46,9 @@ Let $f(x) = 3x^2 - x$.
 
  * (c) $f(a+1)$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 1
+##### Solution to Problem 1
 > (a) Find $f(1)$
 > Substitute $x = 1$ into the function:
 > $$f(1) = 3(1)^2 - (1)$$
@@ -78,10 +87,9 @@ State the domain and range of the following functions:
 
  * (c) $f(x) = \frac{9}{x-2}$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 2
+##### Solution to Problem 2
 > ### (a) $f(x) = x^2 + 1$ *
 > **Domain:**
 > This is a polynomial function (a parabola). There are no fractions with variables in the denominator and no square roots to restrict our inputs. You can plug in any real number.
@@ -115,10 +123,9 @@ Use the function given to evaluate the following:
 
    * (c) $h(3)$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 3
+##### Solution to Problem 3
 > ### (a) Find $h(5)$
 > **Determine the condition:**
 > The input is $x = 5$. Since $5 > 3$, we use the third piece of the function.
@@ -134,10 +141,10 @@ Use the function given to evaluate the following:
 > The input is $x = 3$. Since $3 = 3$, we use the second piece of the function.
 > **Evaluate:** Substitute $x = 3$ into $e^x$: $$h(3) = e^3$$
 
-### 00:25 - 00:30 (5 mins) — Regroup 1: Class Discussion
+### Regroup 1
 - Review domain restrictions (denominator != 0, radicand >= 0).
 
-### 00:30 - 00:45 (15 mins) — Skill Block 2: Compositions & Linear/Quadratic Systems
+### Skill Block 2
 #### Problem 4
 Let $f(x) = \sqrt{x^2 - 1}$ and $g(x) = x + 1$. 
 
@@ -152,10 +159,9 @@ Find the following:
 
 * (c) $(g \circ f)(2)$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 4
+##### Solution to Problem 4
 > ### (a) Find $\left(\frac{g}{f}\right)(x)$
 > The notation $\left(\frac{g}{f}\right)(x)$ represents the division of function $g(x)$ by function $f(x)$: $$\left(\frac{g}{f}\right)(x) = \frac{g(x)}{f(x)}$$
 > Substitute the given equations: $$\left(\frac{g}{f}\right)(x) = \frac{x + 1}{\sqrt{x^2 - 1}}$$
@@ -178,10 +184,9 @@ Find the equation of the line through the point $(1, 7)$ with slope $\frac{2}{3}
 
 [[How Point-Slope Form Works]]
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 5
+##### Solution to Problem 5
 > ### Step 1: Choose a linear equation form You can use either the **point-slope form** or the **slope-intercept form** to find the equation. Both methods yield the same result.
 > #### Method 1: Using Point-Slope Form The point-slope form of a line is: $$y - y_1 = m(x - x_1)$$
 > Substitute $m = \frac{2}{3}$, $x_1 = 1$, and $y_1 = 7$: $$y - 7 = \frac{2}{3}(x - 1)$$
@@ -206,10 +211,9 @@ Find the solutions to the following:
 
 * (c) $2\theta \cos(\theta) + \theta = 0$ on $[0, 2\pi]$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 6
+##### Solution to Problem 6
 > ### (a) Solve: $1 - (4 - (5 - x)) = 3x - (4 + x)$
 > **Step 1: Simplify the innermost parentheses on the left side.** Distribute the negative sign into $(5 - x)$: $$1 - (4 - 5 + x) = 3x - (4 + x)$$ $$1 - (-1 + x) = 3x - (4 + x)$$
 > **Step 2: Distribute the remaining negative signs on both sides.** On the left, distribute the negative sign into $(-1 + x)$. On the right, distribute the negative sign into $(4 + x)$: $$1 + 1 - x = 3x - 4 - x$$
@@ -229,18 +233,17 @@ Find the solutions to the following:
 > **Step 4: Find solutions within the interval $[0, 2\pi]$.** * From the first factor: $\theta = 0$ is within the interval. * From the second factor: $\cos(\theta) = -\frac{1}{2}$ when $\theta$ is in Quadrant II and Quadrant III with a reference angle of $\frac{\pi}{3}$: * Quadrant II: $\theta = \pi - \frac{\pi}{3} = \frac{2\pi}{3}$ * Quadrant III: $\theta = \pi + \frac{\pi}{3} = \frac{4\pi}{3}$
 > **Final Answer:** $$\theta = 0, \quad \frac{2\pi}{3}, \quad \frac{4\pi}{3}$$
 
-### 00:45 - 00:50 (5 mins) — Regroup 2: Reflection
+### Regroup 2
 - Highlight slope-intercept vs point-slope forms.
 
-### 00:50 - 01:05 (15 mins) — Skill Block 3: Trigonometry & Exponentials/Logarithms
+### Skill Block 3
 #### Problem 7
 Given $\sin(\theta) = \frac{12}{13}$ and $\frac{\pi}{2} < \theta < \pi$, find the other 5 trigonometric values. 
 [[Trigonometry Review]]
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 7
+##### Solution to Problem 7
 > ### Problem Analysis
 > We are given: * $\sin(\theta) = \frac{12}{13}$ * $\frac{\pi}{2} < \theta < \pi$ (This indicates that $\theta$ lies in **Quadrant II**)
 > In Quadrant II: * Sine ($\sin$) and Cosecant ($\csc$) are **positive**. * Cosine ($\cos$), Secant ($\sec$), Tangent ($\tan$), and Cotangent ($\cot$) are **negative**.
@@ -267,10 +270,9 @@ Find the inverse, $f^{-1}(x)$, of the following functions:
 
 <div style="page-break-after: always;"></div>
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 8
+##### Solution to Problem 8
 > ### (a) $f(x) = \frac{4x-1}{2x+3}$
 > **Step 1: Replace $f(x)$ with $y$.** $$y = \frac{4x-1}{2x+3}$$
 > **Step 2: Swap the positions of $x$ and $y$ to set up the inverse relation.** $$x = \frac{4y-1}{2y+3}$$
@@ -297,10 +299,9 @@ Solve the following equations:
 
 <div style="page-break-after: always;"></div>
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 9
+##### Solution to Problem 9
 > ### (a) Solve: $4^{2x-3} = 64$
 > **Step 1: Rewrite both sides with a common base.** Notice that $64$ is a power of $4$ ($4^3 = 64$): $$4^{2x-3} = 4^3$$
 > **Step 2: Set the exponents equal to each other.** Since the bases are identical, their powers must be equal: $$2x - 3 = 3$$
@@ -331,10 +332,9 @@ Using the properties of logarithms, express the given quantity as a single logar
 
 <div style="page-break-after: always;"></div>
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 10
+##### Solution to Problem 10
 > ### 10. Express as a single logarithm: $\ln(a+b) + \ln(a-b) - 2\ln c$ To combine these terms into a single logarithm, we will apply the properties of logarithms step by step.
 > ---
 > **Step 1: Apply the Power Property to the last term.** The power property states that $n\ln(x) = \ln(x^n)$. Move the coefficient $2$ to the exponent of $c$: $$\ln(a+b) + \ln(a-b) - \ln(c^2)$$
@@ -345,7 +345,7 @@ Using the properties of logarithms, express the given quantity as a single logar
 > ---
 > ### Final Answer Both forms are mathematically correct single logarithms: $$\ln\left(\frac{a^2 - b^2}{c^2}\right) \quad \text{or} \quad \ln\left(\frac{(a+b)(a-b)}{c^2}\right)$$
 
-### 01:05 - 01:10 (5 mins) — Regroup 3: Verification
+### Regroup 3
 #### Problem 11
 Evaluate the following. Keep in mind the restricted function values for inverse trig functions: 
 * (a) $\cos^{-1}\left(\frac{\sqrt{2}}{2}\right)$ 
@@ -359,10 +359,9 @@ Evaluate the following. Keep in mind the restricted function values for inverse 
 
 <div style="page-break-after: always;"></div>
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 11
+##### Solution to Problem 11
 > ### (a) Evaluate: $\cos^{-1}\left(\frac{\sqrt{2}}{2}\right)$
 > **Step 1: Rephrase the expression.** We are looking for an angle $\theta$ such that: $$\cos(\theta) = \frac{\sqrt{2}}{2}$$
 > **Step 2: Apply range restrictions.** The output angle $\theta$ must fall within $[0, \pi]$.
@@ -387,10 +386,9 @@ Determine if the following functions are even, odd, or neither:
 
 * (c) $f(x) = 4x^5 + 2x^3 - x$
 
-> [!workspace] Student Practice Space
-> 
+##### Workspace
 
-> [!check]- Solution to Problem 12
+##### Solution to Problem 12
 > To determine the symmetry of a function algebraically, replace $x$ with $-x$ and simplify the expression:
 > * If $f(-x) = f(x)$, the function is **Even** (symmetric across the $y$-axis). * If $f(-x) = -f(x)$, the function is **Odd** (symmetric about the origin). * If neither condition is met, the function is **Neither**.
 > ---
@@ -412,5 +410,5 @@ Determine if the following functions are even, odd, or neither:
 > **Step 3: Factor out a negative sign to compare with $-f(x)$.** $$f(-x) = -(4x^5 + 2x^3 - x)$$ Notice that this is exactly equal to $-f(x)$.
 > **Conclusion:** The function is **Odd**.
 
-### 01:10 - 01:15 (5 mins) — Synthesis Wrap-up
+### Synthesis Wrap-up
 - Wrap up precalculus review and connect to limits next week.

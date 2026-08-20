@@ -10,25 +10,30 @@ updated: 2026-08-18
 
 # Calc-1 Session 20 - Midterm Exam 2 Review
 
-## 🎯 Review Objectives
+## Session Objectives
 This session is dedicated to summarizing, clarifying, and practicing key engineering calculus skills ahead of assessments.
 
-> [!abstract] Topic Focus: Midterm Exam 2 Review
-> Review resources, formula cards, and concept mappings are located in the **TEST REVIEW CENTER**.
+**Topic Focus: Midterm Exam 2 Review**
+Review resources, formula cards, and concept mappings are located in the **TEST REVIEW CENTER**.
 
-## 🛠️ Review Problems & Active Practice
+## Session Timeline
+- **00:00 - 01:15 (75 mins)**: Test Review
 
-### Core Skills Matrix
+## Session Content
+
+### Test Review
+#### Review Problems & Active Practice
+
+##### Core Skills Matrix
 Review the following core competencies:
 1. **Conceptual Fluency:** Identifying structural limits, derivative derivatives, and accumulation integrals.
 2. **Algebraic Mechanics:** Rationalizing conjugates, factoring polynomials, and matching dimensions.
 3. **Engineering Applications:** Setting up optimization boundaries, rates of change, and system trends.
 
-### Practice Exercises
+##### Practice Exercises
 Work through sample problems in your Bullet Journal or workspace panels below.
 
-> [!workspace] Practice Space
-> 
+###### Workspace
 
-> [!check]- Solution & Walkthrough
-> Complete solution guides are distributed in class sessions.
+###### Solution
+Complete solution guides are distributed in class sessions.
