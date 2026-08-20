@@ -555,6 +555,12 @@ export function getVaultHome() {
       const alias = bmatch[2]?.trim();
       const desc = bmatch[3]?.trim() || '';
 
+      // Skip manually placed dashboard targets (Calculus OER notes, Garden, and Blog)
+      const targetLower = target.toLowerCase();
+      if (targetLower.startsWith('courses/calc-') || targetLower.startsWith('garden') || targetLower.startsWith('blog')) {
+        continue;
+      }
+
       const displayText = alias || target;
       
       // Resolve links
