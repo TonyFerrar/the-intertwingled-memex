@@ -226,6 +226,91 @@ function resolveCoursePath(courseName) {
 }
 
 /**
+ * Build-time note validator to verify note structure, frontmatter, timeline items, and transclusions.
+ */
+function validateSessionNote(filePath, fileContent) {
+  const fileName = path.basename(filePath);
+  
+  // 1. Check Frontmatter Metadata
+  let frontmatterData = {};
+  try {
+    const { data } = matter(preprocessFrontmatter(fileContent));
+    frontmatterData = data;
+  } catch (err) {
+    console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName} has invalid YAML frontmatter\x1b[0m`);
+    return;
+  }
+  
+  if (frontmatterData.publish === false) return; // Skip warnings for draft files
+
+  if (!frontmatterData.type || frontmatterData.type !== 'course-session') {
+    // Skip timeline validations for non-session notes (e.g. concept notes)
+    return;
+  }
+
+  if (!frontmatterData.course) {
+    console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName} is missing 'course' frontmatter field (e.g. course: MATH-182)\x1b[0m`);
+  }
+
+  // 2. Check structural headings
+  const hasObjectives = fileContent.includes('## Session Objectives');
+  const hasTimeline = fileContent.includes('## Session Timeline');
+  const hasContent = fileContent.includes('## Session Content');
+
+  if (!hasObjectives) {
+    console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName} is missing required '## Session Objectives' header.\x1b[0m`);
+  }
+  if (!hasTimeline) {
+    console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName} is missing required '## Session Timeline' header.\x1b[0m`);
+    return; // Cannot validate timeline elements if header is missing
+  }
+  if (!hasContent) {
+    console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName} is missing required '## Session Content' header.\x1b[0m`);
+    return;
+  }
+
+  // 3. Check for Timeline name mismatches (fuzzy matching)
+  const timelineItems = [];
+  const timelineBlockMatch = fileContent.match(/## Session Timeline([\s\S]*?)## Session Content/i);
+  if (timelineBlockMatch) {
+    const rawTimeline = timelineBlockMatch[1];
+    const lineRegex = /-\s*\*\*(.*?)\s*\((.*?)\)\*\*\s*:\s*(.*)/g;
+    let tmatch;
+    while ((tmatch = lineRegex.exec(rawTimeline)) !== null) {
+      timelineItems.push(tmatch[3].trim());
+    }
+  }
+
+  // Parse ### headers under ## Session Content
+  const contentMatch = fileContent.match(/## Session Content([\s\S]*)$/i);
+  const contentText = contentMatch ? contentMatch[1] : '';
+  const rawSections = contentText.split(/^### /gm).slice(1);
+  const headerNames = rawSections.map(sec => sec.split('\n')[0].trim());
+
+  timelineItems.forEach(item => {
+    const itemNorm = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = headerNames.find(h => h.toLowerCase().replace(/[^a-z0-9]/g, '') === itemNorm);
+    if (!matched) {
+      console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName}: Timeline item "${item}" has no matching content header "### ${item}" under ## Session Content.\x1b[0m`);
+    }
+  });
+
+  // 4. Check for broken transclusions
+  const transRegex = /!\[\[([^\]|#]+)(?:#[^\]]*)?\]\]/g;
+  let transMatch;
+  while ((transMatch = transRegex.exec(fileContent)) !== null) {
+    const targetName = transMatch[1].trim();
+    const isAttachment = /\.(png|jpg|jpeg|gif|svg|pdf|webp|mp4)$/i.test(targetName);
+    if (!isAttachment) {
+      const resolvedPath = findVaultFileByName(VAULT_ROOT, targetName);
+      if (!resolvedPath) {
+        console.warn(`\x1b[33m⚠️  [Note Warning] ${fileName}: Broken transclusion embed ![[${targetName}]] could not be resolved in the vault.\x1b[0m`);
+      }
+    }
+  }
+}
+
+/**
  * Scans a course folder and returns a list of sessions.
  */
 export function getCourseSessions(courseName) {
@@ -239,6 +324,10 @@ export function getCourseSessions(courseName) {
     .map(file => {
       const filePath = path.join(coursePath, file);
       const fileContent = fs.readFileSync(filePath, 'utf-8');
+      
+      // Run build-time validations
+      validateSessionNote(filePath, fileContent);
+      
       const { data } = matter(preprocessFrontmatter(fileContent));
       
       const slug = file.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -302,7 +391,7 @@ export function getCourseSessions(courseName) {
 /**
  * Recursively search and expand Obsidian transclusions ![[Filename]] or ![[Filename#Header]]
  */
-function expandTransclusions(text) {
+function expandTransclusions(text, visited = new Set()) {
   if (!text) return '';
   const transclusionRegex = /!\[\[([^\]|#]+)(?:#[^\]]*)?\]\]/g;
   
@@ -313,21 +402,32 @@ function expandTransclusions(text) {
     }
     const resolvedPath = findVaultFileByName(VAULT_ROOT, targetName);
     if (!resolvedPath) {
-      console.warn(`[Transclusion Warning] Could not find transcluded file: ${targetName}`);
+      console.warn(`[Transclusion Warning] Could not find transcluded file: "${targetName}"`);
       return `*Warning: Transclusion not found: [[${targetName}]]*`;
     }
-    
+
+    const canonName = targetName.trim().toLowerCase();
+    if (visited.has(canonName)) {
+      console.warn(`[Transclusion Warning] Loop detected! Note "${targetName}" is recursively transcluded.`);
+      return `*Warning: Infinite Transclusion Loop on [[${targetName}]]*`;
+    }
+
     try {
       const content = fs.readFileSync(resolvedPath, 'utf-8');
       const { content: rawBody } = matter(preprocessFrontmatter(content));
-      // Recursively expand nested transclusions
-      return expandTransclusions(rawBody);
+      
+      const nextVisited = new Set(visited);
+      nextVisited.add(canonName);
+      
+      const expandedInner = expandTransclusions(rawBody, nextVisited);
+      return `\n\n<div class="transcluded-note" data-note="${targetName.trim()}">\n\n${expandedInner}\n\n</div>\n\n`;
     } catch (err) {
       console.error(`Error expanding transclusion ${targetName}:`, err);
       return match;
     }
   });
 }
+
 
 /**
  * Parses a single session markdown file into structured segments.
@@ -345,6 +445,9 @@ export function getSessionDetails(courseName, sessionSlug) {
 
   const filePath = path.join(coursePath, matchedFile);
   const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  // Run build-time validations
+  validateSessionNote(filePath, fileContent);
   
   // Expand transclusions at compile-time
   const expandedContent = expandTransclusions(fileContent);

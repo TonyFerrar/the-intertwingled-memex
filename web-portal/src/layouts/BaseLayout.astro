@@ -374,6 +374,26 @@ const courses = [
       padding: 15px;
       border-radius: 6px;
     }
+
+    /* Embedded Concept Cards (Transclusions) Styling */
+    .transcluded-note {
+      border-left: 3px dashed var(--callout-workspace-border);
+      padding: 0.75rem 1rem;
+      margin: 1.25rem 0;
+      background-color: var(--background-secondary);
+      border-radius: 0 8px 8px 0;
+      position: relative;
+    }
+    .transcluded-note::before {
+      content: "🔗 Concept Card: " attr(data-note);
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
