@@ -587,7 +587,7 @@ export function getSessionDetails(courseName, sessionSlug) {
           });
         }
       } else {
-        parsedBlock.theoryHtml = renderMathAndMarkdown(body);
+        parsedBlock.bodyHtml = renderMathAndMarkdown(body);
       }
 
       blocks.push(parsedBlock);
