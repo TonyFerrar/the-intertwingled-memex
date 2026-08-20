@@ -356,10 +356,10 @@ const courses = [
         </svg>
       </button>
       <span class="text-2xl">🌱</span>
-      <a href="/" class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
+      <a href={import.meta.env.BASE_URL} class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
     </div>
     <div class="flex items-center gap-4">
-      <a href="/garden/limits" class="text-sm font-semibold hover:underline">Digital Garden</a>
+      <a href={import.meta.env.BASE_URL + "garden/limits"} class="text-sm font-semibold hover:underline">Digital Garden</a>
       <span class="text-mathTextMuted">|</span>
       <span class="text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
     </div>
@@ -378,7 +378,7 @@ const courses = [
             {courses.map(course => (
               <li>
                 <a
-                  href={`/courses/${course.id}`}
+                  href={`${import.meta.env.BASE_URL}courses/${course.id}`}
                   class={`block p-2 rounded text-sm font-semibold transition-colors hover:bg-mathBorder ${
                     courseName === course.id ? 'text-accent bg-mathBorder' : 'text-mathTextNormal'
                   }`}
@@ -394,7 +394,7 @@ const courses = [
           <h3 class="text-xs font-bold text-mathTextMuted uppercase tracking-wider mb-3">Resources</h3>
           <ul class="space-y-2">
             <li>
-              <a href="/garden" class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
+              <a href={import.meta.env.BASE_URL + "garden"} class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
                 🌲 Zettelkasten Concept Garden
               </a>
             </li>

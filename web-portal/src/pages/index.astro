@@ -17,7 +17,7 @@ const courses = [
         A custom digital learning reference and interactive Digital Garden for UNLV Calculus courses. Built for mobile-first in-class active learning.
       </p>
       <div class="mt-6 flex flex-wrap gap-4">
-        <a href="/garden" class="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg shadow hover:bg-blue-50 transition-colors text-sm">
+        <a href={import.meta.env.BASE_URL + "garden"} class="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg shadow hover:bg-blue-50 transition-colors text-sm">
           🌲 Browse Digital Garden
         </a>
       </div>
@@ -26,7 +26,7 @@ const courses = [
     <!-- Course Cards Grid -->
     <section class="grid md:grid-cols-3 gap-6">
       {courses.map(course => (
-        <a href={`/courses/${course.id}`} class="group border border-mathBorder rounded-xl p-6 bg-mathBgSecondary hover:border-accent hover:shadow transition-all duration-200">
+        <a href={`${import.meta.env.BASE_URL}courses/${course.id}`} class="group border border-mathBorder rounded-xl p-6 bg-mathBgSecondary hover:border-accent hover:shadow transition-all duration-200">
           <span class="text-4xl block mb-4">{course.icon}</span>
           <h2 class="text-xl font-bold text-mathTextNormal group-hover:text-accent transition-colors flex items-center gap-2">
             {course.name}

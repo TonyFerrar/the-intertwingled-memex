@@ -9,7 +9,7 @@ const concepts = getGardenConcepts();
   <div class="space-y-6">
     <div class="border-b border-mathBorder pb-4">
       <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
-        <a href="/">Home</a> / <span class="text-mathTextMuted">Digital Garden</span>
+        <a href={import.meta.env.BASE_URL}>Home</a> / <span class="text-mathTextMuted">Digital Garden</span>
       </div>
       <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">🌲 Zettelkasten Concept Garden</h1>
       <p class="text-sm text-mathTextMuted mt-1">
@@ -22,7 +22,7 @@ const concepts = getGardenConcepts();
       <div class="grid md:grid-cols-2 gap-4">
         {concepts.map(concept => (
           <a
-            href={`/garden/${concept.slug}`}
+            href={`${import.meta.env.BASE_URL}garden/${concept.slug}`}
             class="border border-mathBorder rounded-xl p-5 bg-mathBgSecondary hover:border-accent hover:shadow-sm transition-all duration-200"
           >
             <h2 class="text-lg font-bold text-mathTextNormal hover:text-accent transition-colors flex items-center justify-between">

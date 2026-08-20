@@ -168,10 +168,10 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
       const parts = target.split('/');
       const course = parts[1].toLowerCase();
       const session = parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `<a class="text-accent underline font-semibold" href="/courses/${course}/${session}">${displayText}</a>`;
+      return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/courses/${course}/${session}">${displayText}</a>`;
     } else {
       const conceptSlug = target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `<a class="text-accent underline font-semibold" href="/garden/${conceptSlug}">${displayText}</a>`;
+      return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/garden/${conceptSlug}">${displayText}</a>`;
     }
   });
 

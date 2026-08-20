@@ -66,7 +66,7 @@ if (unsortedSessions.length > 0) {
     <!-- Header Block -->
     <div class="border-b border-mathBorder pb-5">
       <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-2">
-        <a href="/">Courses</a> / <span class="text-mathTextMuted">{courseTitle}</span>
+        <a href={import.meta.env.BASE_URL}>Courses</a> / <span class="text-mathTextMuted">{courseTitle}</span>
       </div>
       <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{courseTitle} Syllabus Map</h1>
       <p class="text-sm text-mathTextMuted mt-2 max-w-3xl leading-relaxed">
@@ -118,7 +118,7 @@ if (unsortedSessions.length > 0) {
                 
                 return (
                   <a 
-                    href={`/courses/${course}/${sess.slug}`} 
+                    href={`${import.meta.env.BASE_URL}courses/${course}/${sess.slug}`} 
                     class="group block border border-mathBorder rounded-xl p-4 bg-mathBgSecondary/30 hover:bg-mathBgSecondary/70 hover:border-accent hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200 no-underline hover:no-underline flex flex-col justify-between h-full"
                   >
                     <div>
