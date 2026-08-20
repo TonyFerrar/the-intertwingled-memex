@@ -1437,3 +1437,31 @@ export function getConceptDetails(conceptSlug) {
     contentHtml: renderMathAndMarkdown(cleanedContent)
   };
 }
+
+/**
+ * Loads a static markdown page from the vault root
+ */
+export function getStaticPage(fileName) {
+  const filePath = path.join(VAULT_ROOT, `${fileName}.md`);
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  const { data, content: body } = matter(preprocessFrontmatter(fileContent));
+  
+  const titleMatch = body.match(/^#\s+([^\n]+)/m);
+  const title = titleMatch ? titleMatch[1].trim() : (data.title || fileName);
+  
+  let cleanBody = body;
+  if (titleMatch) {
+    cleanBody = body.substring(titleMatch.index + titleMatch[0].length).trim();
+  }
+  
+  const bodyHtml = renderMathAndMarkdown(cleanBody);
+  
+  return {
+    title,
+    bodyHtml,
+    metadata: data
+  };
+}

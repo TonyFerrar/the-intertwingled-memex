@@ -180,6 +180,39 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
           </span>
         </a>
 
+        <!-- Connect / CTA Widget -->
+        <div class="border border-mathBorder rounded-xl bg-mathBgSecondary/15 p-5 space-y-4">
+          <h3 class="text-base font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2 select-none">
+            👋 Connect with Me
+          </h3>
+          <div class="space-y-3 select-none">
+            <a href={link('/about')} class="flex items-center gap-3 p-3 rounded-lg border border-mathBorder/40 bg-mathBgSecondary/20 hover:bg-mathBgSecondary/55 hover:border-accent transition-all duration-200 group text-sm font-semibold text-mathTextNormal no-underline hover:no-underline">
+              <span class="text-xl">👤</span>
+              <div class="flex-1">
+                <div class="group-hover:text-accent transition-colors">About Me</div>
+                <div class="text-[10px] text-mathTextMuted font-normal mt-0.5">Read my profile & teaching philosophy.</div>
+              </div>
+              <span class="text-xs text-accent group-hover:translate-x-1 transition-transform">➜</span>
+            </a>
+            <a href={link('/meet')} class="flex items-center gap-3 p-3 rounded-lg border border-mathBorder/40 bg-mathBgSecondary/20 hover:bg-mathBgSecondary/55 hover:border-accent transition-all duration-200 group text-sm font-semibold text-mathTextNormal no-underline hover:no-underline">
+              <span class="text-xl">📅</span>
+              <div class="flex-1">
+                <div class="group-hover:text-accent transition-colors">Schedule a Meeting</div>
+                <div class="text-[10px] text-mathTextMuted font-normal mt-0.5">Book office hours or scheduling details.</div>
+              </div>
+              <span class="text-xs text-accent group-hover:translate-x-1 transition-transform">➜</span>
+            </a>
+            <a href={link('/enroll')} class="flex items-center gap-3 p-3 rounded-lg border border-mathBorder/40 bg-mathBgSecondary/20 hover:bg-mathBgSecondary/55 hover:border-accent transition-all duration-200 group text-sm font-semibold text-mathTextNormal no-underline hover:no-underline">
+              <span class="text-xl">🎓</span>
+              <div class="flex-1">
+                <div class="group-hover:text-accent transition-colors">Take a Course</div>
+                <div class="text-[10px] text-mathTextMuted font-normal mt-0.5">Find upcoming classes & enrollment links.</div>
+              </div>
+              <span class="text-xs text-accent group-hover:translate-x-1 transition-transform">➜</span>
+            </a>
+          </div>
+        </div>
+
         <!-- Recent Blog Posts Feed widget -->
         <div class="border border-mathBorder rounded-xl bg-mathBgSecondary/15 p-5 space-y-4">
           <h3 class="text-base font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2 select-none">

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getStaticPage } from '../utils/vaultLoader.js';
+
+const page = getStaticPage('Meet with Me');
+if (!page) {
+  return Astro.redirect('/');
+}
+---
+
+<BaseLayout title={page.title}>
+  <div class="max-w-3xl mx-auto space-y-6">
+    <article class="border border-mathBorder rounded-2xl p-8 bg-mathBgSecondary/20">
+      <header class="border-b border-mathBorder/50 pb-4 mb-6">
+        <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">
+          {page.title}
+        </h1>
+      </header>
+      <div class="prose max-w-none text-mathTextNormal leading-relaxed">
+        <Fragment set:html={page.bodyHtml} />
+      </div>
+    </article>
+  </div>
+</BaseLayout>
