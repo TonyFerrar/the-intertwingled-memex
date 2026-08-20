@@ -18,17 +18,45 @@ const typeLabels: Record<string, { label: string; badge: string }> = {
 
 <BaseLayout title={vaultHome.title}>
   <div class="space-y-12 max-w-5xl mx-auto">
-    <!-- Header/Hero Section -->
-    <section class="border-b border-mathBorder pb-6">
-      <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{vaultHome.title}</h1>
-      <div class="prose max-w-none text-mathTextNormal mt-6 leading-relaxed">
-        <Fragment set:html={vaultHome.bodyHtml} />
+    <!-- Hero Section -->
+    <section class="py-8 px-6 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-mathBorder/60 rounded-2xl shadow-lg">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{vaultHome.title}</h1>
+      <div class="prose prose-invert max-w-none text-slate-200 mt-4 leading-relaxed text-sm sm:text-base">
+        <Fragment set:html={vaultHome.introHtml} />
       </div>
     </section>
 
+    <!-- Navigation Hubs -->
+    {vaultHome.sections.map(section => (
+      <section class="space-y-4">
+        <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2">
+          {section.title}
+        </h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {section.cards.map(card => (
+            <a href={link(card.url)} class="group border border-mathBorder rounded-xl p-5 bg-mathBgSecondary/30 hover:bg-mathBgSecondary/70 hover:border-accent hover:shadow transition-all duration-200 no-underline hover:no-underline flex flex-col justify-between h-full">
+              <div>
+                <h3 class="text-base font-bold text-mathTextNormal group-hover:text-accent transition-colors">
+                  {card.title}
+                </h3>
+                {card.description && (
+                  <p class="text-xs text-mathTextMuted mt-2 leading-relaxed">
+                    {card.description}
+                  </p>
+                )}
+              </div>
+              <span class="text-[11px] font-bold text-accent group-hover:underline mt-4 block select-none">
+                Explore ➜
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+
     <!-- Recently Updated Section -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2">
+      <h2 class="text-xl font-bold text-mathTextNormal flex items-center gap-2 border-b border-mathBorder/50 pb-2">
         🕒 Recently Updated Notes
       </h2>
       <p class="text-xs text-mathTextMuted">

@@ -500,7 +500,7 @@ export function getCourseIndex(courseName) {
 export function getVaultHome() {
   const indexPath = path.join(VAULT_ROOT, 'index.md');
   if (!fs.existsSync(indexPath)) {
-    return { title: "Tony's Interwingled Memex", bodyHtml: '' };
+    return { title: "Tony's Interwingled Memex", introHtml: '', sections: [] };
   }
 
   const fileContent = fs.readFileSync(indexPath, 'utf-8');
@@ -518,11 +518,82 @@ export function getVaultHome() {
   cleanBody = cleanBody.replace(/```dataview[\s\S]*?```/g, '').trim();
   cleanBody = cleanBody.replace(/\s*---\s*$/, '').trim(); // Remove trailing hr if present
 
-  const bodyHtml = renderMathAndMarkdown(cleanBody);
+  // Extract intro text (everything before the first H2/H3 header)
+  const firstHeaderMatch = cleanBody.match(/^(##|###)\s+/m);
+  let introMarkdown = '';
+  let restMarkdown = '';
+
+  if (firstHeaderMatch) {
+    introMarkdown = cleanBody.substring(0, firstHeaderMatch.index).trim();
+    restMarkdown = cleanBody.substring(firstHeaderMatch.index).trim();
+  } else {
+    introMarkdown = cleanBody;
+  }
+
+  const introHtml = renderMathAndMarkdown(introMarkdown);
+
+  // Now parse H2/H3 sections
+  const sections = [];
+  const parts = restMarkdown.split(/^(##|###)\s+/gm);
+  
+  for (let i = 1; i < parts.length; i += 2) {
+    const level = parts[i]; // "##" or "###"
+    const content = parts[i+1] || '';
+    const plines = content.split('\n');
+    const headerTitle = plines[0].trim();
+    const bodyContent = plines.slice(1).join('\n').trim();
+
+    // Skip Recently Updated heading since it's rendered by the template manually
+    if (headerTitle.toLowerCase().includes('recently updated')) continue;
+
+    // Parse bullet points: - [[TargetName|Alias]] - Description
+    const cards = [];
+    const bulletRegex = /^\s*-\s+(?:[*\s]*)\[\[([^\]|]+)(?:\|([^\]]+))?\]\](?:[*\s]*)(?:—|-)\s*(.*?)$/gm;
+    let bmatch;
+    while ((bmatch = bulletRegex.exec(bodyContent)) !== null) {
+      const target = bmatch[1].trim();
+      const alias = bmatch[2]?.trim();
+      const desc = bmatch[3]?.trim() || '';
+
+      const displayText = alias || target;
+      
+      // Resolve links
+      let url = '';
+      if (target.startsWith('Courses/')) {
+        const p = target.split('/');
+        const course = p[1].toLowerCase();
+        if (p[2] && p[2].toLowerCase().startsWith('index')) {
+          url = `/courses/${course}`;
+        } else {
+          const session = p[2] ? p[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
+          url = `/courses/${course}/${session}`;
+        }
+      } else if (target.startsWith('Garden/') || target === 'Garden') {
+        url = '/garden/limits';
+      } else {
+        url = `/garden/${target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+      }
+
+      cards.push({
+        title: displayText,
+        url,
+        description: desc
+      });
+    }
+
+    if (cards.length > 0) {
+      sections.push({
+        title: headerTitle,
+        level,
+        cards
+      });
+    }
+  }
 
   return {
     title,
-    bodyHtml
+    introHtml,
+    sections
   };
 }
 
