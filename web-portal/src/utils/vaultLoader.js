@@ -237,10 +237,11 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
       }
     }
 
-    const ext = path.extname(cleanTarget).toLowerCase();
+    const filename = path.basename(cleanTarget);
+    const ext = path.extname(filename).toLowerCase();
     
     // URL-encode spaces in filename
-    const encodedTarget = encodeURIComponent(cleanTarget);
+    const encodedTarget = encodeURIComponent(filename);
     const srcPath = `/the-interwingled-memex/${encodedTarget}`;
     
     let width = '';
