@@ -423,7 +423,7 @@ export function getCourseIndex(courseName) {
   const sessions = getCourseSessions(courseName);
 
   // Extract Title Heading
-  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const titleMatch = body.match(/^#\s+([^\n]+)/m);
   const title = titleMatch ? titleMatch[1].trim() : (data.title || courseName);
 
   // Extract overview text between H1 and the first H2 heading
@@ -507,7 +507,7 @@ export function getVaultHome() {
   const { data, content: body } = matter(preprocessFrontmatter(fileContent));
 
   // Extract Title Heading
-  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const titleMatch = body.match(/^#\s+([^\n]+)/m);
   const title = titleMatch ? titleMatch[1].trim() : (data.title || "Tony's Interwingled Memex");
 
   // Remove Title and dataview codeblocks
@@ -619,7 +619,7 @@ export function getOERPortalHome() {
   const fileContent = fs.readFileSync(indexPath, 'utf-8');
   const { data, content: body } = matter(preprocessFrontmatter(fileContent));
 
-  const titleMatch = body.match(/^#\s*(.*?)\n/m);
+  const titleMatch = body.match(/^#\s+([^\n]+)/m);
   const title = titleMatch ? titleMatch[1].trim() : (data.title || 'Active Calculus OER Portal');
 
   let bodyWithoutTitle = body;
@@ -700,7 +700,7 @@ export function getBlogPosts() {
     
     // Split content to remove H1 heading if present and get description snippet
     let body = parsed.content.trim();
-    const titleMatch = body.match(/^#\s*(.*?)\n/m);
+    const titleMatch = body.match(/^#\s+([^\n]+)/m);
     const postTitle = titleMatch ? titleMatch[1].trim() : (data.title || file.replace('.md', ''));
     
     if (titleMatch) {
