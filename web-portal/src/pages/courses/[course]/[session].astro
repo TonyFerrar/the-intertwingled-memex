@@ -84,6 +84,9 @@ const timelineSteps = details.blocks.map((block, idx) => {
     title: cleanTitle
   };
 }).filter(step => step.time);
+
+const base = import.meta.env.BASE_URL;
+const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
 ---
 
 <BaseLayout title={details.title} courseName={course}>
@@ -92,8 +95,8 @@ const timelineSteps = details.blocks.map((block, idx) => {
     <div class="border-b border-mathBorder pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
-          <a href={import.meta.env.BASE_URL}>Courses</a> / 
-          <a href={`${import.meta.env.BASE_URL}courses/${course}`}>{courseTitle}</a> / 
+          <a href={link('/')}>Courses</a> / 
+          <a href={link(`/courses/${course}`)}>{courseTitle}</a> / 
           <span class="text-mathTextMuted">{displayCode}</span>
         </div>
         <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{displayTitle}</h1>
@@ -102,14 +105,14 @@ const timelineSteps = details.blocks.map((block, idx) => {
       <!-- Print Actions Panel -->
       <div class="flex flex-wrap gap-2 select-none">
         <a
-          href={`${import.meta.env.BASE_URL}courses/${course}/${session}/print?mode=worksheet`}
+          href={link(`/courses/${course}/${session}/print?mode=worksheet`)}
           target="_blank"
           class="px-4 py-2 border border-mathBorder rounded-lg text-sm font-bold bg-mathBgSecondary text-mathTextNormal hover:bg-mathBorder flex items-center gap-1.5 shadow-sm transition-colors"
         >
           🖨️ Student Worksheet
         </a>
         <a
-          href={`${import.meta.env.BASE_URL}courses/${course}/${session}/print?mode=solutions`}
+          href={link(`/courses/${course}/${session}/print?mode=solutions`)}
           target="_blank"
           class="px-4 py-2 border border-mathBorder rounded-lg text-sm font-bold bg-mathBgSecondary text-mathTextNormal hover:bg-mathBorder flex items-center gap-1.5 shadow-sm transition-colors"
         >

@@ -6,6 +6,9 @@ export interface Props {
 
 const { title, courseName } = Astro.props;
 
+const base = import.meta.env.BASE_URL;
+const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
+
 // Mock list of courses for the sidebar
 const courses = [
   { id: 'calc-1', name: 'Calculus I (MATH-181)' },
@@ -356,10 +359,10 @@ const courses = [
         </svg>
       </button>
       <span class="text-2xl">🌱</span>
-      <a href={import.meta.env.BASE_URL} class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
+      <a href={link('/')} class="text-xl font-bold tracking-tight hover:text-accent transition-colors">UNLV Calculus Reference Portal</a>
     </div>
     <div class="flex items-center gap-4">
-      <a href={import.meta.env.BASE_URL + "garden/limits"} class="text-sm font-semibold hover:underline">Digital Garden</a>
+      <a href={link('/garden/limits')} class="text-sm font-semibold hover:underline">Digital Garden</a>
       <span class="text-mathTextMuted">|</span>
       <span class="text-xs py-1 px-2 bg-mathBorder rounded font-mono">OER Curriculum</span>
     </div>
@@ -378,7 +381,7 @@ const courses = [
             {courses.map(course => (
               <li>
                 <a
-                  href={`${import.meta.env.BASE_URL}courses/${course.id}`}
+                  href={link(`/courses/${course.id}`)}
                   class={`block p-2 rounded text-sm font-semibold transition-colors hover:bg-mathBorder ${
                     courseName === course.id ? 'text-accent bg-mathBorder' : 'text-mathTextNormal'
                   }`}
@@ -394,7 +397,7 @@ const courses = [
           <h3 class="text-xs font-bold text-mathTextMuted uppercase tracking-wider mb-3">Resources</h3>
           <ul class="space-y-2">
             <li>
-              <a href={import.meta.env.BASE_URL + "garden"} class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
+              <a href={link('/garden')} class="block p-2 rounded text-sm font-semibold text-mathTextNormal hover:bg-mathBorder">
                 🌲 Zettelkasten Concept Garden
               </a>
             </li>

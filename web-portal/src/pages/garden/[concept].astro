@@ -27,6 +27,9 @@ while ((match = desmosRegex.exec(details.contentHtml)) !== null) {
 }
 
 const uniqueDesmosLinks = [...new Set(desmosLinks)];
+
+const base = import.meta.env.BASE_URL;
+const link = (p: string) => `${base.endsWith('/') ? base : base + '/'}${p.startsWith('/') ? p.slice(1) : p}`;
 ---
 
 <BaseLayout title={details.title}>
@@ -34,8 +37,8 @@ const uniqueDesmosLinks = [...new Set(desmosLinks)];
     <!-- Breadcrumbs -->
     <div class="border-b border-mathBorder pb-4">
       <div class="flex items-center gap-2 text-sm font-semibold text-accent mb-1">
-        <a href={import.meta.env.BASE_URL}>Home</a> / 
-        <a href={import.meta.env.BASE_URL + "garden"}>Digital Garden</a> / 
+        <a href={link('/')}>Home</a> / 
+        <a href={link('/garden')}>Digital Garden</a> / 
         <span class="text-mathTextMuted">{details.title}</span>
       </div>
       <h1 class="text-3xl font-extrabold text-mathTextNormal tracking-tight">{details.title}</h1>
