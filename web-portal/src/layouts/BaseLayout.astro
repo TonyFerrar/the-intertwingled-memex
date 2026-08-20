@@ -252,6 +252,28 @@ const courses = [
       color: var(--text-normal);
     }
 
+    /* Responsive Logo Brand Title */
+    .logo-title {
+      font-size: 1rem;
+    }
+    .logo-mobile {
+      display: inline;
+    }
+    .logo-desktop {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .logo-title {
+        font-size: 1.25rem;
+      }
+      .logo-mobile {
+        display: none;
+      }
+      .logo-desktop {
+        display: inline;
+      }
+    }
+
     /* Centered Content Wrapper (increased to 1024px to prevent tab wrapping on desktop) */
     .content-wrapper {
       max-width: 1024px;
@@ -365,9 +387,9 @@ const courses = [
         </svg>
       </button>
       <span class="text-xl sm:text-2xl">🌱</span>
-      <a href={link('/')} class="text-base md:text-xl font-bold tracking-tight hover:text-accent transition-colors">
-        <span class="inline md:hidden">UNLV Calculus</span>
-        <span class="hidden md:inline">UNLV Calculus Reference Portal</span>
+      <a href={link('/')} class="logo-title font-bold tracking-tight hover:text-accent transition-colors">
+        <span class="logo-mobile">UNLV Calculus</span>
+        <span class="logo-desktop">UNLV Calculus Reference Portal</span>
       </a>
     </div>
     <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
