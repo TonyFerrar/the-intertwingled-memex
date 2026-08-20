@@ -356,7 +356,7 @@ const courses = [
 </head>
 <body class="flex flex-col min-h-screen">
   <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-45 w-full border-b border-mathBorder bg-mathBgSecondary py-4 px-3 sm:px-6 flex items-center justify-between shadow-sm">
+  <header class="sticky top-0 z-50 w-full border-b border-mathBorder bg-mathBgSecondary py-4 px-3 sm:px-6 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-3">
       <!-- Mobile Menu Toggle Button -->
       <button id="mobile-menu-toggle" class="md:hidden p-1.5 text-mathTextNormal hover:bg-mathBorder rounded transition-colors mr-1" aria-label="Toggle Navigation">
@@ -365,9 +365,9 @@ const courses = [
         </svg>
       </button>
       <span class="text-xl sm:text-2xl">🌱</span>
-      <a href={link('/')} class="text-base sm:text-xl font-bold tracking-tight hover:text-accent transition-colors">
-        <span class="inline sm:hidden">UNLV Calculus</span>
-        <span class="hidden sm:inline">UNLV Calculus Reference Portal</span>
+      <a href={link('/')} class="text-base md:text-xl font-bold tracking-tight hover:text-accent transition-colors">
+        <span class="inline md:hidden">UNLV Calculus</span>
+        <span class="hidden md:inline">UNLV Calculus Reference Portal</span>
       </a>
     </div>
     <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm">
@@ -438,7 +438,7 @@ const courses = [
   </footer>
 
   <!-- Desmos Side Drawer -->
-  <div id="desmos-drawer" class="fixed top-0 right-0 z-50 h-full w-[480px] max-w-[90%] bg-mathBgSecondary border-l border-mathBorder shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col hidden lg:flex">
+  <div id="desmos-drawer" class="fixed top-0 right-0 z-[70] h-full w-[480px] max-w-[90%] bg-mathBgSecondary border-l border-mathBorder shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col hidden lg:flex">
     <div class="p-4 border-b border-mathBorder flex items-center justify-between bg-mathBgSecondary select-none">
       <span class="font-bold text-mathTextNormal flex items-center gap-1.5">📊 Desmos Graph Visualizer</span>
       <button id="close-desmos-drawer" class="p-1 hover:bg-mathBorder rounded text-mathTextMuted hover:text-mathTextNormal transition-colors">
