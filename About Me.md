@@ -5,11 +5,14 @@ description: "Tony's profile, research background, and teaching philosophy."
 # About Me
 
 Howdy! I am Tony Ferrar.
+
 **Chair and Associate Professor in Residence**
+
 _Department of Applied and Interdisciplinary Engineering_
+
 _Howard R. Hughes College of Engineering, UNLV_
 
-![[Tony Climbing Caustic.jpeg]]
+![[_Attachments/Tony Climbing Caustic.jpeg]]
 
 ## My Vision: Engineering the Future of Synthesis
 

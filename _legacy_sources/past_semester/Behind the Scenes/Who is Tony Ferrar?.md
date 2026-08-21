@@ -4,7 +4,7 @@
 _Department of Applied and Interdisciplinary Engineering_
 _Howard R. Hughes College of Engineering, UNLV_
 
-![[Tony Climbing Caustic.jpeg]]
+![[_Attachments/Tony Climbing Caustic.jpeg]]
 ## My Vision: Engineering the Future of Synthesis
 
 As the founding Chair of the Department of Applied and Interdisciplinary Engineering, I don’t believe in silos. I believe that the greatest innovations of the 21st century happen at the intersections: where Computer Science meets Mechanical Engineering, or where Entertainment Engineering meets Civil infrastructure.
