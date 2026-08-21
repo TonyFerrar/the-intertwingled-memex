@@ -218,6 +218,51 @@ const courses = [
       color: var(--text-normal);
     }
 
+    /* Table Styling for Markdown Content */
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    .prose thead {
+      border-bottom: 2px solid var(--border-color);
+      background-color: var(--background-secondary);
+    }
+    .prose th {
+      font-weight: 700;
+      color: var(--text-normal);
+      padding: 0.75rem 1rem;
+    }
+    .prose td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-normal);
+    }
+    .prose tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .prose tbody tr:hover {
+      background-color: var(--background-secondary-alt);
+    }
+    .prose tbody tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    @media (prefers-color-scheme: dark) {
+      .prose tbody tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.02);
+      }
+    }
+
 
     /* Math Formula Hero Cards */
     .callout-formula {

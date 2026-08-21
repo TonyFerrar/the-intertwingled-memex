@@ -12,8 +12,8 @@ I teach the core Engineering Calculus sequence, exclusively to students from the
 *   [[Courses/Calc-2/index|MATH 182: Calculus II for Engineers]] — Focuses on integration, numerical methods, and sequences/series.
 *   [[Courses/Calc-3/index|MATH 283: Calculus III for Engineers]] — Focuses on multivariable calculus, vectors, and vector fields.
 
-### Coming Soon:
-My schedule for the next 3 years is:
+### Upcoming Teaching Schedule (2026–2029):
+My tentative course availability for the next 3 years is below. Schedules are subject to department updates.
 
 | Term        | Course                                           | Course                                           |
 | ----------- | ------------------------------------------------ | ------------------------------------------------ |

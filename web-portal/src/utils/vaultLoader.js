@@ -320,6 +320,9 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
     }
   });
 
+  // 8. Wrap all tables in a scrollable div for responsiveness
+  html = html.replace(/<table/g, '<div class="table-wrapper"><table').replace(/<\/table>/g, '</table></div>');
+
   return html;
 }
 
