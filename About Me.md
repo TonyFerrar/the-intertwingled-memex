@@ -4,9 +4,9 @@ description: "Tony's profile, research background, and teaching philosophy."
 ---
 # About Me
 
-Howdy! I am Tony Ferrar.
+**Howdy! I am Tony Ferrar.**
 
-**Chair and Associate Professor in Residence**
+*Chair and Associate Professor in Residence*
 
 _Department of Applied and Interdisciplinary Engineering_
 
