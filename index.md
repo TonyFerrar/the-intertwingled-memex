@@ -5,7 +5,7 @@ publish: true
 updated: 2026-08-18
 ---
 
-# Welcome to Tony's Interwingled Memex
+# Welcome to Tony's Intertwingled Memex
 
 Welcome to the central hub for the UNLV Engineering Calculus Vault. This digital space serves as a persistent, organized environment for academic course materials, curriculum planning, and active learning resources built on the **Modeling Practices in Calculus (MPC)** pedagogical framework.
 

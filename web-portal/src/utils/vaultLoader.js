@@ -242,7 +242,7 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
     
     // URL-encode spaces in filename
     const encodedTarget = encodeURIComponent(filename);
-    const srcPath = `/the-interwingled-memex/${encodedTarget}`;
+    const srcPath = `/the-intertwingled-memex/${encodedTarget}`;
     
     let width = '';
     let alt = cleanTarget;
@@ -273,13 +273,13 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
       const parts = target.split('/');
       const course = parts[1].toLowerCase();
       if (parts[2] && parts[2].toLowerCase().startsWith('index')) {
-        return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/courses/${course}">${displayText}</a>`;
+        return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/courses/${course}">${displayText}</a>`;
       }
       const session = parts[2] ? parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
-      return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/courses/${course}/${session}">${displayText}</a>`;
+      return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/courses/${course}/${session}">${displayText}</a>`;
     } else {
       const conceptSlug = target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `<a class="text-accent underline font-semibold" href="/the-interwingled-memex/garden/${conceptSlug}">${displayText}</a>`;
+      return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/garden/${conceptSlug}">${displayText}</a>`;
     }
   });
 
@@ -600,12 +600,12 @@ export function getCourseIndex(courseName) {
 }
 
 /**
- * Loads the root index.md note to dynamically populate the Tony's Interwingled Memex homepage.
+ * Loads the root index.md note to dynamically populate the Tony's Intertwingled Memex homepage.
  */
 export function getVaultHome() {
   const indexPath = path.join(VAULT_ROOT, 'index.md');
   if (!fs.existsSync(indexPath)) {
-    return { title: "Tony's Interwingled Memex", introHtml: '', sections: [] };
+    return { title: "Tony's Intertwingled Memex", introHtml: '', sections: [] };
   }
 
   const fileContent = fs.readFileSync(indexPath, 'utf-8');
@@ -613,7 +613,7 @@ export function getVaultHome() {
 
   // Extract Title Heading
   const titleMatch = body.match(/^#\s+([^\n]+)/m);
-  const title = titleMatch ? titleMatch[1].trim() : (data.title || "Tony's Interwingled Memex");
+  const title = titleMatch ? titleMatch[1].trim() : (data.title || "Tony's Intertwingled Memex");
 
   // Remove Title and dataview codeblocks
   let cleanBody = body;

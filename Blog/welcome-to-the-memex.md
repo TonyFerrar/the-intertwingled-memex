@@ -1,5 +1,5 @@
 ---
-title: "Welcome to the Interwingled Memex"
+title: "Welcome to the Intertwingled Memex"
 publish: true
 updated: 2026-08-20
 type: blog
