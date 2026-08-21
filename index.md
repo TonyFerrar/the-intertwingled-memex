@@ -7,7 +7,7 @@ updated: 2026-08-18
 
 # Welcome to Tony's Intertwingled Memex
 
-Welcome to the central hub for the UNLV Engineering Calculus Vault. This digital space serves as a persistent, organized environment for academic course materials, curriculum planning, and active learning resources built on the **Modeling Practices in Calculus (MPC)** pedagogical framework.
+Inspired by Vannevar Bush’s Memex and Ted Nelson’s intertwingled universe, this digital garden is driven by a personal passion for finding connections where none seem to exist. Here, I cultivate new associative trails between wildly disparate ideas, proving that no concept ever stands alone and everything is deeply, unexpectedly linked.
 
 ## 🧭 Vault Navigation
 
@@ -24,6 +24,7 @@ Explore current course structures, session lecture notes, and discussion materia
 ### 🛠️ Department & Projects
 - **[[Department/|UNLV Department Materials]]** — Administration, guidelines, and Graduate Assistant (GA) training resources.
 - **[[Projects/|Projects]]** — Educational software, interactive visualizations, and curricula design projects.
+- **[[Future Backlog|Future Backlog]]** — Backlog of ideas, tasks, and future projects.
 
 ---
 
