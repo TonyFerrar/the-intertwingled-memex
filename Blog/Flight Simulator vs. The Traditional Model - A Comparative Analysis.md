@@ -49,12 +49,12 @@ When a UNLV student—who works a 30-hour graveyard resort shift, manages first-
 
 We cannot force traditional upper-division faculty to soften their syllabi or alter their teaching styles. Therefore, this course acts as a **flight simulator**—it maintains high technical standards while embedding safety nets that allow students to fail safely, analyze their mistakes, and build the personal systems needed to survive unyielding environments later.
 
-| Traditional Upper-Division Threat | Simulator Skill Developed | Governing Policy Node |
-| :--- | :--- | :--- |
-| Rigid, high-stakes exams with zero grace | Retro-grading & Exam Corrections | [[Garden/Evaluation Anxiety and Systemic Failure Paralysis]] |
-| Unclear / unrealistic workload expectations | $2\text{--}3$ hr/credit time-guarding | [[Garden/Weight of First-Gen and Immigrant Expectations]] |
-| Dense, textbook-focused problem sets | Personal problem-solving flowcharts | [[Garden/Inclusive Admissions Mirage and Legacy Faculty Wall]] |
-| Unapproachable faculty / cold environment | Self-auditing & self-advocacy | [[Garden/Institutional Convenience vs Student Growth]] |
+| Traditional Upper-Division Threat           | Simulator Skill Developed             | Governing Policy Node                                          |
+| :------------------------------------------ | :------------------------------------ | :------------------------------------------------------------- |
+| Rigid, high-stakes exams with zero grace    | Retro-grading & Exam Corrections      | [[Garden/Evaluation Anxiety and Systemic Failure Paralysis]]   |
+| Unclear / unrealistic workload expectations | $2\text{--}3$ hr/credit time-guarding | [[Garden/Weight of First-Gen and Immigrant Expectations]]      |
+| Dense, textbook-focused problem sets        | Personal problem-solving flowcharts   | [[Garden/Inclusive Admissions Mirage and Legacy Faculty Wall]] |
+| Unapproachable faculty / cold environment   | Self-auditing & self-advocacy         | [[Garden/Institutional Convenience vs Student Growth]]         |
 
 1. **Developing Personal Problem-Solving Flowcharts:** Rather than grading homework strictly on numerical "right answers," our system rewards process, redlining, and time investment (4-hour rule). Students discover *how* they learn best, leaving the course with a personalized troubleshooting flowchart.
 2. **Mastering Time-Guarding:** By explicitly teaching the $2\text{--}3$ hours per credit/week rule and enforcing an automated 7-day hard lock, students learn to treat study blocks as non-negotiable professional appointments.

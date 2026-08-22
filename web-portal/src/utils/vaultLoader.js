@@ -90,6 +90,82 @@ function findVaultFileByName(baseDir, name) {
 }
 
 /**
+ * Resolves an Obsidian link target (e.g. [[Limits]], [[Garden/Limits]], [[Courses/Calc-1/Session 01]])
+ * to its correct web portal URL path, handling prefixing, file search, and fallback routes.
+ */
+function resolveObsidianLink(target, includeBase = true) {
+  const basePrefix = includeBase ? '/the-intertwingled-memex' : '';
+
+  // If target starts with Courses/
+  if (target.startsWith('Courses/')) {
+    const parts = target.split('/');
+    const course = parts[1].toLowerCase();
+    if (parts[2] && parts[2].toLowerCase().startsWith('index')) {
+      return `${basePrefix}/courses/${course}`;
+    }
+    const session = parts[2] ? parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
+    return `${basePrefix}/courses/${course}/${session}`;
+  }
+
+  // If target starts with Garden/
+  if (target.startsWith('Garden/')) {
+    const conceptSlug = target.substring(7).replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `${basePrefix}/garden/${conceptSlug}`;
+  }
+
+  // If target starts with Blog/
+  if (target.startsWith('Blog/')) {
+    const blogSlug = target.substring(5).replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `${basePrefix}/blog/${blogSlug}`;
+  }
+
+  // Otherwise, search for the file in the vault
+  // If the target has a path slash, look for the basename
+  const targetBaseName = target.includes('/') ? target.split('/').pop() : target;
+  const resolvedPath = findVaultFileByName(VAULT_ROOT, targetBaseName);
+
+  if (resolvedPath) {
+    const relativePath = path.relative(VAULT_ROOT, resolvedPath);
+    const parts = relativePath.replace(/\\/g, '/').split('/');
+
+    if (parts[0] === 'Blog') {
+      const slug = parts[parts.length - 1].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `${basePrefix}/blog/${slug}`;
+    } else if (parts[0] === 'Garden') {
+      const slug = parts[parts.length - 1].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `${basePrefix}/garden/${slug}`;
+    } else if (parts[0] === 'Courses') {
+      const course = parts[1].toLowerCase();
+      const filename = parts[parts.length - 1];
+      if (filename.toLowerCase().startsWith('index')) {
+        return `${basePrefix}/courses/${course}`;
+      }
+      const session = filename.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `${basePrefix}/courses/${course}/${session}`;
+    } else {
+      // Root level static page mapping
+      const filename = parts[parts.length - 1].replace('.md', '');
+      const cleanName = filename.toLowerCase().replace(/\s+/g, ' ').trim();
+      if (cleanName === 'about me') {
+        return `${basePrefix}/about`;
+      } else if (cleanName === 'meet with me') {
+        return `${basePrefix}/meet`;
+      } else if (cleanName === 'take a course') {
+        return `${basePrefix}/enroll`;
+      } else {
+        const slug = filename.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        return `${basePrefix}/${slug}`;
+      }
+    }
+  }
+
+  // Fallback: slugify the target as a garden concept
+  const conceptSlug = target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  return `${basePrefix}/garden/${conceptSlug}`;
+}
+
+
+/**
  * Preprocesses markdown file content to quote unquoted YAML frontmatter values
  * containing brackets like [[MATH-181]], which causes js-yaml to crash.
  */
@@ -269,18 +345,8 @@ export function renderMathAndMarkdown(markdownText, mathBlocks = [], mathInlines
   // 4. Convert Obsidian links [[Limits]] or [[Limits|Limits Card]] into standard HTML links
   processed = processed.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (match, target, alias) => {
     const displayText = alias || target;
-    if (target.startsWith('Courses/')) {
-      const parts = target.split('/');
-      const course = parts[1].toLowerCase();
-      if (parts[2] && parts[2].toLowerCase().startsWith('index')) {
-        return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/courses/${course}">${displayText}</a>`;
-      }
-      const session = parts[2] ? parts[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
-      return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/courses/${course}/${session}">${displayText}</a>`;
-    } else {
-      const conceptSlug = target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `<a class="text-accent underline font-semibold" href="/the-intertwingled-memex/garden/${conceptSlug}">${displayText}</a>`;
-    }
+    const resolvedUrl = resolveObsidianLink(target.trim(), true);
+    return `<a class="text-accent underline font-semibold" href="${resolvedUrl}">${displayText}</a>`;
   });
 
   // 5. Parse Markdown safely now that LaTeX subscripts and backslashes are protected
@@ -672,21 +738,7 @@ export function getVaultHome() {
       const displayText = alias || target;
       
       // Resolve links
-      let url = '';
-      if (target.startsWith('Courses/')) {
-        const p = target.split('/');
-        const course = p[1].toLowerCase();
-        if (p[2] && p[2].toLowerCase().startsWith('index')) {
-          url = `/courses/${course}`;
-        } else {
-          const session = p[2] ? p[2].replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-') : '';
-          url = `/courses/${course}/${session}`;
-        }
-      } else if (target.startsWith('Garden/') || target === 'Garden') {
-        url = '/garden/limits';
-      } else {
-        url = `/garden/${target.replace('.md', '').toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-      }
+      const url = resolveObsidianLink(target.trim(), false);
 
       cards.push({
         title: displayText,
