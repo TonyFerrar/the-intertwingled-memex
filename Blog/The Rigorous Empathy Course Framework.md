@@ -35,5 +35,5 @@ The **Rigorous Empathy Framework** reframes course design using an engineering m
 ---
 
 > [!example] Deeper Reading
-> For an architectural comparison between this framework and standard university instruction, read [[Flight Simulator vs. The Traditional Model - A Comparative Analysis|Flight Simulator vs. The Traditional Model]].
+> For an architectural comparison between this framework and standard university instruction, read [[Rigorous Empathy vs. The Traditional Model - A Comparative Analysis|Rigorous Empathy vs. The Traditional Model]].
 
