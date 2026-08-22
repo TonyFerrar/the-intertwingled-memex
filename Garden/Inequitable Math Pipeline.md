@@ -1,7 +1,7 @@
 ---
-title: "Inequitable Math Pipeline"
+title: Inequitable Math Pipeline
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

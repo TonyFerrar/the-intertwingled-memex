@@ -1,7 +1,7 @@
 ---
-title: "Prerequisite Desert and Bait-and-Switch"
+title: Prerequisite Desert and Bait-and-Switch
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

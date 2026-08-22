@@ -1,7 +1,7 @@
 ---
-title: "Breadwinner-Student Disconnect"
+title: Breadwinner-Student Disconnect
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

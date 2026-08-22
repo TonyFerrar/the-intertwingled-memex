@@ -1,7 +1,7 @@
 ---
-title: "Veteran and Non-Traditional Misalignment"
+title: Veteran and Non-Traditional Misalignment
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

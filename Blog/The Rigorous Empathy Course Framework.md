@@ -1,7 +1,7 @@
 ---
 title: "Map of Content: The Rigorous Empathy Course Framework"
 type: blog
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

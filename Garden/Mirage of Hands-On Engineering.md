@@ -1,7 +1,7 @@
 ---
-title: "Mirage of Hands-On Engineering"
+title: Mirage of Hands-On Engineering
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22

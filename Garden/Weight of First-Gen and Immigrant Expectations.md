@@ -1,7 +1,7 @@
 ---
-title: "Weight of First-Gen and Immigrant Expectations"
+title: Weight of First-Gen and Immigrant Expectations
 type: garden
-course: "[[MATH-181]]"
+course:
 semester: Fall 2026
 publish: true
 updated: 2026-08-22
